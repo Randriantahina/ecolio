@@ -10,7 +10,7 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 - [x] `Role` enum + idempotent `RolesSeeder` for the 5 roles (feat, identity, done 2026-11-23). Fine-grained permissions come via Policies per feature, not DB permissions
 - [x] `POST /api/v1/auth/login` (email or phone), logout, `GET /me`; token 30 days; lockout after 5 failures; `tenant` middleware (feat, auth, done 2026-11-23). Layers: UtilisateurRepository, AuthService, LoginDto, LoginRequest, AuthController
 - [ ] Password reset by e-mail (US1.2)
-- [ ] Directeur creates team accounts with a role (US1.3)
+- [x] Directeur creates/deactivates team accounts with a role (US1.3) (feat, team, done 2026-11-23): `UtilisateurPolicy::gererEquipe`, `TeamService`, 404 for other-school users, tokens revoked on deactivation
 - [ ] API conventions: `/api/v1`, error format `{message, errors}`, API Resources
 - [ ] Activity log wired for sensitive models; audit entries not editable via API
 - [ ] School settings: `GET/PUT /ecole` (US2.1)

@@ -6,6 +6,7 @@ namespace App\Infrastructure\Persistence\Eloquent;
 
 use App\Domain\Identity\Contracts\UtilisateurRepository;
 use App\Domain\Identity\Models\Utilisateur;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 
 final class EloquentUtilisateurRepository implements UtilisateurRepository
 {
@@ -23,5 +24,23 @@ final class EloquentUtilisateurRepository implements UtilisateurRepository
     public function save(Utilisateur $utilisateur): void
     {
         $utilisateur->save();
+    }
+
+    public function paginateForEcole(int $ecoleId, int $perPage): CursorPaginator
+    {
+        // Utilisateur is not tenant-scoped (login needs it), so the school filter must be explicit here.
+        return Utilisateur::query()
+            ->where('ecole_id', $ecoleId)
+            ->with('roles')
+            ->orderBy('id')
+            ->cursorPaginate($perPage);
+    }
+
+    public function findInEcoleOrFail(string $uuid, int $ecoleId): Utilisateur
+    {
+        return Utilisateur::query()
+            ->where('ecole_id', $ecoleId)
+            ->where('uuid', $uuid)
+            ->firstOrFail();
     }
 }

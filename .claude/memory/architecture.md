@@ -11,6 +11,7 @@ Planned design: `CLAUDE.md` (big picture) and `rules/stack/`. This file records 
 - `Domain/Tenancy`: `TenantContext` (scoped binding; school id or platform mode), `EcoleScope`, `BelongsToEcole`, exceptions. Unresolved context THROWS, never returns all rows.
 - `Domain/Identity`: `Utilisateur` (Authenticatable + Sanctum + spatie roles; NOT tenant-scoped on purpose, repositories filter `ecole_id` explicitly), `Role` enum. Guard name `web`; password column `mot_de_passe` via `getAuthPasswordName()`.
 - Auth slice (reference for every future feature): `Domain/Identity/Contracts/UtilisateurRepository` -> `Infrastructure/Persistence/Eloquent/EloquentUtilisateurRepository` (bound in `Providers/DomainServiceProvider`), `Application/Identity/{DTOs,Services}`, `Http/{Controllers/Auth,Requests/Auth,Resources,Middleware/ResolveTenant}`. HTTP status for domain exceptions is mapped in `bootstrap/app.php`. Routes in `routes/api.php` under `v1`; protected group = `auth:sanctum` + `tenant`.
+- Team slice: `Policies/UtilisateurPolicy` (registered in DomainServiceProvider::boot, needed because models live under Domain/), `Application/Identity/Services/TeamService`, `Http/Controllers/Team`. FormRequest::authorize() runs the policy so forbidden roles get 403 before validation.
 - `Domain/Platform/Models/Ecole` (not scoped; uuid public id).
 - Other layers (`Application`, `Infrastructure`, `Http`) are created as phase 0 needs them.
 

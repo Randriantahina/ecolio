@@ -1,5 +1,9 @@
 <?php
 
+use App\Domain\Identity\Enums\Role;
+use App\Domain\Identity\Models\Utilisateur;
+use App\Domain\Platform\Models\Ecole;
+use Database\Seeders\RolesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,7 +48,14 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/** A user holding one role, in the given school (null school = platform super admin). */
+function utilisateurAvecRole(Role $role, ?Ecole $ecole = null): Utilisateur
 {
-    // ..
+    (new RolesSeeder)->run();
+
+    $user = $role === Role::SuperAdmin
+        ? Utilisateur::factory()->superAdmin()->create()
+        : Utilisateur::factory()->for($ecole ?? Ecole::factory()->create())->create();
+
+    return $user->assignRole($role->value);
 }
