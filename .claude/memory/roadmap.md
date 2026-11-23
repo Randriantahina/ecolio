@@ -3,8 +3,8 @@
 Tick a phase only when its **definition of done** is met: tests green on the 4 families that exist so far (tenant isolation, receipts, grades, import), demo on fictional data, no blocking bug on the main journey. Task detail lives in `phases/`.
 
 - [x] **Bootstrap** · repo, toolchain, CI, rules, memory (done 2026-11-23)
-- [ ] **Phase 0 · Fondations** · auth, roles, tenancy, audit, installable PWA skeleton · DoD: a directeur logs in, isolation proven by tests · `phases/phase-0-fondations.md`
-- [ ] **Phase 1 · Registre et écolage** · years/levels/classes, students (core), tariffs, échéances, tuition checkboxes, numbered PDF receipts, absences, departures · DoD: what the directrice described (spec 0.1)
+- [x] **Phase 0 · Fondations** · auth, roles, tenancy, audit, installable PWA skeleton · DoD: a directeur logs in, isolation proven by tests · done 2026-11-23, 99 backend + 86 frontend tests, CI green · `phases/phase-0-fondations.md`
+- [ ] **Phase 1 · Registre et écolage** · years/levels/classes, students (core), tariffs, échéances, tuition checkboxes, numbered PDF receipts, absences, departures · DoD: what the directrice described (spec 0.1) · `phases/phase-1-registre-ecolage.md`
 - [ ] **Phase 2 · Dynamique et import** · custom fields, saved views, Excel import wizard · DoD: a real school Excel imported with < 10 % manual fixes (real file not yet seen)
 - [ ] **Phase 3 · Inscriptions** · tutors, siblings, re-enrolment, class promotion, dashboard · DoD: a simulated school start
 - [ ] **Phase 4 · Notes et bulletins** · subjects, evaluations, grades, calculations, report-card PDF · DoD: one full term on one class
