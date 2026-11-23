@@ -9,6 +9,7 @@ Planned design: `CLAUDE.md` (big picture) and `rules/stack/`. This file records 
 
 ## Backend (`backend/app`)
 - `Domain/Tenancy`: `TenantContext` (scoped binding; school id or platform mode), `EcoleScope`, `BelongsToEcole`, exceptions. Unresolved context THROWS, never returns all rows.
+- `Domain/Identity`: `Utilisateur` (Authenticatable + Sanctum + spatie roles; NOT tenant-scoped on purpose, repositories filter `ecole_id` explicitly), `Role` enum. Guard name `web`; password column `mot_de_passe` via `getAuthPasswordName()`.
 - `Domain/Platform/Models/Ecole` (not scoped; uuid public id).
 - Other layers (`Application`, `Infrastructure`, `Http`) are created as phase 0 needs them.
 

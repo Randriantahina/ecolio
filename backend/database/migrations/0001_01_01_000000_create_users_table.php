@@ -1,23 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        // Spec 7.3 `utilisateurs`: ecole_id null = platform super admin. The "e-mail or phone" CHECK is
+        // enforced in the model because SQLite (used by tests) cannot add CHECK constraints after creation.
+        Schema::create('utilisateurs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->uuid('uuid')->unique();
+            $table->foreignId('ecole_id')->nullable()->constrained('ecoles')->restrictOnDelete();
+            $table->string('nom');
+            $table->string('email')->nullable()->unique();
+            $table->string('telephone')->nullable()->unique();
+            $table->string('mot_de_passe');
+            $table->boolean('actif')->default(true);
+            $table->unsignedSmallInteger('tentatives_echouees')->default(0);
+            $table->timestamp('verrouille_jusqua')->nullable();
+            $table->timestamp('derniere_connexion')->nullable();
+            $table->string('langue', 5)->default('fr');
             $table->timestamps();
         });
 
@@ -37,12 +44,9 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('utilisateurs');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
