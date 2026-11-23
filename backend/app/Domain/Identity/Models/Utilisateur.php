@@ -14,6 +14,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use InvalidArgumentException;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -22,7 +24,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 final class Utilisateur extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasRoles, HasUuids, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, HasUuids, LogsActivity, Notifiable;
 
     public const MAX_ECHECS = 5;
 
@@ -51,6 +53,16 @@ final class Utilisateur extends Authenticatable
             'verrouille_jusqua' => 'datetime',
             'derniere_connexion' => 'datetime',
         ];
+    }
+
+    /** Whitelist, never logAll: the password hash and login bookkeeping must stay out of the trail. */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['nom', 'email', 'telephone', 'actif'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->useLogName('utilisateurs');
     }
 
     public function uniqueIds(): array

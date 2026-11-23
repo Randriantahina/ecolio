@@ -13,6 +13,7 @@ Planned design: `CLAUDE.md` (big picture) and `rules/stack/`. This file records 
 - Auth slice (reference for every future feature): `Domain/Identity/Contracts/UtilisateurRepository` -> `Infrastructure/Persistence/Eloquent/EloquentUtilisateurRepository` (bound in `Providers/DomainServiceProvider`), `Application/Identity/{DTOs,Services}`, `Http/{Controllers/Auth,Requests/Auth,Resources,Middleware/ResolveTenant}`. HTTP status for domain exceptions is mapped in `bootstrap/app.php`. Routes in `routes/api.php` under `v1`; protected group = `auth:sanctum` + `tenant`.
 - Team slice: `Policies/UtilisateurPolicy` (registered in DomainServiceProvider::boot, needed because models live under Domain/), `Application/Identity/Services/TeamService`, `Http/Controllers/Team`. FormRequest::authorize() runs the policy so forbidden roles get 403 before validation.
 - Ecole settings slice: `EcoleRepository`, `EcoleSettingsService`, `UpdateEcoleDto`, `EcolePolicy::modifier`, `Http/Controllers/Ecole`. Receipt texts stored in `ecoles.parametres` JSON.
+- Audit slice: `Domain/Audit/Models/JournalAudit` (extends spatie Activity; `ecole_id` stamped from subject/causer on create; configured in `config/activitylog.php`), `JournalAuditRepository`, `JournalAuditPolicy::voir`, `AuditController`. Models opt in with `LogsActivity` + a logOnly whitelist.
 - `Domain/Platform/Models/Ecole` (not scoped; uuid public id).
 - Other layers (`Application`, `Infrastructure`, `Http`) are created as phase 0 needs them.
 

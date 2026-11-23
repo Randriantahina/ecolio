@@ -11,8 +11,8 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 - [x] `POST /api/v1/auth/login` (email or phone), logout, `GET /me`; token 30 days; lockout after 5 failures; `tenant` middleware (feat, auth, done 2026-11-23). Layers: UtilisateurRepository, AuthService, LoginDto, LoginRequest, AuthController
 - [x] Password reset by e-mail (US1.2) (feat, auth, done 2026-11-23): forgot/reset endpoints, link to SPA `/reinitialiser-mot-de-passe`, no enumeration, sessions revoked. SMS reset deferred to phase 5
 - [x] Directeur creates/deactivates team accounts with a role (US1.3) (feat, team, done 2026-11-23): `UtilisateurPolicy::gererEquipe`, `TeamService`, 404 for other-school users, tokens revoked on deactivation
-- [ ] API conventions: `/api/v1`, error format `{message, errors}`, API Resources
-- [ ] Activity log wired for sensitive models; audit entries not editable via API
+- [x] API conventions: `/api/v1`, error format `{message, errors}`, API Resources, cursor pagination (done 2026-11-23)
+- [x] Activity log on Utilisateur and Ecole (whitelist, no password), `GET /api/v1/audit` directeur-only and read-only, role changes logged explicitly (feat, audit, done 2026-11-23)
 - [x] School settings `GET/PUT /api/v1/ecole` (US2.1) (feat, platform, done 2026-11-23). Logo upload NOT done yet (needs file storage decision)
 
 ## Frontend
@@ -24,7 +24,7 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 - [ ] Dexie database bootstrap (empty queue schema)
 
 ## Quality
-- [ ] Tenant-isolation test for every model created in this phase
+- [x] Tenant isolation proven for every model of this phase: trait probe, Utilisateur (list + 404), JournalAudit (read), Ecole (caller-only) (done 2026-11-23)
 - [ ] CI green on `dev` for both workflows
 - [ ] Update `architecture.md` with the real layer map
 

@@ -35,6 +35,7 @@ final class TeamService
 
             $this->utilisateurs->save($membre);
             $membre->assignRole($dto->role->value);
+            $this->journaliserRole($acteur, $membre, $dto->role->value);
 
             return $membre->load('ecole', 'roles');
         });
@@ -57,6 +58,7 @@ final class TeamService
 
             if ($dto->role !== null) {
                 $membre->syncRoles([$dto->role->value]);
+                $this->journaliserRole($acteur, $membre, $dto->role->value);
             }
 
             // A deactivated account must lose access now, not when its 30-day token expires.
@@ -66,5 +68,16 @@ final class TeamService
 
             return $membre->load('ecole', 'roles');
         });
+    }
+
+    /** Role changes are the most sensitive team event and are not model attributes, so they are logged explicitly. */
+    private function journaliserRole(Utilisateur $acteur, Utilisateur $membre, string $role): void
+    {
+        activity('utilisateurs')
+            ->performedOn($membre)
+            ->causedBy($acteur)
+            ->event('role_changed')
+            ->withProperties(['role' => $role])
+            ->log('role_changed');
     }
 }

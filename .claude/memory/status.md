@@ -3,16 +3,16 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **0 – Fondations** · Phases done: 0/7 (+ bootstrap done)
 
 ## In progress
-- Phase 0 backend: tenancy, identity, roles, auth API done; next is audit (activitylog), then the frontend shell.
+- Phase 0 backend: tenancy, identity, roles, auth API done; backend of phase 0 is COMPLETE (93 tests); next is the frontend shell.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
 - 2026-11-23 · Project memory system with hooks. Packages (Sanctum, permission, activitylog) installed.
 - 2026-11-23 · Tenancy (`BelongsToEcole`, `TenantContext`, `Ecole`) and identity (`Utilisateur`, roles, lockout): 30 tests green.
-- 2026-11-23 · Auth API and team management (policy-protected): 84 backend tests green (incl. school settings, password reset).
+- 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 0, TDD: (1) activitylog on `Utilisateur` and `Ecole` (`LogsActivity`, log only meaningful attributes never `mot_de_passe`, causer = acting user, store `ecole_id` on the row; read-only endpoint `GET /api/v1/audit` for directeur only, per spec M10 audit table); (2) then backend phase-0 is complete: tick the backend section and start the FRONTEND shell (router, i18n, API client, auth feature MVVM, login view, PWA icons, offline indicator, Dexie).
+Phase 0, FRONTEND, TDD (Vitest first): in `frontend/src`: (1) `shared/api/client.ts` (fetch wrapper: base URL from `VITE_API_URL`, bearer token, maps 401/422/423 to typed errors) with tests; (2) `features/auth/{domain,data,ui}`: Zod schemas, `AuthRepository` interface + HTTP impl, `useLoginViewModel`, `LoginView.vue`, route guard; (3) router + layouts + vue-i18n(fr) + Pinia + Vue Query provider; (4) offline indicator; (5) PWA icons + install prompt; (6) Dexie bootstrap. Add shadcn-vue `button input label card` first (`pnpm dlx shadcn-vue@latest add ...`).
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.

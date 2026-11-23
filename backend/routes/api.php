@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Audit\AuditController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Ecole\EcoleController;
@@ -16,6 +17,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'me']);
+
+        Route::get('audit', [AuditController::class, 'index']);
 
         Route::get('ecole', [EcoleController::class, 'show']);
         Route::put('ecole', [EcoleController::class, 'update']);
