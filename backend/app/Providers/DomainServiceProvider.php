@@ -11,10 +11,14 @@ use App\Domain\Identity\Contracts\UtilisateurRepository;
 use App\Domain\Identity\Models\Utilisateur;
 use App\Domain\Platform\Contracts\EcoleRepository;
 use App\Domain\Platform\Models\Ecole;
+use App\Domain\Scolarite\Contracts\AnneeScolaireRepository;
+use App\Domain\Scolarite\Models\AnneeScolaire;
+use App\Infrastructure\Persistence\Eloquent\EloquentAnneeScolaireRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentCompteurRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentEcoleRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentJournalAuditRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentUtilisateurRepository;
+use App\Policies\AnneeScolairePolicy;
 use App\Policies\EcolePolicy;
 use App\Policies\JournalAuditPolicy;
 use App\Policies\UtilisateurPolicy;
@@ -30,6 +34,7 @@ final class DomainServiceProvider extends ServiceProvider
         EcoleRepository::class => EloquentEcoleRepository::class,
         JournalAuditRepository::class => EloquentJournalAuditRepository::class,
         CompteurRepository::class => EloquentCompteurRepository::class,
+        AnneeScolaireRepository::class => EloquentAnneeScolaireRepository::class,
     ];
 
     public function boot(): void
@@ -38,6 +43,7 @@ final class DomainServiceProvider extends ServiceProvider
         Gate::policy(Utilisateur::class, UtilisateurPolicy::class);
         Gate::policy(Ecole::class, EcolePolicy::class);
         Gate::policy(JournalAudit::class, JournalAuditPolicy::class);
+        Gate::policy(AnneeScolaire::class, AnneeScolairePolicy::class);
 
         ResetPassword::createUrlUsing(fn ($user, string $token) => config('app.frontend_url')
             .'/reinitialiser-mot-de-passe?token='.$token.'&email='.urlencode($user->getEmailForPasswordReset()));

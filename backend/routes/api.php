@@ -6,6 +6,7 @@ use App\Http\Controllers\Audit\AuditController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Ecole\EcoleController;
+use App\Http\Controllers\Scolarite\AnneeScolaireController;
 use App\Http\Controllers\Team\UtilisateurController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,11 @@ Route::prefix('v1')->group(function () {
 
         Route::get('ecole', [EcoleController::class, 'show']);
         Route::put('ecole', [EcoleController::class, 'update']);
+
+        Route::get('annees-scolaires', [AnneeScolaireController::class, 'index']);
+        Route::post('annees-scolaires', [AnneeScolaireController::class, 'store']);
+        Route::patch('annees-scolaires/{uuid}', [AnneeScolaireController::class, 'update']);
+        Route::post('annees-scolaires/{uuid}/courante', [AnneeScolaireController::class, 'definirCourante']);
 
         Route::get('utilisateurs', [UtilisateurController::class, 'index']);
         Route::post('utilisateurs', [UtilisateurController::class, 'store']);

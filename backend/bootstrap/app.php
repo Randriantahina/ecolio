@@ -3,6 +3,7 @@
 use App\Domain\Identity\Exceptions\AccountLockedException;
 use App\Domain\Identity\Exceptions\InvalidCredentialsException;
 use App\Domain\Identity\Exceptions\InvalidResetTokenException;
+use App\Domain\Scolarite\Exceptions\InvalidAnneeScolaireException;
 use App\Http\Middleware\ResolveTenant;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -34,6 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(fn (AccountLockedException $e) => response()->json([
             'message' => __('auth.locked'),
         ], 423));
+
+        $exceptions->render(fn (InvalidAnneeScolaireException $e) => response()->json([
+            'message' => $e->getMessage(),
+            'errors' => ['date_fin' => [$e->getMessage()]],
+        ], 422));
 
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),

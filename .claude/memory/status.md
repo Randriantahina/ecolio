@@ -3,18 +3,19 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écolage (planned, not started)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- Phase 1 task 3 (années scolaires) about to start. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
+- Phase 1 task 4 (niveaux et classes) about to start. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
 - 2026-11-23 · Project memory system with hooks. Packages (Sanctum, permission, activitylog) installed.
 - 2026-11-23 · Tenancy (`BelongsToEcole`, `TenantContext`, `Ecole`) and identity (`Utilisateur`, roles, lockout): 30 tests green.
+- 2026-11-24 · Phase 1 task 3: `AnneeScolaire` slice, 140 backend tests green.
 - 2026-11-23 · Phase 1 task 2: `compteurs` + `CompteurRepository`, 116 backend tests green.
 - 2026-11-23 · Phase 1 task 1: `Money` value object, 108 backend tests green.
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 1 task 3: TDD `AnneeScolaire` (`app/Domain/Scolarite`): model with `BelongsToEcole`, one current year per school (RG-S1, enforced in the service AND by a partial unique index where the DB allows), repository interface + Eloquent impl, Service, DTOs, FormRequests, Resource, Policy (directeur manages), routes under `/api/v1/annees-scolaires`, tenant-isolation test. Copy the Team (`utilisateurs`) slice layout. Check spec section 4/RG-S1 for exact rules first.
+Phase 1 task 4: TDD `Niveau` and `Classe` (`app/Domain/Scolarite`). Spec lines ~388-396 (`niveaux`, `classes` UQ(ecole_id, annee_scolaire_id, nom), `effectif_max` only WARNS, RG-I2). Same slice layout as `AnneeScolaire` (Contract, Eloquent repo, Service, DTOs, Requests, Resource, Policy, routes, tenant isolation test, 404 on foreign uuid). Classes belong to a year (`annee_scolaire_id`), so resolve the year by uuid inside the actor's school.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.
