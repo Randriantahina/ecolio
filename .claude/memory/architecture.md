@@ -20,6 +20,7 @@ Planned design: `CLAUDE.md` (big picture) and `rules/stack/`. This file records 
 ## Frontend (`frontend/src`)
 - `shared/api`: `createHttpClient` + typed errors (inject `fetchImpl` in tests). `lib/utils.ts` (`cn`). UI kit: shadcn button/input/label/card.
 - `app/`: `create-app.ts` (composition root: Pinia, router, i18n, Vue Query, HTTP client, repository provided via `authRepositoryKey`), `router.ts` (meta `requiresAuth`/`guestOnly`), `auth-guard.ts` (pure). `main.ts` only mounts. API URL from `VITE_API_URL`.
+- `shared/offline/db.ts`: `EcolioDb` (Dexie) with `queue` table; `declare` (not a field) for Dexie tables. `shared/pwa`: `useInstallPrompt`, `InstallPrompt.vue`.
 - `shared/i18n` (fr only; mg to add), `shared/network` (`useOnlineStatus`, `OnlineIndicator`).
 - `features/auth`: `domain/` (Zod schemas, `AuthRepository` port), `data/HttpAuthRepository`, `session.store.ts` (Pinia, key `ecolio.session` in localStorage), `login.viewmodel.ts` (depends on narrow `SessionPort`). Reference slice for every later feature.
 

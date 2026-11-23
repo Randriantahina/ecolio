@@ -21,7 +21,7 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 - [x] Auth feature: schemas, repository port + HTTP adapter, persisted session store, login ViewModel, `LoginView.vue`, route guard, safe `redirect` param (done 2026-11-23)
 - [x] Online/offline indicator `shared/network` (done 2026-11-23). Pending-operations counter comes with the offline queue (phase 6)
 - [x] PWA: manifest icons (192/512/maskable PLACEHOLDER art, replace when branding exists), install prompt from 2nd visit, `index.html` fr (feat, pwa, done 2026-11-23)
-- [ ] Dexie database bootstrap (empty queue schema)
+- [x] Dexie bootstrap `shared/offline/db.ts` (`EcolioDb`, `queue` table, unique `clientUuid`, ordered by `createdAt`) (feat, offline, done 2026-11-23); no queue logic yet = phase 6
 
 ## Quality
 - [x] Tenant isolation proven for every model of this phase: trait probe, Utilisateur (list + 404), JournalAudit (read), Ecole (caller-only) (done 2026-11-23)
