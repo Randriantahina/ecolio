@@ -13,7 +13,7 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 - [x] Directeur creates/deactivates team accounts with a role (US1.3) (feat, team, done 2026-11-23): `UtilisateurPolicy::gererEquipe`, `TeamService`, 404 for other-school users, tokens revoked on deactivation
 - [ ] API conventions: `/api/v1`, error format `{message, errors}`, API Resources
 - [ ] Activity log wired for sensitive models; audit entries not editable via API
-- [ ] School settings: `GET/PUT /ecole` (US2.1)
+- [x] School settings `GET/PUT /api/v1/ecole` (US2.1) (feat, platform, done 2026-11-23). Logo upload NOT done yet (needs file storage decision)
 
 ## Frontend
 - [ ] App shell: router, layouts, i18n (fr), Pinia, TanStack Query provider
