@@ -2,6 +2,7 @@
 
 use App\Domain\Identity\Exceptions\AccountLockedException;
 use App\Domain\Identity\Exceptions\InvalidCredentialsException;
+use App\Domain\Identity\Exceptions\InvalidResetTokenException;
 use App\Http\Middleware\ResolveTenant;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -23,6 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(fn (InvalidCredentialsException $e) => response()->json([
             'message' => __('auth.failed'),
             'errors' => ['login' => [__('auth.failed')]],
+        ], 422));
+
+        $exceptions->render(fn (InvalidResetTokenException $e) => response()->json([
+            'message' => __('auth.reset_invalid'),
+            'errors' => ['token' => [__('auth.reset_invalid')]],
         ], 422));
 
         $exceptions->render(fn (AccountLockedException $e) => response()->json([

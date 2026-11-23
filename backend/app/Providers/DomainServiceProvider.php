@@ -12,6 +12,7 @@ use App\Infrastructure\Persistence\Eloquent\EloquentEcoleRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentUtilisateurRepository;
 use App\Policies\EcolePolicy;
 use App\Policies\UtilisateurPolicy;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,5 +29,8 @@ final class DomainServiceProvider extends ServiceProvider
         // Models live under Domain/, so Laravel's name-based policy discovery cannot find these.
         Gate::policy(Utilisateur::class, UtilisateurPolicy::class);
         Gate::policy(Ecole::class, EcolePolicy::class);
+
+        ResetPassword::createUrlUsing(fn ($user, string $token) => config('app.frontend_url')
+            .'/reinitialiser-mot-de-passe?token='.$token.'&email='.urlencode($user->getEmailForPasswordReset()));
     }
 }

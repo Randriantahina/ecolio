@@ -3,12 +3,15 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Ecole\EcoleController;
 use App\Http\Controllers\Team\UtilisateurController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::post('auth/login', [AuthController::class, 'login'])->middleware('throttle:20,1');
+    Route::post('auth/password/forgot', [PasswordController::class, 'forgot'])->middleware('throttle:5,1');
+    Route::post('auth/password/reset', [PasswordController::class, 'reset'])->middleware('throttle:10,1');
 
     Route::middleware(['auth:sanctum', 'tenant'])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout']);

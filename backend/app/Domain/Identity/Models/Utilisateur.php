@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use InvalidArgumentException;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -21,7 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 final class Utilisateur extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasRoles, HasUuids;
+    use HasApiTokens, HasFactory, HasRoles, HasUuids, Notifiable;
 
     public const MAX_ECHECS = 5;
 
