@@ -3,12 +3,13 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écolage (planned, not started)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- Phase 1 tasks 13-15 (absences, départ, PDF) next; then frontend 17-24. User wants ALL of the spec, built fast (prototype demo tomorrow): batch whole slices, test business rules not getters, UI design must be excellent. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
+- Phase 1 backend: only task 15 (receipt PDF) left; then DemoSeeder and frontend 17-24. User wants ALL of the spec, built fast (prototype demo tomorrow): batch whole slices, test business rules not getters, UI design must be excellent. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
 - 2026-11-23 · Project memory system with hooks. Packages (Sanctum, permission, activitylog) installed.
 - 2026-11-23 · Tenancy (`BelongsToEcole`, `TenantContext`, `Ecole`) and identity (`Utilisateur`, roles, lockout): 30 tests green.
+- 2026-11-24 · Phase 1 tasks 13-14: absences and departure, 185 backend tests green.
 - 2026-11-24 · Phase 1 tasks 4-12: levels/classes, élèves+inscriptions, finance (receipts, void, register), 175 backend tests green.
 - 2026-11-24 · Phase 1 task 3: `AnneeScolaire` slice, 140 backend tests green.
 - 2026-11-23 · Phase 1 task 2: `compteurs` + `CompteurRepository`, 116 backend tests green.
@@ -16,7 +17,7 @@ Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 1 backend remaining: task 13 absences (`PUT /classes/{uuid}/absences` batch, UQ eleve+date+periode, justifiee, client_uuid), 14 départ (`POST /eleves/{uuid}/sortie`: statut, date_sortie, future unpaid échéances -> `annule`, owed stays owed, RG-P6), 15 receipt PDF A5 (dompdf; needs `COMPOSER_AUTH` from `gh auth token`), 16 isolation tests for new models. Then DemoSeeder with fictional school data, then the FRONTEND screens (priority for the demo): app shell + nav, élèves, registre écolage with checkboxes + payment panel + receipt, absences. Design must be excellent.
+1) DemoSeeder with a realistic fictional school (levels, 3-4 classes, ~25 pupils, fees, a few paid/partial/void payments, absences) so the demo has data. 2) FRONTEND (priority for tomorrow's demo): app shell with nav, élèves list, registre écolage (checkbox -> payment panel -> receipt), absences, receipt view; excellent design, French copy. 3) Receipt PDF A5 with dompdf (needs `COMPOSER_AUTH` from `gh auth token`) - the JSON receipt (`GET /paiements/{uuid}`) already carries every RG-R4 field, so a printable HTML receipt in the frontend can cover the demo.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.

@@ -41,6 +41,12 @@ interface EcheanceRepository
      */
     public function lastReceiptNumbers(array $ids): array;
 
+    /**
+     * RG-P6: marks as cancelled every monthly instalment AFTER `$moisSortie` (`YYYY-MM`) that no valid
+     * payment has touched. Returns how many were cancelled.
+     */
+    public function cancelFutureUnpaid(int $eleveId, string $moisSortie): int;
+
     /** @return Collection<int, Echeance> */
     public function forEleve(int $eleveId): Collection;
 

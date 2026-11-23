@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Absences\Contracts\AbsenceRepository;
+use App\Domain\Absences\Models\Absence;
 use App\Domain\Audit\Contracts\JournalAuditRepository;
 use App\Domain\Audit\Models\JournalAudit;
 use App\Domain\Eleves\Contracts\EleveRepository;
@@ -25,6 +27,7 @@ use App\Domain\Scolarite\Contracts\StructureRepository;
 use App\Domain\Scolarite\Models\AnneeScolaire;
 use App\Domain\Scolarite\Models\Classe;
 use App\Domain\Scolarite\Models\Niveau;
+use App\Infrastructure\Persistence\Eloquent\EloquentAbsenceRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentAnneeScolaireRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentCompteurRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentEcheanceRepository;
@@ -36,6 +39,7 @@ use App\Infrastructure\Persistence\Eloquent\EloquentJournalAuditRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentPaiementRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentStructureRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentUtilisateurRepository;
+use App\Policies\AbsencePolicy;
 use App\Policies\AnneeScolairePolicy;
 use App\Policies\EcolePolicy;
 use App\Policies\ElevePolicy;
@@ -62,6 +66,7 @@ final class DomainServiceProvider extends ServiceProvider
         FraisRepository::class => EloquentFraisRepository::class,
         EcheanceRepository::class => EloquentEcheanceRepository::class,
         PaiementRepository::class => EloquentPaiementRepository::class,
+        AbsenceRepository::class => EloquentAbsenceRepository::class,
     ];
 
     public function boot(): void
@@ -71,6 +76,7 @@ final class DomainServiceProvider extends ServiceProvider
         Gate::policy(Ecole::class, EcolePolicy::class);
         Gate::policy(JournalAudit::class, JournalAuditPolicy::class);
         Gate::policy(Eleve::class, ElevePolicy::class);
+        Gate::policy(Absence::class, AbsencePolicy::class);
         Gate::policy(Paiement::class, PaiementPolicy::class);
         Gate::policy(TypeFrais::class, FraisPolicy::class);
         Gate::policy(Tarif::class, FraisPolicy::class);

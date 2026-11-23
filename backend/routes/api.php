@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Absences\AbsenceController;
 use App\Http\Controllers\Audit\AuditController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -38,6 +39,7 @@ Route::prefix('v1')->group(function () {
         Route::get('eleves/{uuid}', [EleveController::class, 'show']);
         Route::patch('eleves/{uuid}', [EleveController::class, 'update']);
         Route::post('eleves/{uuid}/inscriptions', [EleveController::class, 'inscrire']);
+        Route::post('eleves/{uuid}/sortie', [EleveController::class, 'sortie']);
         Route::patch('eleves/{uuid}/classe', [EleveController::class, 'changerClasse']);
 
         Route::get('types-frais', [FraisController::class, 'types']);
@@ -53,6 +55,9 @@ Route::prefix('v1')->group(function () {
         Route::post('paiements/{uuid}/annulation', [PaiementController::class, 'annuler']);
         Route::get('eleves/{uuid}/echeances', [PaiementController::class, 'echeancesEleve']);
         Route::get('classes/{uuid}/registre-ecolage', [PaiementController::class, 'registre']);
+
+        Route::get('classes/{uuid}/absences', [AbsenceController::class, 'index']);
+        Route::put('classes/{uuid}/absences', [AbsenceController::class, 'saisir']);
 
         Route::get('niveaux', [StructureController::class, 'niveaux']);
         Route::post('niveaux', [StructureController::class, 'storeNiveau']);

@@ -15,8 +15,8 @@ Goal: what the directrice described (spec 0.1): registry by matricule, tuition/a
 10. [x] Reçu: gapless `YYYY-NNNN` per school/year from compteurs (RG-R1); concurrency test; never edited (RG-R2) (feat, finance)
 11. [x] Annulation: directeur, or secretary with director validation (RG-P7), reason mandatory, receipt marked ANNULÉ, audit (feat, finance)
 12. [x] Registre écolage `GET /classes/{id}/registre-ecolage?periode=` (feat, finance)
-13. [ ] Absences: batch `PUT /classes/{id}/absences`, unique (élève, date, période) (RG-P5) (feat, absences)
-14. [ ] Départ: `POST /eleves/{id}/sortie`, future unpaid échéances become `annule`, owed stays owed (RG-P6) (feat, eleves)
+13. [x] Absences (`PUT/GET /classes/{uuid}/absences`, sets exactly the absentees, client_uuid replay safe): batch `PUT /classes/{id}/absences`, unique (élève, date, période) (RG-P5) (feat, absences)
+14. [x] Départ (`POST /eleves/{uuid}/sortie`; future unpaid MONTHLY instalments -> annule, partial/paid kept): `POST /eleves/{id}/sortie`, future unpaid échéances become `annule`, owed stays owed (RG-P6) (feat, eleves)
 15. [ ] Receipt PDF A5 (dompdf) with school identity and legal mention (RG-R4), word "reçu" not "facture" (RG-R6) (feat, finance)
 16. [ ] Tenant-isolation test for every model above; policies per spec section 1
 

@@ -59,6 +59,14 @@ final class EloquentEcheanceRepository implements EcheanceRepository
             ->filter()->all();
     }
 
+    public function cancelFutureUnpaid(int $eleveId, string $moisSortie): int
+    {
+        // Monthly periods only (`YYYY-MM`): one-off and quarterly fees have no "after" month to compare.
+        return Echeance::query()->where('eleve_id', $eleveId)->where('statut', 'du')
+            ->whereNotNull('periode')->where('periode', 'like', '____-__')->where('periode', '>', $moisSortie)
+            ->update(['statut' => 'annule']);
+    }
+
     public function forEleve(int $eleveId): Collection
     {
         return Echeance::query()->with('typeFrais')->where('eleve_id', $eleveId)->orderBy('periode')->orderBy('id')->get();

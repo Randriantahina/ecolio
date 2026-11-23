@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Eleves;
 
+use App\Application\Eleves\Services\DepartService;
 use App\Application\Eleves\Services\EleveService;
 use App\Application\Eleves\Services\InscriptionService;
+use App\Domain\Eleves\Enums\StatutEleve;
 use App\Domain\Eleves\Models\Eleve;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Eleves\EleveRequest;
 use App\Http\Requests\Eleves\InscriptionRequest;
+use App\Http\Requests\Eleves\SortieRequest;
 use App\Http\Resources\EleveResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,6 +24,7 @@ final class EleveController extends Controller
     public function __construct(
         private readonly EleveService $eleves,
         private readonly InscriptionService $inscriptions,
+        private readonly DepartService $departs,
     ) {}
 
     public function index(Request $request): AnonymousResourceCollection
@@ -68,6 +72,15 @@ final class EleveController extends Controller
             'eleve' => EleveResource::make($this->eleves->voir($request->user(), $uuid))->resolve(),
             'avertissements' => ['effectif_depasse' => $result['effectif_depasse']],
         ], 201);
+    }
+
+    public function sortie(SortieRequest $request, string $uuid): JsonResponse
+    {
+        $d = $request->validated();
+        $eleve = $this->departs->enregistrer($request->user(), $uuid, StatutEleve::from($d['statut']), $d['date_sortie'],
+            $d['motif_sortie'] ?? null, $d['commentaire_sortie'] ?? null);
+
+        return response()->json(['eleve' => EleveResource::make($eleve)->resolve()]);
     }
 
     public function changerClasse(InscriptionRequest $request, string $uuid): JsonResponse
