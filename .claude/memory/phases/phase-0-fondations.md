@@ -8,7 +8,7 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 - [x] `BelongsToEcole` + `EcoleScope` + `TenantContext` (feat, tenancy, done 2026-11-23); fail-closed, platform mode, cross-tenant write refused. Reusable probe: `tests/Support/TenantProbe.php`. Per-model isolation tests still to add with each model
 - [x] `Utilisateur` model on `utilisateurs` (`ecole_id` null = super_admin), factory, lockout (5 fails = 15 min), e-mail-or-phone rule (feat, identity, done 2026-11-23)
 - [x] `Role` enum + idempotent `RolesSeeder` for the 5 roles (feat, identity, done 2026-11-23). Fine-grained permissions come via Policies per feature, not DB permissions
-- [ ] `POST /api/v1/auth/login` (email or phone), logout, `GET /me`; token 30 days; lockout after 5 failures (RG-A2, RG-A3)
+- [x] `POST /api/v1/auth/login` (email or phone), logout, `GET /me`; token 30 days; lockout after 5 failures; `tenant` middleware (feat, auth, done 2026-11-23). Layers: UtilisateurRepository, AuthService, LoginDto, LoginRequest, AuthController
 - [ ] Password reset by e-mail (US1.2)
 - [ ] Directeur creates team accounts with a role (US1.3)
 - [ ] API conventions: `/api/v1`, error format `{message, errors}`, API Resources
