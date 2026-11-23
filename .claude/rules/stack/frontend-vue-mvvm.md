@@ -39,4 +39,4 @@ Repository, Adapter (API, IndexedDB, clock), Factory (ViewModel with its depende
 No `any`; use `unknown` + Zod narrowing. Payload types come from `z.infer`. Alias `@/` → `src/`. Files kebab-case or `name.viewmodel.ts`; components PascalCase.
 
 ## Tests (Vitest, mandatory)
-ViewModels with a fake repository, schemas with valid and invalid cases, components with `@vue/test-utils`, repositories with mocked HTTP. Playwright e2e: "encaisser en 3 interactions", import wizard, offline mode. Run `pnpm test && pnpm typecheck && pnpm lint` before committing. Comments follow `01-comments-why-not-how.md`.
+ViewModels with a fake repository, schemas with valid and invalid cases, components with `@vue/test-utils`, repositories with mocked HTTP. Playwright e2e: "encaisser en 3 interactions", import wizard, offline mode. Run `pnpm test && pnpm typecheck && pnpm lint` before committing. Comments follow `03-comments.md`.

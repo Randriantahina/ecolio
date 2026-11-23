@@ -15,7 +15,8 @@ Monorepo with no shared tooling at the root:
 - `backend/`: Laravel 13 JSON API (PHP 8.5, Pest 5; PostgreSQL in prod, in-memory SQLite in tests)
 - `frontend/`: Vue 3 + TypeScript SPA/PWA (Vite, Tailwind 4, shadcn-vue on Reka UI, **pnpm**)
 - `docs/`: spec, OpenAPI, architecture decisions
-- `.claude/rules/`: engineering rules (TDD, DDD, SOLID, MVVM, commits, comments). **Read them before writing code.**
+- `.claude/rules/process/`: portable workflow rules (session protocol, TDD, memory journal, comments, commits, branches, CI). `.claude/rules/stack/`: Laravel DDD and Vue MVVM rules. **Read them before writing code.**
+- `.claude/memory/`: **project memory** (status, roadmap, per-phase checklists, changelog, decisions). **Read `status.md` and `roadmap.md` at the start of every session and update them in every commit**; a SessionStart hook injects them and a PreToolUse hook blocks commits without a memory change.
 
 Node is pinned in `.mise.toml`. Use pnpm only; lockfiles (`pnpm-lock.yaml`, `composer.lock`) are committed.
 
@@ -73,9 +74,9 @@ Bounded contexts: Platform, Identity, Scolarite, Eleves, Finance, Absences, Note
 ## Conventions
 
 - **TDD is mandatory**: failing test first, then code, then refactor. Every class, composable and component has a Pest (Feature or Unit) or Vitest test.
-- **Comments explain why, never how** (business rule, constraint, trade-off). See `.claude/rules/01-comments-why-not-how.md`.
-- **Commits**: English Conventional Commits (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `build`, `ci`, `perf`, `style`), one logical change each, committed after every green change. See `.claude/rules/git-commits.md`.
-- **Branching**: all work (feat, fix, everything) is committed on `dev`; no per-feature branches. `main` only receives `dev` via PR after green CI. See `.claude/rules/02-git-workflow-branches.md`.
-- **CI** (`.github/workflows/`): Pint + Pest for the backend; lint, format, typecheck, Vitest, build for the frontend. Run the same gates locally before committing. See `.claude/rules/03-ci.md`.
+- **Comments explain why, never how** (business rule, constraint, trade-off). See `.claude/rules/process/03-comments.md`.
+- **Commits**: English Conventional Commits (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `build`, `ci`, `perf`, `style`), one logical change each, committed after every green change. See `.claude/rules/process/04-commits.md`.
+- **Branching**: all work (feat, fix, everything) is committed on `dev`; no per-feature branches. `main` only receives `dev` via PR after green CI. See `.claude/rules/process/05-branches-and-push.md`.
+- **CI** (`.github/workflows/`): Pint + Pest for the backend; lint, format, typecheck, Vitest, build for the frontend. Run the same gates locally before committing. See `.claude/rules/process/06-ci.md`.
 - **Test gate before push**: after each feature or fix, all tests and gates must be green; then commit and `git push origin dev` without asking. Never push a red state. Pushing `main` or other branches needs user approval.
 - Remote `origin` is `git@github.com:Randriantahina/ecolio.git`.

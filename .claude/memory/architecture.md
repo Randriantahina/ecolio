@@ -1,0 +1,20 @@
+# Architecture map (what exists, not what is planned)
+
+Planned design: `CLAUDE.md` (big picture) and `rules/stack/`. This file records the **real** state; update it when structure changes.
+
+## Pinned toolchain (2026-11-23)
+- Backend: PHP 8.5.12, Laravel 13.43, Pest 5.3.7, PHPUnit 13.4, Pint 1.32. DB: SQLite (tests, dev default), PostgreSQL 18 targeted for prod.
+- Frontend: Node 26.8.1 (`.mise.toml`), pnpm 11.25, Vite 8, Vue 3.5, TypeScript 6 (no `baseUrl`, use `paths`), Tailwind 4, Vitest 5, shadcn-vue style `reka-nova`.
+- UI components live in `frontend/src/components/ui` (generated, excluded from ESLint/Prettier).
+
+## Backend (`backend/app`)
+- Only Laravel defaults so far. Target layers (`Domain`, `Application`, `Infrastructure`, `Http`) are created as phase 0 needs them.
+
+## Frontend (`frontend/src`)
+- Vite starter + `lib/utils.ts` (`cn`). Target slices: `features/<name>/{domain,data,ui}`, `shared/`.
+
+## CI
+- `.github/workflows/backend.yml` (Pint, Pest + coverage) and `frontend.yml` (lint, format, types, Vitest coverage, build) on `main` and `dev`.
+
+## Memory and automation
+- `.claude/hooks/session-start.sh` injects status + roadmap at session start; `guard-commit-journal.sh` blocks commits without a `.claude/memory/` change.

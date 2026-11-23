@@ -49,4 +49,4 @@ Bounded contexts: Platform, Identity, Scolarite, Eleves, Finance, Absences, Note
 - Names: French domain nouns (`Eleve`, `Paiement`, `Echeance`); tables/columns French without accents; technical classes English (`EloquentPaiementRepository`).
 - API under `/api/v1`, JSON Resources, cursor pagination, errors `{message, errors{field:[...]}}`.
 - Migrations reversible; encode spec invariants as DB `CHECK` constraints.
-- Run Pint before committing. Comments follow `01-comments-why-not-how.md`.
+- Run Pint before committing. Comments follow `03-comments.md`.

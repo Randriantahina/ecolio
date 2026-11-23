@@ -1,6 +1,6 @@
 # Git workflow: all work happens on `dev`
 
-Applies to every task. Commit message format is in `git-commits.md`.
+Applies to every task. Commit message format is in `04-commits.md`.
 
 ## Branches
 - `main`: stable, deployable. **Never work or commit directly on it** once the project structure is in place (the initial scaffolding was the only exception).
