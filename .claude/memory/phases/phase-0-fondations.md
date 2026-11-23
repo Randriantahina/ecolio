@@ -3,7 +3,7 @@
 Goal: a directeur can log in; school data is isolated by tests; PWA skeleton installs. Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked. Every task is test-first and committed on `dev`.
 
 ## Backend
-- [ ] Install Sanctum, spatie/permission, spatie/activitylog (build)
+- [x] Install Sanctum 4.5, spatie/permission 8.5, spatie/activitylog 5.1 (build, done 2026-11-23)
 - [ ] `Ecole` model + migration + factory
 - [ ] `BelongsToEcole` trait: global scope + auto `ecole_id` (feat, tenancy) + isolation test helper reusable per model
 - [ ] `Utilisateur` model on table `utilisateurs` (`ecole_id` nullable = super_admin), factory
