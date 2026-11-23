@@ -18,7 +18,8 @@ Planned design: `CLAUDE.md` (big picture) and `rules/stack/`. This file records 
 - Other layers (`Application`, `Infrastructure`, `Http`) are created as phase 0 needs them.
 
 ## Frontend (`frontend/src`)
-- Vite starter + `lib/utils.ts` (`cn`). Target slices: `features/<name>/{domain,data,ui}`, `shared/`.
+- `shared/api`: `createHttpClient` + typed errors (inject `fetchImpl` in tests). `lib/utils.ts` (`cn`). UI kit: shadcn button/input/label/card.
+- `features/auth`: `domain/` (Zod schemas, `AuthRepository` port), `data/HttpAuthRepository`, `session.store.ts` (Pinia, key `ecolio.session` in localStorage), `login.viewmodel.ts` (depends on narrow `SessionPort`). Reference slice for every later feature.
 
 ## CI
 - `.github/workflows/backend.yml` (Pint, Pest + coverage) and `frontend.yml` (lint, format, types, Vitest coverage, build) on `main` and `dev`.

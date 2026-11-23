@@ -3,7 +3,7 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **0 – Fondations** · Phases done: 0/7 (+ bootstrap done)
 
 ## In progress
-- Phase 0 backend: tenancy, identity, roles, auth API done; backend of phase 0 is COMPLETE (93 tests); frontend shell in progress (HTTP client done).
+- Phase 0 backend: tenancy, identity, roles, auth API done; backend of phase 0 is COMPLETE (93 tests); frontend shell in progress (HTTP client, auth domain/data/session/ViewModel done).
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
@@ -12,7 +12,7 @@ Updated: 2026-11-23 · Branch: `dev` · Active phase: **0 – Fondations** · Ph
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 0 FRONTEND, TDD (Vitest first), continue: (1) `features/auth/domain` Zod schemas (login response, utilisateur) + `AuthRepository` interface + `HttpAuthRepository` (data) with mocked-client tests; (2) Pinia `useSessionStore` (token in localStorage wrapped in try/catch, user, isAuthenticated, clear) with tests; (3) `useLoginViewModel(repo, session)` with fake repo tests (loading, field errors from 422, locked message, offline message); (4) `LoginView.vue` (shadcn Card/Input/Label/Button, i18n) with component test; (5) router + `authGuard` + AppLayout; (6) vue-i18n fr; (7) online/offline indicator; (8) PWA icons/install; (9) Dexie bootstrap.
+Phase 0 FRONTEND, TDD: (1) vue-i18n setup `shared/i18n` (fr messages incl. `auth.*`, `validation.*`, `network.*`) + test; (2) `features/auth/ui/LoginView.vue` using shadcn Card/Input/Label/Button, bound to `useLoginViewModel`, errors mapped through i18n, component test with @vue/test-utils; (3) `app/router.ts` + `authGuard` (pure function, tested) + `AppLayout`; (4) wire `main.ts` (Pinia, router, i18n, VueQuery, http client with `getToken` from session and `onUnauthorized` = clear + redirect); (5) online/offline indicator; (6) PWA icons + install prompt; (7) Dexie bootstrap; then run `pnpm build` and mark phase 0 DoD.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.
