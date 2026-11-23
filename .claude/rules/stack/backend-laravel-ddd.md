@@ -31,7 +31,7 @@ Bounded contexts: Platform, Identity, Scolarite, Eleves, Finance, Absences, Note
 - **O**: add a Strategy/implementation instead of growing `if`/`switch` chains.
 - **L**: every repository implementation honours its interface (shared contract test).
 - **I**: small role-based interfaces (`PaiementRepository`, `RecuNumberGenerator`), no god interface.
-- **D**: depend on interfaces, inject via constructor; no `app()` or facades in Domain/Application.
+- **D**: depend on interfaces, inject via constructor; no `app()` or facades in Domain/Application. Sole exception: Eloquent boot hooks and global scopes (`BelongsToEcole`, `EcoleScope`) resolve `TenantContext` from the container, since they cannot take constructor injection.
 
 ## Multi-tenancy and security
 - Every business model uses `BelongsToEcole` (global scope + automatic `ecole_id`). Composite unique indexes start with `ecole_id`. Jobs carry `ecole_id`.

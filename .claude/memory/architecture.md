@@ -8,7 +8,9 @@ Planned design: `CLAUDE.md` (big picture) and `rules/stack/`. This file records 
 - UI components live in `frontend/src/components/ui` (generated, excluded from ESLint/Prettier).
 
 ## Backend (`backend/app`)
-- Only Laravel defaults so far. Target layers (`Domain`, `Application`, `Infrastructure`, `Http`) are created as phase 0 needs them.
+- `Domain/Tenancy`: `TenantContext` (scoped binding; school id or platform mode), `EcoleScope`, `BelongsToEcole`, exceptions. Unresolved context THROWS, never returns all rows.
+- `Domain/Platform/Models/Ecole` (not scoped; uuid public id).
+- Other layers (`Application`, `Infrastructure`, `Http`) are created as phase 0 needs them.
 
 ## Frontend (`frontend/src`)
 - Vite starter + `lib/utils.ts` (`cn`). Target slices: `features/<name>/{domain,data,ui}`, `shared/`.

@@ -4,8 +4,8 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 
 ## Backend
 - [x] Install Sanctum 4.5, spatie/permission 8.5, spatie/activitylog 5.1 (build, done 2026-11-23)
-- [ ] `Ecole` model + migration + factory
-- [ ] `BelongsToEcole` trait: global scope + auto `ecole_id` (feat, tenancy) + isolation test helper reusable per model
+- [x] `Ecole` model + migration + factory (feat, platform, done 2026-11-23)
+- [x] `BelongsToEcole` + `EcoleScope` + `TenantContext` (feat, tenancy, done 2026-11-23); fail-closed, platform mode, cross-tenant write refused. Reusable probe: `tests/Support/TenantProbe.php`. Per-model isolation tests still to add with each model
 - [ ] `Utilisateur` model on table `utilisateurs` (`ecole_id` nullable = super_admin), factory
 - [ ] Roles/permissions seeder: super_admin, directeur, secretaire, enseignant, parent (spec section 1)
 - [ ] `POST /api/v1/auth/login` (email or phone), logout, `GET /me`; token 30 days; lockout after 5 failures (RG-A2, RG-A3)
