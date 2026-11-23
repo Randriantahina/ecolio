@@ -16,10 +16,10 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 - [x] School settings `GET/PUT /api/v1/ecole` (US2.1) (feat, platform, done 2026-11-23). Logo upload NOT done yet (needs file storage decision)
 
 ## Frontend
-- [ ] App shell: router, layouts, i18n (fr), Pinia, TanStack Query provider
+- [x] App shell: router + `authGuard`, i18n (fr), Pinia, Vue Query plugin, composition root `app/create-app.ts`, `App.vue` with online indicator (feat, frontend, done 2026-11-23)
 - [x] API client `shared/api/http-client.ts` with bearer token, typed errors (Validation 422, Unauthorized 401 + onUnauthorized hook, Locked 423, Network, ApiError) (feat, frontend, done 2026-11-23). shadcn button/input/label/card added
-- [~] Auth feature: DONE = schemas, `AuthRepository` + `HttpAuthRepository`, `useSessionStore` (persisted, corruption-safe), `useLoginViewModel` (feat, auth, 2026-11-23). TODO = `LoginView.vue`, route guard
-- [ ] Online/offline indicator component (spec 8.3)
+- [x] Auth feature: schemas, repository port + HTTP adapter, persisted session store, login ViewModel, `LoginView.vue`, route guard, safe `redirect` param (done 2026-11-23)
+- [x] Online/offline indicator `shared/network` (done 2026-11-23). Pending-operations counter comes with the offline queue (phase 6)
 - [ ] PWA: manifest icons (192/512 maskable), install prompt on second visit
 - [ ] Dexie database bootstrap (empty queue schema)
 

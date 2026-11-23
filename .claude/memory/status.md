@@ -3,7 +3,7 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **0 – Fondations** · Phases done: 0/7 (+ bootstrap done)
 
 ## In progress
-- Phase 0 backend: tenancy, identity, roles, auth API done; backend of phase 0 is COMPLETE (93 tests); frontend shell in progress (HTTP client, auth domain/data/session/ViewModel done).
+- Phase 0 backend: tenancy, identity, roles, auth API done; backend of phase 0 is COMPLETE (93 tests); frontend shell nearly done (login, router, i18n, indicator). Left: PWA icons/install prompt, Dexie bootstrap, CI check, phase-0 DoD.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
@@ -12,7 +12,7 @@ Updated: 2026-11-23 · Branch: `dev` · Active phase: **0 – Fondations** · Ph
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 0 FRONTEND, TDD: (1) vue-i18n setup `shared/i18n` (fr messages incl. `auth.*`, `validation.*`, `network.*`) + test; (2) `features/auth/ui/LoginView.vue` using shadcn Card/Input/Label/Button, bound to `useLoginViewModel`, errors mapped through i18n, component test with @vue/test-utils; (3) `app/router.ts` + `authGuard` (pure function, tested) + `AppLayout`; (4) wire `main.ts` (Pinia, router, i18n, VueQuery, http client with `getToken` from session and `onUnauthorized` = clear + redirect); (5) online/offline indicator; (6) PWA icons + install prompt; (7) Dexie bootstrap; then run `pnpm build` and mark phase 0 DoD.
+Phase 0 FRONTEND, remaining: (1) PWA: generate maskable icons 192/512 (use `pnpm dlx @vite-pwa/assets-generator` or hand-made SVG->PNG; no brand yet, a simple placeholder is fine and flagged), fill `manifest.icons` in `vite.config.ts`, install prompt shown on 2nd visit (`useInstallPrompt` composable + test); (2) Dexie bootstrap `shared/offline/db.ts` with empty `queue` table schema + test using fake-indexeddb; (3) watch the Frontend CI run on GitHub; (4) end-to-end smoke by running backend + frontend and logging in for real with a seeded directeur (create `database/seeders/DemoSeeder` guarded to local env); then tick phase 0 DoD in `roadmap.md` and start phase 1 (create `phases/phase-1-registre-ecolage.md` from `templates/phase.md`).
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.

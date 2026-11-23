@@ -1,5 +1,5 @@
-import { createApp } from 'vue'
 import './style.css'
-import App from './App.vue'
+import { createEcolioApp } from './app/create-app'
 
-createApp(App).mount('#app')
+const { app } = createEcolioApp({ apiBaseUrl: import.meta.env.VITE_API_URL ?? '/api/v1' })
+app.mount('#app')
