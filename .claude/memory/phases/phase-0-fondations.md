@@ -26,6 +26,8 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 ## Dev tooling
 - [x] `DemoSeeder` (local env only, fictional school + directeur `directeur@demo.ecolio.test` / `password`), idempotent (chore, backend, done 2026-11-23)
 
+- [x] CORS for the SPA origin only (`config/cors.php`, `FRONTEND_URL`), bearer tokens so no credentials (feat, api, done 2026-11-23)
+
 ## Quality
 - [x] Tenant isolation proven for every model of this phase: trait probe, Utilisateur (list + 404), JournalAudit (read), Ecole (caller-only) (done 2026-11-23)
 - [ ] CI green on `dev` for both workflows
