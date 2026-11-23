@@ -17,7 +17,7 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 
 ## Frontend
 - [ ] App shell: router, layouts, i18n (fr), Pinia, TanStack Query provider
-- [ ] API client with token injection and error mapping (data layer)
+- [x] API client `shared/api/http-client.ts` with bearer token, typed errors (Validation 422, Unauthorized 401 + onUnauthorized hook, Locked 423, Network, ApiError) (feat, frontend, done 2026-11-23). shadcn button/input/label/card added
 - [ ] Auth feature: repository, ViewModel, login view, route guard
 - [ ] Online/offline indicator component (spec 8.3)
 - [ ] PWA: manifest icons (192/512 maskable), install prompt on second visit
