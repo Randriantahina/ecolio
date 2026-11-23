@@ -3,22 +3,24 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écolage (planned, not started)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- Phase 1 task 2 (`compteurs`) about to start. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
+- Phase 1 task 3 (années scolaires) about to start. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
 - 2026-11-23 · Project memory system with hooks. Packages (Sanctum, permission, activitylog) installed.
 - 2026-11-23 · Tenancy (`BelongsToEcole`, `TenantContext`, `Ecole`) and identity (`Utilisateur`, roles, lockout): 30 tests green.
+- 2026-11-23 · Phase 1 task 2: `compteurs` + `CompteurRepository`, 116 backend tests green.
 - 2026-11-23 · Phase 1 task 1: `Money` value object, 108 backend tests green.
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 1 task 2: TDD `compteurs` (migration with composite unique `(ecole_id, cle)`, `CompteurRepository` interface in `app/Domain/Finance/Contracts`, Eloquent impl with `lockForUpdate`, `nextValue(ecoleId, key)` gapless). Write the Feature test first, including a test that two sequential calls never repeat a value. SQLite ignores `lockForUpdate`: note that real concurrency can only be proven on PostgreSQL.
+Phase 1 task 3: TDD `AnneeScolaire` (`app/Domain/Scolarite`): model with `BelongsToEcole`, one current year per school (RG-S1, enforced in the service AND by a partial unique index where the DB allows), repository interface + Eloquent impl, Service, DTOs, FormRequests, Resource, Policy (directeur manages), routes under `/api/v1/annees-scolaires`, tenant-isolation test. Copy the Team (`utilisateurs`) slice layout. Check spec section 4/RG-S1 for exact rules first.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.
 
 ## Environment notes (non-derivable)
+- SQLite (tests) ignores `lockForUpdate`: concurrency of `compteurs` is not proven by the suite; run a real two-process check on PostgreSQL before phase 1 closes.
 - This project's commit-guard hook checks Écolio's memory even for commits in other repos opened from here (fixed in Cairn's version of the hook).
 - Project settings deny `curl`/`wget` and reading `backend/.env*`: live HTTP smoke tests are not possible for Claude; rely on Pest Feature tests. Never grep `.env`; use `php artisan env`.
 - Frontend TS: `erasableSyntaxOnly` bans constructor parameter properties and enums; if `pnpm typecheck` shows phantom errors, `rm -rf frontend/node_modules/.tmp`. Promise<unknown>.catch loses types: use the `rejectionOf<E>` helper pattern in tests.

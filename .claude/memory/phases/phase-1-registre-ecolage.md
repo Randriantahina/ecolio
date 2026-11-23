@@ -4,7 +4,7 @@ Goal: what the directrice described (spec 0.1): registry by matricule, tuition/a
 
 ## Backend
 1. [x] `Money` value object (integer ariary, non-negative, plus/minus/min/sum/compare; subtraction below zero throws) (feat, finance, done 2026-11-23)
-2. [ ] `compteurs` table + `CompteurRepository::nextValue(ecoleId, key)` with `lockForUpdate`, concurrency-safe (feat, finance) — shared by receipts and matricules
+2. [x] `compteurs` table (unique `ecole_id`+`cle`) + `CompteurRepository::nextValue` (insertOrIgnore, then `lockForUpdate`, increment); gapless incl. rollback; real concurrency NOT provable on SQLite, to verify on PostgreSQL (feat, finance, done 2026-11-23)
 3. [ ] Années scolaires: model, one current per school (RG-S1), CRUD (feat, scolarite)
 4. [ ] Niveaux and Classes (per year, `effectif_max` warns only, RG-I2) (feat, scolarite)
 5. [ ] Matricule format per school (`ecoles.format_matricule`) + generator via compteurs (Strategy) (feat, eleves)

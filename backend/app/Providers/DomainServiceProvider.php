@@ -6,10 +6,12 @@ namespace App\Providers;
 
 use App\Domain\Audit\Contracts\JournalAuditRepository;
 use App\Domain\Audit\Models\JournalAudit;
+use App\Domain\Finance\Contracts\CompteurRepository;
 use App\Domain\Identity\Contracts\UtilisateurRepository;
 use App\Domain\Identity\Models\Utilisateur;
 use App\Domain\Platform\Contracts\EcoleRepository;
 use App\Domain\Platform\Models\Ecole;
+use App\Infrastructure\Persistence\Eloquent\EloquentCompteurRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentEcoleRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentJournalAuditRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentUtilisateurRepository;
@@ -27,6 +29,7 @@ final class DomainServiceProvider extends ServiceProvider
         UtilisateurRepository::class => EloquentUtilisateurRepository::class,
         EcoleRepository::class => EloquentEcoleRepository::class,
         JournalAuditRepository::class => EloquentJournalAuditRepository::class,
+        CompteurRepository::class => EloquentCompteurRepository::class,
     ];
 
     public function boot(): void
