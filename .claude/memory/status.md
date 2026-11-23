@@ -3,7 +3,7 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écolage (planned, not started)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- Phase 1 task 5-6 (matricule + élèves) about to start. User wants ALL of the spec, built fast (prototype demo tomorrow): batch whole slices, test business rules not getters, UI design must be excellent. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
+- Phase 1 task 8 (frais, tarifs, échéances) about to start. User wants ALL of the spec, built fast (prototype demo tomorrow): batch whole slices, test business rules not getters, UI design must be excellent. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
@@ -15,7 +15,7 @@ Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 1 tasks 5-6: `eleves` migration (spec lines ~410-418: uuid, matricule UQ(ecole_id, matricule), nom, prenoms, sexe, date_naissance, statut, date_entree/sortie, champs_perso json, soft deletes), matricule generator via `CompteurRepository` (format from `ecoles.format_matricule`, default `YYYY-NNNN`), immutable matricule (RG-E1), duplicate warning (RG-E4), list with search + cursor pagination. Then inscriptions (task 7).
+Phase 1 task 8: `types_frais` (UQ ecole+nom, periodicite unique/mensuel/trimestriel/annuel), `tarifs` (per year, per niveau or classe, montant_ar int, UQ), `echeances` generated at enrolment from the matching tarifs (monthly fees expand to one row per month of the year; UQ inscription+type+periode; statut du/partiel/paye/annule). Hook generation into `InscriptionService::inscrire`. Then task 9-11 payments/receipts/void (spec lines 450-470, RG-P1..P7, RG-R1..R6).
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.

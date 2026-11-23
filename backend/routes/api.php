@@ -6,6 +6,7 @@ use App\Http\Controllers\Audit\AuditController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Ecole\EcoleController;
+use App\Http\Controllers\Eleves\EleveController;
 use App\Http\Controllers\Scolarite\AnneeScolaireController;
 use App\Http\Controllers\Scolarite\StructureController;
 use App\Http\Controllers\Team\UtilisateurController;
@@ -29,6 +30,13 @@ Route::prefix('v1')->group(function () {
         Route::post('annees-scolaires', [AnneeScolaireController::class, 'store']);
         Route::patch('annees-scolaires/{uuid}', [AnneeScolaireController::class, 'update']);
         Route::post('annees-scolaires/{uuid}/courante', [AnneeScolaireController::class, 'definirCourante']);
+
+        Route::get('eleves', [EleveController::class, 'index']);
+        Route::post('eleves', [EleveController::class, 'store']);
+        Route::get('eleves/{uuid}', [EleveController::class, 'show']);
+        Route::patch('eleves/{uuid}', [EleveController::class, 'update']);
+        Route::post('eleves/{uuid}/inscriptions', [EleveController::class, 'inscrire']);
+        Route::patch('eleves/{uuid}/classe', [EleveController::class, 'changerClasse']);
 
         Route::get('niveaux', [StructureController::class, 'niveaux']);
         Route::post('niveaux', [StructureController::class, 'storeNiveau']);

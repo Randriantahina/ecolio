@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Eleves\Exceptions\DuplicateEleveException;
 use App\Domain\Identity\Exceptions\AccountLockedException;
 use App\Domain\Identity\Exceptions\InvalidCredentialsException;
 use App\Domain\Identity\Exceptions\InvalidResetTokenException;
@@ -40,6 +41,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'message' => $e->getMessage(),
             'errors' => ['date_fin' => [$e->getMessage()]],
         ], 422));
+
+        // RG-E4: a blocking warning, not a failure; the client re-sends with confirmer_doublon.
+        $exceptions->render(fn (DuplicateEleveException $e) => response()->json([
+            'message' => 'Un élève avec le même nom et la même date de naissance existe déjà.',
+            'code' => 'doublon_eleve',
+            'existant' => ['uuid' => $e->existant->uuid, 'matricule' => $e->existant->matricule, 'nom' => $e->existant->nom],
+        ], 409));
 
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),

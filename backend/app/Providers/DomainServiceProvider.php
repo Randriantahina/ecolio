@@ -6,6 +6,9 @@ namespace App\Providers;
 
 use App\Domain\Audit\Contracts\JournalAuditRepository;
 use App\Domain\Audit\Models\JournalAudit;
+use App\Domain\Eleves\Contracts\EleveRepository;
+use App\Domain\Eleves\Contracts\InscriptionRepository;
+use App\Domain\Eleves\Models\Eleve;
 use App\Domain\Finance\Contracts\CompteurRepository;
 use App\Domain\Identity\Contracts\UtilisateurRepository;
 use App\Domain\Identity\Models\Utilisateur;
@@ -19,11 +22,14 @@ use App\Domain\Scolarite\Models\Niveau;
 use App\Infrastructure\Persistence\Eloquent\EloquentAnneeScolaireRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentCompteurRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentEcoleRepository;
+use App\Infrastructure\Persistence\Eloquent\EloquentEleveRepository;
+use App\Infrastructure\Persistence\Eloquent\EloquentInscriptionRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentJournalAuditRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentStructureRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentUtilisateurRepository;
 use App\Policies\AnneeScolairePolicy;
 use App\Policies\EcolePolicy;
+use App\Policies\ElevePolicy;
 use App\Policies\JournalAuditPolicy;
 use App\Policies\UtilisateurPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -40,6 +46,8 @@ final class DomainServiceProvider extends ServiceProvider
         CompteurRepository::class => EloquentCompteurRepository::class,
         AnneeScolaireRepository::class => EloquentAnneeScolaireRepository::class,
         StructureRepository::class => EloquentStructureRepository::class,
+        EleveRepository::class => EloquentEleveRepository::class,
+        InscriptionRepository::class => EloquentInscriptionRepository::class,
     ];
 
     public function boot(): void
@@ -48,6 +56,7 @@ final class DomainServiceProvider extends ServiceProvider
         Gate::policy(Utilisateur::class, UtilisateurPolicy::class);
         Gate::policy(Ecole::class, EcolePolicy::class);
         Gate::policy(JournalAudit::class, JournalAuditPolicy::class);
+        Gate::policy(Eleve::class, ElevePolicy::class);
         // Calendar, levels and classes share one rule: staff read, the directeur writes (spec section 1).
         Gate::policy(AnneeScolaire::class, AnneeScolairePolicy::class);
         Gate::policy(Niveau::class, AnneeScolairePolicy::class);
