@@ -25,6 +25,11 @@ final class EloquentAnneeScolaireRepository implements AnneeScolaireRepository
         return AnneeScolaire::query()->where('ecole_id', $ecoleId)->where('uuid', $uuid)->firstOrFail();
     }
 
+    public function currentOfEcole(int $ecoleId): ?AnneeScolaire
+    {
+        return AnneeScolaire::query()->where('ecole_id', $ecoleId)->where('est_courante', true)->first();
+    }
+
     public function ecoleHasCurrent(int $ecoleId): bool
     {
         return AnneeScolaire::query()->where('ecole_id', $ecoleId)->where('est_courante', true)->exists();

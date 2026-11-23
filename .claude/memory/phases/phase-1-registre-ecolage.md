@@ -6,7 +6,7 @@ Goal: what the directrice described (spec 0.1): registry by matricule, tuition/a
 1. [x] `Money` value object (integer ariary, non-negative, plus/minus/min/sum/compare; subtraction below zero throws) (feat, finance, done 2026-11-23)
 2. [x] `compteurs` table (unique `ecole_id`+`cle`) + `CompteurRepository::nextValue` (insertOrIgnore, then `lockForUpdate`, increment); gapless incl. rollback; real concurrency NOT provable on SQLite, to verify on PostgreSQL (feat, finance, done 2026-11-23)
 3. [x] Années scolaires: `/api/v1/annees-scolaires` list/create/update/`{uuid}/courante`; one current per school (RG-S1) enforced by service in one transaction AND a partial unique index; first year auto-current (my choice, not in spec); staff read, directeur writes, parents 403 (feat, scolarite, done 2026-11-24)
-4. [ ] Niveaux and Classes (per year, `effectif_max` warns only, RG-I2) (feat, scolarite)
+4. [x] Niveaux and Classes (`/niveaux`, `/classes`, per year default current; duplicate name 422; soft delete; `effectif_max` stored, warning enforced at enrolment) (feat, scolarite, done 2026-11-24)
 5. [ ] Matricule format per school (`ecoles.format_matricule`) + generator via compteurs (Strategy) (feat, eleves)
 6. [ ] Élève core: model (`BelongsToEcole`, softDeletes), statuses, `UQ(ecole_id, matricule)`, immutable matricule (RG-E1), duplicate warning (RG-E4), list with search/filter/cursor pagination by matricule (feat, eleves)
 7. [ ] Inscription: one active per year (RG-I1), class change history (feat, scolarite)

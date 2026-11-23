@@ -17,6 +17,8 @@ interface AnneeScolaireRepository
     /** Throws ModelNotFoundException for another school's year so existence is never revealed. */
     public function findInEcoleOrFail(string $uuid, int $ecoleId): AnneeScolaire;
 
+    public function currentOfEcole(int $ecoleId): ?AnneeScolaire;
+
     public function ecoleHasCurrent(int $ecoleId): bool;
 
     /** Clears the current flag of every year of the school (the new current is set right after). */

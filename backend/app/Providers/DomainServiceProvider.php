@@ -12,11 +12,15 @@ use App\Domain\Identity\Models\Utilisateur;
 use App\Domain\Platform\Contracts\EcoleRepository;
 use App\Domain\Platform\Models\Ecole;
 use App\Domain\Scolarite\Contracts\AnneeScolaireRepository;
+use App\Domain\Scolarite\Contracts\StructureRepository;
 use App\Domain\Scolarite\Models\AnneeScolaire;
+use App\Domain\Scolarite\Models\Classe;
+use App\Domain\Scolarite\Models\Niveau;
 use App\Infrastructure\Persistence\Eloquent\EloquentAnneeScolaireRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentCompteurRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentEcoleRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentJournalAuditRepository;
+use App\Infrastructure\Persistence\Eloquent\EloquentStructureRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentUtilisateurRepository;
 use App\Policies\AnneeScolairePolicy;
 use App\Policies\EcolePolicy;
@@ -35,6 +39,7 @@ final class DomainServiceProvider extends ServiceProvider
         JournalAuditRepository::class => EloquentJournalAuditRepository::class,
         CompteurRepository::class => EloquentCompteurRepository::class,
         AnneeScolaireRepository::class => EloquentAnneeScolaireRepository::class,
+        StructureRepository::class => EloquentStructureRepository::class,
     ];
 
     public function boot(): void
@@ -43,7 +48,10 @@ final class DomainServiceProvider extends ServiceProvider
         Gate::policy(Utilisateur::class, UtilisateurPolicy::class);
         Gate::policy(Ecole::class, EcolePolicy::class);
         Gate::policy(JournalAudit::class, JournalAuditPolicy::class);
+        // Calendar, levels and classes share one rule: staff read, the directeur writes (spec section 1).
         Gate::policy(AnneeScolaire::class, AnneeScolairePolicy::class);
+        Gate::policy(Niveau::class, AnneeScolairePolicy::class);
+        Gate::policy(Classe::class, AnneeScolairePolicy::class);
 
         ResetPassword::createUrlUsing(fn ($user, string $token) => config('app.frontend_url')
             .'/reinitialiser-mot-de-passe?token='.$token.'&email='.urlencode($user->getEmailForPasswordReset()));

@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Ecole\EcoleController;
 use App\Http\Controllers\Scolarite\AnneeScolaireController;
+use App\Http\Controllers\Scolarite\StructureController;
 use App\Http\Controllers\Team\UtilisateurController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,14 @@ Route::prefix('v1')->group(function () {
         Route::post('annees-scolaires', [AnneeScolaireController::class, 'store']);
         Route::patch('annees-scolaires/{uuid}', [AnneeScolaireController::class, 'update']);
         Route::post('annees-scolaires/{uuid}/courante', [AnneeScolaireController::class, 'definirCourante']);
+
+        Route::get('niveaux', [StructureController::class, 'niveaux']);
+        Route::post('niveaux', [StructureController::class, 'storeNiveau']);
+        Route::patch('niveaux/{uuid}', [StructureController::class, 'updateNiveau']);
+        Route::get('classes', [StructureController::class, 'classes']);
+        Route::post('classes', [StructureController::class, 'storeClasse']);
+        Route::patch('classes/{uuid}', [StructureController::class, 'updateClasse']);
+        Route::delete('classes/{uuid}', [StructureController::class, 'destroyClasse']);
 
         Route::get('utilisateurs', [UtilisateurController::class, 'index']);
         Route::post('utilisateurs', [UtilisateurController::class, 'store']);
