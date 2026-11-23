@@ -27,5 +27,5 @@ Applies to every commit. **Commit messages are written in English**, even though
 - Never commit with failing tests, unformatted PHP (`pint --test`) or type errors.
 - Never commit `.env`, secrets, `node_modules`, `vendor`, `dist`, `.claude/settings.local.json`, or real student data.
 - No `--no-verify`, no `--amend` on pushed commits, no force-push, no `reset --hard` without explicit user approval.
-- Branch `main`, remote `origin` (`git@github.com:Randriantahina/ecolio.git`). Push when the user asks or confirms.
+- Commit on `dev` (see `02-git-workflow-branches.md`); remote `origin` is `git@github.com:Randriantahina/ecolio.git`. After each feature or fix, once its tests and the gates are green and the commit is made, push `dev` (`git push origin dev`) without asking. Pushing any other branch, or `main`, still needs the user's approval.
 - End messages with the attribution line(s) the Claude Code session requires, when provided.

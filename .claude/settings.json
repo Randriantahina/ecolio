@@ -41,6 +41,8 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git restore --staged:*)",
+      "Bash(git push origin dev)",
+      "Bash(git push -u origin dev)",
       "Bash(ls:*)",
       "Bash(mkdir:*)"
     ],
