@@ -3,7 +3,7 @@
 Goal: what the directrice described (spec 0.1): registry by matricule, tuition/absence/departure checkboxes, numbered receipt. Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked. Test first, commit on `dev`. Order follows dependencies; copy the auth slice layout (Contract, Eloquent repo, Service, DTO, Request, Resource, Policy).
 
 ## Backend
-1. [ ] `Money` value object (integer ariary, no float, add/sub/compare, formatting excluded) (feat, finance)
+1. [x] `Money` value object (integer ariary, non-negative, plus/minus/min/sum/compare; subtraction below zero throws) (feat, finance, done 2026-11-23)
 2. [ ] `compteurs` table + `CompteurRepository::nextValue(ecoleId, key)` with `lockForUpdate`, concurrency-safe (feat, finance) — shared by receipts and matricules
 3. [ ] Années scolaires: model, one current per school (RG-S1), CRUD (feat, scolarite)
 4. [ ] Niveaux and Classes (per year, `effectif_max` warns only, RG-I2) (feat, scolarite)

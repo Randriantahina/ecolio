@@ -3,21 +3,23 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écolage (planned, not started)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- Nothing. Phase 0 closed; the user paused to work on a separate project, will resume phase 1 afterwards.
+- Phase 1 task 2 (`compteurs`) about to start. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
 - 2026-11-23 · Project memory system with hooks. Packages (Sanctum, permission, activitylog) installed.
 - 2026-11-23 · Tenancy (`BelongsToEcole`, `TenantContext`, `Ecole`) and identity (`Utilisateur`, roles, lockout): 30 tests green.
+- 2026-11-23 · Phase 1 task 1: `Money` value object, 108 backend tests green.
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 1, task 1 in `phases/phase-1-registre-ecolage.md`: TDD the `Money` value object (`app/Domain/Finance/ValueObjects/Money.php`, unit tests first: integer ariary only, add/sub/compare, refuses negatives where meaningless), then task 2 `compteurs` with `lockForUpdate`. Read the phase file and the auth slice in `architecture.md` before starting.
+Phase 1 task 2: TDD `compteurs` (migration with composite unique `(ecole_id, cle)`, `CompteurRepository` interface in `app/Domain/Finance/Contracts`, Eloquent impl with `lockForUpdate`, `nextValue(ecoleId, key)` gapless). Write the Feature test first, including a test that two sequential calls never repeat a value. SQLite ignores `lockForUpdate`: note that real concurrency can only be proven on PostgreSQL.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.
 
 ## Environment notes (non-derivable)
+- This project's commit-guard hook checks Écolio's memory even for commits in other repos opened from here (fixed in Cairn's version of the hook).
 - Project settings deny `curl`/`wget` and reading `backend/.env*`: live HTTP smoke tests are not possible for Claude; rely on Pest Feature tests. Never grep `.env`; use `php artisan env`.
 - Frontend TS: `erasableSyntaxOnly` bans constructor parameter properties and enums; if `pnpm typecheck` shows phantom errors, `rm -rf frontend/node_modules/.tmp`. Promise<unknown>.catch loses types: use the `rejectionOf<E>` helper pattern in tests.
 - `.env.example` cannot be edited by Claude (deny rule `Read(./backend/.env.*)`): it still says `APP_LOCALE=en`; code default is `fr`. Ask the user to switch it, or relax the rule.
