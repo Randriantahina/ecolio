@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Ecole\EcoleController;
 use App\Http\Controllers\Eleves\EleveController;
+use App\Http\Controllers\Finance\FraisController;
+use App\Http\Controllers\Finance\PaiementController;
 use App\Http\Controllers\Scolarite\AnneeScolaireController;
 use App\Http\Controllers\Scolarite\StructureController;
 use App\Http\Controllers\Team\UtilisateurController;
@@ -37,6 +39,20 @@ Route::prefix('v1')->group(function () {
         Route::patch('eleves/{uuid}', [EleveController::class, 'update']);
         Route::post('eleves/{uuid}/inscriptions', [EleveController::class, 'inscrire']);
         Route::patch('eleves/{uuid}/classe', [EleveController::class, 'changerClasse']);
+
+        Route::get('types-frais', [FraisController::class, 'types']);
+        Route::post('types-frais', [FraisController::class, 'storeType']);
+        Route::patch('types-frais/{uuid}', [FraisController::class, 'updateType']);
+        Route::get('tarifs', [FraisController::class, 'tarifs']);
+        Route::post('tarifs', [FraisController::class, 'storeTarif']);
+        Route::patch('tarifs/{uuid}', [FraisController::class, 'updateTarif']);
+        Route::delete('tarifs/{uuid}', [FraisController::class, 'destroyTarif']);
+
+        Route::post('paiements', [PaiementController::class, 'store']);
+        Route::get('paiements/{uuid}', [PaiementController::class, 'show']);
+        Route::post('paiements/{uuid}/annulation', [PaiementController::class, 'annuler']);
+        Route::get('eleves/{uuid}/echeances', [PaiementController::class, 'echeancesEleve']);
+        Route::get('classes/{uuid}/registre-ecolage', [PaiementController::class, 'registre']);
 
         Route::get('niveaux', [StructureController::class, 'niveaux']);
         Route::post('niveaux', [StructureController::class, 'storeNiveau']);

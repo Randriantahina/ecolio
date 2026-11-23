@@ -3,19 +3,20 @@
 Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écolage (planned, not started)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- Phase 1 task 8 (frais, tarifs, échéances) about to start. User wants ALL of the spec, built fast (prototype demo tomorrow): batch whole slices, test business rules not getters, UI design must be excellent. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
+- Phase 1 tasks 13-15 (absences, départ, PDF) next; then frontend 17-24. User wants ALL of the spec, built fast (prototype demo tomorrow): batch whole slices, test business rules not getters, UI design must be excellent. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
 - 2026-11-23 · Project memory system with hooks. Packages (Sanctum, permission, activitylog) installed.
 - 2026-11-23 · Tenancy (`BelongsToEcole`, `TenantContext`, `Ecole`) and identity (`Utilisateur`, roles, lockout): 30 tests green.
+- 2026-11-24 · Phase 1 tasks 4-12: levels/classes, élèves+inscriptions, finance (receipts, void, register), 175 backend tests green.
 - 2026-11-24 · Phase 1 task 3: `AnneeScolaire` slice, 140 backend tests green.
 - 2026-11-23 · Phase 1 task 2: `compteurs` + `CompteurRepository`, 116 backend tests green.
 - 2026-11-23 · Phase 1 task 1: `Money` value object, 108 backend tests green.
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-Phase 1 task 8: `types_frais` (UQ ecole+nom, periodicite unique/mensuel/trimestriel/annuel), `tarifs` (per year, per niveau or classe, montant_ar int, UQ), `echeances` generated at enrolment from the matching tarifs (monthly fees expand to one row per month of the year; UQ inscription+type+periode; statut du/partiel/paye/annule). Hook generation into `InscriptionService::inscrire`. Then task 9-11 payments/receipts/void (spec lines 450-470, RG-P1..P7, RG-R1..R6).
+Phase 1 backend remaining: task 13 absences (`PUT /classes/{uuid}/absences` batch, UQ eleve+date+periode, justifiee, client_uuid), 14 départ (`POST /eleves/{uuid}/sortie`: statut, date_sortie, future unpaid échéances -> `annule`, owed stays owed, RG-P6), 15 receipt PDF A5 (dompdf; needs `COMPOSER_AUTH` from `gh auth token`), 16 isolation tests for new models. Then DemoSeeder with fictional school data, then the FRONTEND screens (priority for the demo): app shell + nav, élèves, registre écolage with checkboxes + payment panel + receipt, absences. Design must be excellent.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.

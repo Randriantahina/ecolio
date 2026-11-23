@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Eleves\Services;
 
+use App\Application\Finance\Services\EcheanceGenerator;
 use App\Domain\Eleves\Contracts\InscriptionRepository;
 use App\Domain\Eleves\Models\Eleve;
 use App\Domain\Eleves\Models\Inscription;
@@ -17,6 +18,7 @@ final class InscriptionService
     public function __construct(
         private readonly InscriptionRepository $inscriptions,
         private readonly StructureRepository $structure,
+        private readonly EcheanceGenerator $echeances,
     ) {}
 
     /** @return array{inscription: Inscription, effectif_depasse: bool} */
@@ -36,6 +38,8 @@ final class InscriptionService
             $inscription->annee_scolaire_id = $classe->annee_scolaire_id;
             $inscription->classe_id = $classe->id;
             $this->inscriptions->save($inscription);
+            // The tariffs of the class's year become this pupil's instalments right away (RG-S2).
+            $this->echeances->pourInscription($inscription);
 
             // RG-I2: over capacity is a warning for the caller to show, never a refusal.
             $depasse = $classe->effectif_max !== null

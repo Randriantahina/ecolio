@@ -10,6 +10,12 @@ use App\Domain\Eleves\Contracts\EleveRepository;
 use App\Domain\Eleves\Contracts\InscriptionRepository;
 use App\Domain\Eleves\Models\Eleve;
 use App\Domain\Finance\Contracts\CompteurRepository;
+use App\Domain\Finance\Contracts\EcheanceRepository;
+use App\Domain\Finance\Contracts\FraisRepository;
+use App\Domain\Finance\Contracts\PaiementRepository;
+use App\Domain\Finance\Models\Paiement;
+use App\Domain\Finance\Models\Tarif;
+use App\Domain\Finance\Models\TypeFrais;
 use App\Domain\Identity\Contracts\UtilisateurRepository;
 use App\Domain\Identity\Models\Utilisateur;
 use App\Domain\Platform\Contracts\EcoleRepository;
@@ -21,16 +27,21 @@ use App\Domain\Scolarite\Models\Classe;
 use App\Domain\Scolarite\Models\Niveau;
 use App\Infrastructure\Persistence\Eloquent\EloquentAnneeScolaireRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentCompteurRepository;
+use App\Infrastructure\Persistence\Eloquent\EloquentEcheanceRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentEcoleRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentEleveRepository;
+use App\Infrastructure\Persistence\Eloquent\EloquentFraisRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentInscriptionRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentJournalAuditRepository;
+use App\Infrastructure\Persistence\Eloquent\EloquentPaiementRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentStructureRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentUtilisateurRepository;
 use App\Policies\AnneeScolairePolicy;
 use App\Policies\EcolePolicy;
 use App\Policies\ElevePolicy;
+use App\Policies\FraisPolicy;
 use App\Policies\JournalAuditPolicy;
+use App\Policies\PaiementPolicy;
 use App\Policies\UtilisateurPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
@@ -48,6 +59,9 @@ final class DomainServiceProvider extends ServiceProvider
         StructureRepository::class => EloquentStructureRepository::class,
         EleveRepository::class => EloquentEleveRepository::class,
         InscriptionRepository::class => EloquentInscriptionRepository::class,
+        FraisRepository::class => EloquentFraisRepository::class,
+        EcheanceRepository::class => EloquentEcheanceRepository::class,
+        PaiementRepository::class => EloquentPaiementRepository::class,
     ];
 
     public function boot(): void
@@ -57,6 +71,9 @@ final class DomainServiceProvider extends ServiceProvider
         Gate::policy(Ecole::class, EcolePolicy::class);
         Gate::policy(JournalAudit::class, JournalAuditPolicy::class);
         Gate::policy(Eleve::class, ElevePolicy::class);
+        Gate::policy(Paiement::class, PaiementPolicy::class);
+        Gate::policy(TypeFrais::class, FraisPolicy::class);
+        Gate::policy(Tarif::class, FraisPolicy::class);
         // Calendar, levels and classes share one rule: staff read, the directeur writes (spec section 1).
         Gate::policy(AnneeScolaire::class, AnneeScolairePolicy::class);
         Gate::policy(Niveau::class, AnneeScolairePolicy::class);

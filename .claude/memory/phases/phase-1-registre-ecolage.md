@@ -10,15 +10,17 @@ Goal: what the directrice described (spec 0.1): registry by matricule, tuition/a
 5. [x] Matricule generator via compteurs, format from `ecoles.format_matricule` {prefixe, avec_annee, longueur}, skips taken values (feat, eleves, done 2026-11-24)
 6. [x] Élève core (`/eleves` list/search/cursor by matricule, create, show, update; matricule correction directeur-only; duplicate 409 `doublon_eleve` confirmable) (feat, eleves, done 2026-11-24) — original spec: Élève core: model (`BelongsToEcole`, softDeletes), statuses, `UQ(ecole_id, matricule)`, immutable matricule (RG-E1), duplicate warning (RG-E4), list with search/filter/cursor pagination by matricule (feat, eleves)
 7. [x] Inscription (`/eleves/{uuid}/inscriptions`, `/classe` with `historique_classes`; one active per year DB-enforced; effectif warning in response) (feat, scolarite, done 2026-11-24) — original: Inscription: one active per year (RG-I1), class change history (feat, scolarite)
-8. [ ] Types de frais + tarifs (per level or class) + échéance generation at enrolment (feat, finance)
-9. [ ] Paiement + lignes + échéance status recompute in one transaction; partial (RG-P2), grouped (RG-P3); `client_uuid` idempotency; no line above balance (feat, finance)
-10. [ ] Reçu: gapless `YYYY-NNNN` per school/year from compteurs (RG-R1); concurrency test; never edited (RG-R2) (feat, finance)
-11. [ ] Annulation: directeur, or secretary with director validation (RG-P7), reason mandatory, receipt marked ANNULÉ, audit (feat, finance)
-12. [ ] Registre écolage `GET /classes/{id}/registre-ecolage?periode=` (feat, finance)
+8. [x] Types de frais + tarifs (per level or class) + échéance generation at enrolment (feat, finance)
+9. [x] Paiement + lignes + échéance status recompute in one transaction; partial (RG-P2), grouped (RG-P3); `client_uuid` idempotency; no line above balance (feat, finance)
+10. [x] Reçu: gapless `YYYY-NNNN` per school/year from compteurs (RG-R1); concurrency test; never edited (RG-R2) (feat, finance)
+11. [x] Annulation: directeur, or secretary with director validation (RG-P7), reason mandatory, receipt marked ANNULÉ, audit (feat, finance)
+12. [x] Registre écolage `GET /classes/{id}/registre-ecolage?periode=` (feat, finance)
 13. [ ] Absences: batch `PUT /classes/{id}/absences`, unique (élève, date, période) (RG-P5) (feat, absences)
 14. [ ] Départ: `POST /eleves/{id}/sortie`, future unpaid échéances become `annule`, owed stays owed (RG-P6) (feat, eleves)
 15. [ ] Receipt PDF A5 (dompdf) with school identity and legal mention (RG-R4), word "reçu" not "facture" (RG-R6) (feat, finance)
 16. [ ] Tenant-isolation test for every model above; policies per spec section 1
+
+Note 2026-11-24: tasks 8-12 done in one batch (`/types-frais`, `/tarifs`, `/paiements`, `/paiements/{uuid}/annulation`, `/eleves/{uuid}/echeances`, `/classes/{uuid}/registre-ecolage`). Known gaps: grouped payment across SIBLINGS not built (all lines must belong to one pupil); secretaire void with director validation not built (RG-P7 hypothesis, directeur only); a class tariff added after enrolment does not reprice instalments already generated; weak spots in tests: no true concurrency test (SQLite).
 
 ## Frontend
 17. [ ] Settings screens: year, levels, classes, tariffs (directeur)
