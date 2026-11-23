@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\Eleves\Models\Eleve;
+use App\Domain\Finance\Models\Echeance;
+use App\Domain\Finance\Models\Paiement;
 use App\Domain\Identity\Enums\Role;
 use App\Domain\Identity\Models\Utilisateur;
 use App\Domain\Platform\Models\Ecole;
@@ -23,14 +26,17 @@ it('creates a fictional school with a directeur who can log in', function () {
         ->assertOk();
 });
 
-it('can run twice without duplicating the school or the account', function () {
+it('can run twice without duplicating the school, accounts, pupils or payments', function () {
     $this->app['env'] = 'local';
 
     $this->seed(DemoSeeder::class);
+    $paiements = Paiement::withoutGlobalScopes()->count();
     $this->seed(DemoSeeder::class);
 
     expect(Ecole::count())->toBe(1)
-        ->and(Utilisateur::count())->toBe(1);
+        ->and(Utilisateur::count())->toBe(3)
+        ->and(Eleve::withoutGlobalScopes()->count())->toBe(24)
+        ->and(Paiement::withoutGlobalScopes()->count())->toBe($paiements);
 });
 
 it('refuses to run outside local so a known password never reaches production', function () {
@@ -39,3 +45,13 @@ it('refuses to run outside local so a known password never reaches production', 
     // Called directly: `db:seed` already refuses production, this proves the seeder's own guard too.
     (new DemoSeeder)->run();
 })->throws(RuntimeException::class);
+
+it('shows every box state in the demo register: paid, partial, due and a voided receipt', function () {
+    $this->app['env'] = 'local';
+    $this->seed(DemoSeeder::class);
+
+    $statuts = Echeance::withoutGlobalScopes()->pluck('statut')->map->value->unique()->all();
+
+    expect($statuts)->toContain('paye', 'partiel', 'du')
+        ->and(Paiement::withoutGlobalScopes()->where('statut', 'annule')->count())->toBe(1);
+});

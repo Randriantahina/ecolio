@@ -17,7 +17,7 @@ Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-1) DemoSeeder with a realistic fictional school (levels, 3-4 classes, ~25 pupils, fees, a few paid/partial/void payments, absences) so the demo has data. 2) FRONTEND (priority for tomorrow's demo): app shell with nav, élèves list, registre écolage (checkbox -> payment panel -> receipt), absences, receipt view; excellent design, French copy. 3) Receipt PDF A5 with dompdf (needs `COMPOSER_AUTH` from `gh auth token`) - the JSON receipt (`GET /paiements/{uuid}`) already carries every RG-R4 field, so a printable HTML receipt in the frontend can cover the demo.
+1) (done) DemoSeeder. 2) FRONTEND (priority for tomorrow's demo): app shell with nav, élèves list, registre écolage (checkbox -> payment panel -> receipt), absences, receipt view; excellent design, French copy. 3) Receipt PDF A5 with dompdf (needs `COMPOSER_AUTH` from `gh auth token`) - the JSON receipt (`GET /paiements/{uuid}`) already carries every RG-R4 field, so a printable HTML receipt in the frontend can cover the demo.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.
