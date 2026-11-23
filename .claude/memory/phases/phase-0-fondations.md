@@ -20,7 +20,7 @@ Goal: a directeur can log in; school data is isolated by tests; PWA skeleton ins
 - [x] API client `shared/api/http-client.ts` with bearer token, typed errors (Validation 422, Unauthorized 401 + onUnauthorized hook, Locked 423, Network, ApiError) (feat, frontend, done 2026-11-23). shadcn button/input/label/card added
 - [x] Auth feature: schemas, repository port + HTTP adapter, persisted session store, login ViewModel, `LoginView.vue`, route guard, safe `redirect` param (done 2026-11-23)
 - [x] Online/offline indicator `shared/network` (done 2026-11-23). Pending-operations counter comes with the offline queue (phase 6)
-- [ ] PWA: manifest icons (192/512 maskable), install prompt on second visit
+- [x] PWA: manifest icons (192/512/maskable PLACEHOLDER art, replace when branding exists), install prompt from 2nd visit, `index.html` fr (feat, pwa, done 2026-11-23)
 - [ ] Dexie database bootstrap (empty queue schema)
 
 ## Quality

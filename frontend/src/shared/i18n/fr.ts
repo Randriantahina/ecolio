@@ -1,6 +1,14 @@
 /** French is the product language; keys are grouped by feature. Malagasy (mg) is added by the same shape later. */
 export const fr = {
   app: { name: 'Écolio' },
+  pwa: {
+    install: {
+      title: 'Installer Écolio',
+      body: "Ajoutez l'application à votre écran d'accueil pour y accéder même avec une connexion instable.",
+      accept: 'Installer',
+      later: 'Plus tard',
+    },
+  },
   network: { online: 'En ligne', offline: 'Hors ligne' },
   home: { welcome: 'Bonjour, {nom}', school: 'École : {nom}' },
   auth: {
