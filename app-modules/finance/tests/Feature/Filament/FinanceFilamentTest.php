@@ -209,3 +209,22 @@ it('collects a registration fee from the registration tab', function () {
 
     expect($frais->fresh()->statut->value)->toBe('paye');
 });
+
+it('issues the missing instalments of enrolled pupils on demand, without duplicating existing ones', function () {
+    $transport = app(FraisService::class)->creerType($this->directeur, ['nom' => 'Transport', 'periodicite' => 'unique', 'actif' => false]);
+    app(FraisService::class)->creerTarif($this->directeur, ['type_frais_uuid' => $transport->uuid, 'montant_ar' => 15000]);
+    expect(Echeance::where('libelle', 'Transport')->count())->toBe(0);
+
+    app(FraisService::class)->modifierType($this->directeur, $transport->uuid, ['actif' => true]);
+    $avant = Echeance::count();
+
+    Livewire::test(RegistreEcolage::class)->callAction('generer')->assertNotified('1 échéance(s) créée(s)');
+    expect(Echeance::count())->toBe($avant + 1);
+
+    Livewire::test(RegistreEcolage::class)->callAction('generer')->assertNotified('Rien à créer');
+    expect(Echeance::count())->toBe($avant + 1);
+});
+
+it('links the register to the places where it is configured', function () {
+    Livewire::test(RegistreEcolage::class)->assertActionExists('typesFrais')->assertActionExists('tarifs')->assertActionExists('eleves');
+});

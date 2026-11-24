@@ -22,13 +22,17 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
+use Modules\Eleves\Filament\Resources\EleveResource;
 use Modules\Finance\Application\DTOs\EncaisserDto;
+use Modules\Finance\Application\Services\FraisService;
 use Modules\Finance\Application\Services\PaiementService;
 use Modules\Finance\Application\Services\RegistreEcolageService;
 use Modules\Finance\Domain\Contracts\RecuPdfGenerator;
 use Modules\Finance\Domain\Enums\ModePaiement;
 use Modules\Finance\Domain\Enums\StatutEcheance;
 use Modules\Finance\Domain\Models\Paiement;
+use Modules\Finance\Filament\Resources\TarifResource;
+use Modules\Finance\Filament\Resources\TypeFraisResource;
 use Modules\Finance\Filament\Support\Ariary;
 use Modules\Finance\Filament\Support\ModePaiementLabels;
 use Modules\Finance\Http\Resources\PaiementResource;
@@ -72,6 +76,22 @@ final class RegistreEcolage extends Page implements HasTable
     public static function canAccess(): bool
     {
         return auth()->user()?->can('viewAny', Paiement::class) ?? false;
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('generer')->label('Générer les échéances manquantes')->icon(Heroicon::OutlinedArrowPath)->color('gray')
+                ->requiresConfirmation()
+                ->modalDescription('Crée, pour tous les élèves inscrits cette année, les échéances prévues par les tarifs et qui n\'existent pas encore. Rien n\'est modifié ni dupliqué.')
+                ->action(function (): void {
+                    $n = app(FraisService::class)->genererEcheancesManquantes(auth()->user());
+                    Notification::make()->success()->title($n > 0 ? "$n échéance(s) créée(s)" : 'Rien à créer')->send();
+                }),
+            Action::make('typesFrais')->label('Types de frais')->color('gray')->url(fn (): string => TypeFraisResource::getUrl()),
+            Action::make('tarifs')->label('Tarifs')->color('gray')->url(fn (): string => TarifResource::getUrl()),
+            Action::make('eleves')->label('Ajouter un élève')->url(fn (): string => EleveResource::getUrl('create')),
+        ];
     }
 
     public function table(Table $table): Table

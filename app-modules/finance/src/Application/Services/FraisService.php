@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Modules\Eleves\Domain\Models\Inscription;
 use Modules\Finance\Domain\Contracts\FraisRepository;
+use Modules\Finance\Domain\Models\Echeance;
 use Modules\Finance\Domain\Models\Tarif;
 use Modules\Finance\Domain\Models\TypeFrais;
 use Modules\Identity\Domain\Models\Utilisateur;
@@ -83,6 +84,26 @@ final class FraisService
                 ->get()->each(fn (Inscription $i) => $this->generator->pourInscription($i));
 
             return $tarif->load('typeFrais');
+        });
+    }
+
+    /**
+     * Safety net after a fee type is reactivated or a tariff edited: issues what is missing for every
+     * active enrolment of the current year. Idempotent (the generator never recreates or reprices).
+     *
+     * @return int number of instalments created
+     */
+    public function genererEcheancesManquantes(Utilisateur $acteur): int
+    {
+        return DB::transaction(function () use ($acteur): int {
+            $ecoleId = (int) $acteur->ecole_id;
+            $annee = $this->annee($acteur, null);
+            $avant = Echeance::query()->where('ecole_id', $ecoleId)->count();
+
+            Inscription::query()->where('ecole_id', $ecoleId)->where('annee_scolaire_id', $annee->id)->where('statut', 'active')
+                ->get()->each(fn (Inscription $i) => $this->generator->pourInscription($i));
+
+            return Echeance::query()->where('ecole_id', $ecoleId)->count() - $avant;
         });
     }
 
