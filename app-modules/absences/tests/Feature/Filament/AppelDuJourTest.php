@@ -90,3 +90,10 @@ it('never lists the classes of another school (tenant isolation)', function () {
 
     expect(Livewire::test(AppelDuJour::class)->instance()->form->getComponent('classe_uuid')->getOptions())->toHaveCount(2);
 });
+
+it('is attached to the school panel by its module and reachable through a real request', function () {
+    expect(Filament\Facades\Filament::getPanel('ecole')->getPlugins())->toHaveKey('absences')
+        ->and(Filament\Facades\Filament::getPanel('ecole')->getPages())->toContain(AppelDuJour::class);
+
+    $this->get("/ecole/{$this->ecole->slug}/appel-du-jour")->assertOk();
+});

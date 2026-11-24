@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Absences\Providers;
 
+use Filament\Panel;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Absences\AbsencesPlugin;
 use Modules\Absences\Domain\Contracts\AbsenceRepository;
 use Modules\Absences\Domain\Models\Absence;
 use Modules\Absences\Infrastructure\Persistence\Eloquent\EloquentAbsenceRepository;
@@ -18,7 +20,15 @@ final class AbsencesServiceProvider extends ServiceProvider
         AbsenceRepository::class => EloquentAbsenceRepository::class,
     ];
 
-    public function register(): void {}
+    public function register(): void
+    {
+        // Filament modular architecture: the module attaches its own plugin, the panel provider is never edited.
+        Panel::configureUsing(function (Panel $panel): void {
+            if ($panel->getId() === 'ecole') {
+                $panel->plugin(AbsencesPlugin::make());
+            }
+        });
+    }
 
     public function boot(): void
     {
