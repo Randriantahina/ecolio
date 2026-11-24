@@ -84,14 +84,13 @@
       "Bash(gh:*)"
     ],
     "deny": [
-      "Read(./backend/.env)",
-      "Read(./backend/.env.*)",
+      "Read(./.env)",
+      "Read(./.env.*)",
       "Read(./**/*.pem)",
       "Read(./**/*.key)",
-      "Edit(./backend/.env)",
+      "Edit(./.env)",
       "Edit(./pnpm-lock.yaml)",
-      "Edit(./frontend/pnpm-lock.yaml)",
-      "Edit(./backend/composer.lock)",
+      "Edit(./composer.lock)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",

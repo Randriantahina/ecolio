@@ -1,0 +1,6 @@
+public/build
+vendor
+storage
+bootstrap/cache
+resources/js/components/ui
+pnpm-lock.yaml

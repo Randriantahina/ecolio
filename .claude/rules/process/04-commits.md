@@ -15,7 +15,7 @@ Applies to every commit. **Commit messages are written in English**, even though
 `feat` new behaviour · `fix` bug fix · `refactor` no behaviour change · `test` tests only · `docs` documentation · `chore` maintenance/tooling · `build` dependencies/build system · `ci` pipelines · `perf` performance · `style` formatting only · `revert`.
 
 ## Scopes
-`backend`, `frontend`, `docs`, `ci`, `claude`, or a feature/context: `finance`, `eleves`, `absences`, `imports`, `notes`, `auth`, `tenancy`, `pwa`, `i18n`.
+`backend` (PHP side), `frontend` (Vue/Inertia pages), `docs`, `ci`, `claude`, or a feature/context: `finance`, `eleves`, `absences`, `imports`, `notes`, `auth`, `tenancy`, `pwa`, `i18n`.
 - `feat(finance): generate gapless receipt numbers under row lock`
 - `test(tenancy): prove school A cannot read school B students`
 - `fix(imports): reject rows with duplicate matricule`

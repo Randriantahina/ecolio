@@ -13,7 +13,7 @@ Never write production code without a failing test that demands it. Bug fix = fi
 - Backend: every class under `app/` (Service, Action, Repository, Policy, FormRequest, Resource, DTO, Value Object, Job, route) has a **Pest Feature or Unit test**.
   - Feature (`tests/Feature/<Context>/`): HTTP endpoints, DB-backed flows, policies, repositories, jobs.
   - Unit (`tests/Unit/<Context>/`): pure logic (value objects, calculators, DTOs, enums, services with mocked repositories).
-- Frontend: every composable, ViewModel, store, repository, Zod schema, util and `.vue` component has a **Vitest test** next to it (`*.test.ts`). Critical journeys also get Playwright tests in `frontend/e2e/`.
+- Frontend: every composable, util and `.vue` component with logic has a **Vitest test** next to it (`*.test.ts`). Critical journeys also get Playwright tests in `tests/e2e/`.
 - A change adding a file without its test is incomplete. A task is not done until `pest` and `pnpm test` are green.
 
 ## Test quality

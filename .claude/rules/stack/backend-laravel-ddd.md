@@ -1,6 +1,8 @@
 ---
 paths:
-  - "backend/**/*.php"
+  - "app/**/*.php"
+  - "routes/**/*.php"
+  - "tests/**/*.php"
 ---
 
 # Backend architecture: Laravel 13, DDD, SOLID
