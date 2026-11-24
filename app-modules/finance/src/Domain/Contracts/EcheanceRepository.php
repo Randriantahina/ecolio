@@ -61,5 +61,6 @@ interface EcheanceRepository
     public function forEleve(int $eleveId): Collection;
 
     /** @return Collection<int, Echeance> */
-    public function forClassePeriode(int $ecoleId, int $classeId, ?string $periode): Collection;
+    /** @param  ?bool  $ponctuels  true = one-off fees only, false = recurring (monthly, quarterly) only, null = all */
+    public function forClassePeriode(int $ecoleId, int $classeId, ?string $periode, ?bool $ponctuels = null): Collection;
 }

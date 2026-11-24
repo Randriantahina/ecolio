@@ -20,11 +20,11 @@ final class RegistreEcolageService
     /**
      * @return list<array{eleve: array<string,mixed>, echeances: list<array<string,mixed>>}>
      */
-    public function pour(Utilisateur $acteur, string $classeUuid, ?string $periode): array
+    public function pour(Utilisateur $acteur, string $classeUuid, ?string $periode, ?bool $ponctuels = null): array
     {
         $ecoleId = (int) $acteur->ecole_id;
         $classe = $this->structure->classeOrFail($classeUuid, $ecoleId);
-        $echeances = $this->echeances->forClassePeriode($ecoleId, $classe->id, $periode);
+        $echeances = $this->echeances->forClassePeriode($ecoleId, $classe->id, $periode, $ponctuels);
 
         $ids = $echeances->pluck('id')->all();
         $payes = $this->echeances->paidAmounts($ids);

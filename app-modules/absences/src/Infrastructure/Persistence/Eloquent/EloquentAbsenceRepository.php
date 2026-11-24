@@ -23,6 +23,11 @@ final class EloquentAbsenceRepository implements AbsenceRepository
             ->mapWithKeys(fn ($r): array => [substr((string) $r->date, 0, 10) => (int) $r->total])->all();
     }
 
+    public function findOrFail(int $id, int $ecoleId): Absence
+    {
+        return Absence::query()->where('ecole_id', $ecoleId)->findOrFail($id);
+    }
+
     public function save(Absence $absence): void
     {
         $absence->save();

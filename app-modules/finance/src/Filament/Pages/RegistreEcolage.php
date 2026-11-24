@@ -21,6 +21,7 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Url;
 use Modules\Finance\Application\DTOs\EncaisserDto;
 use Modules\Finance\Application\Services\PaiementService;
 use Modules\Finance\Application\Services\RegistreEcolageService;
@@ -53,6 +54,20 @@ final class RegistreEcolage extends Page implements HasTable
     protected static ?int $navigationSort = 1;
 
     protected string $view = 'filament.finance.registre-ecolage';
+
+    /** 'ecolages' (monthly fees, one box per month) or 'inscriptions' (one-off fees, no month). */
+    #[Url]
+    public string $activeTab = 'ecolages';
+
+    public function updatedActiveTab(): void
+    {
+        $this->resetTable();
+    }
+
+    public function enInscriptions(): bool
+    {
+        return $this->activeTab === 'inscriptions';
+    }
 
     public static function canAccess(): bool
     {
@@ -87,6 +102,7 @@ final class RegistreEcolage extends Page implements HasTable
                 SelectFilter::make('classe')->label('Classe')->options(fn (): array => $this->classes())
                     ->default(fn (): ?string => array_key_first($this->classes()))->selectablePlaceholder(false),
                 SelectFilter::make('periode')->label('Mois')->options(fn (): array => $this->periodes())
+                    ->visible(fn (): bool => ! $this->enInscriptions())
                     ->default(fn (): ?string => $this->periodeParDefaut())->selectablePlaceholder(false),
             ], layout: FiltersLayout::AboveContent)
             ->recordActions([
@@ -95,8 +111,10 @@ final class RegistreEcolage extends Page implements HasTable
                 $this->annulerAction(),
             ])
             ->paginated(false)
-            ->emptyStateHeading('Aucune échéance')
-            ->emptyStateDescription('Choisissez une classe et un mois, ou créez les tarifs de l\'année.');
+            ->emptyStateHeading(fn (): string => $this->enInscriptions() ? 'Aucun frais d\'inscription' : 'Aucune échéance d\'écolage')
+            ->emptyStateDescription(fn (): string => $this->enInscriptions()
+                ? 'Créez un type de frais « Unique » (ex. Inscription), puis son tarif, dans le menu Finance.'
+                : 'Créez un type de frais « Mensuel » (ex. Écolage), puis son tarif, dans le menu Finance.');
     }
 
     private function encaisserAction(): Action
@@ -190,11 +208,12 @@ final class RegistreEcolage extends Page implements HasTable
             return [];
         }
 
-        $periode = $filters['periode']['value'] ?? $this->periodeParDefaut($classe);
+        // Registration fees have no month: the month filter only narrows the tuition tab.
+        $periode = $this->enInscriptions() ? null : ($filters['periode']['value'] ?? $this->periodeParDefaut($classe));
         $needle = $search !== null ? mb_strtolower(trim($search)) : '';
         $lignes = [];
 
-        foreach (app(RegistreEcolageService::class)->pour(auth()->user(), $classe, $periode) as $groupe) {
+        foreach (app(RegistreEcolageService::class)->pour(auth()->user(), $classe, $periode, $this->enInscriptions()) as $groupe) {
             $eleve = $groupe['eleve'];
             if ($needle !== '' && ! str_contains(mb_strtolower($eleve['matricule'].' '.$eleve['nom'].' '.($eleve['prenoms'] ?? '')), $needle)) {
                 continue;
@@ -234,7 +253,7 @@ final class RegistreEcolage extends Page implements HasTable
             return [];
         }
 
-        $codes = collect(app(RegistreEcolageService::class)->pour(auth()->user(), $classe, null))
+        $codes = collect(app(RegistreEcolageService::class)->pour(auth()->user(), $classe, null, false))
             ->flatMap(fn (array $groupe) => collect($groupe['echeances']))
             ->pluck('periode')->filter()->unique()->sort()->values();
 

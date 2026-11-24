@@ -59,7 +59,7 @@ final class TypeFraisResource extends Resource
                     TextInput::make('nom')->label('Nom')->placeholder('Écolage')->required()->maxLength(80),
                     Select::make('periodicite')->label('Périodicité')->required()->options(self::periodicites())
                         ->default(Periodicite::Mensuel->value)
-                        ->helperText('Mensuel : une échéance par mois de l\'année scolaire.'),
+                        ->helperText('Unique ou Annuel : une seule échéance par année, onglet « Inscriptions » du registre (ex. inscription). Mensuel ou Trimestriel : une échéance par période, onglet « Écolages » (ex. écolage).'),
                     Toggle::make('est_obligatoire')->label('Obligatoire')->default(true),
                     Toggle::make('actif')->label('Actif')->default(true)
                         ->helperText('Un type inactif ne génère plus d\'échéances.'),

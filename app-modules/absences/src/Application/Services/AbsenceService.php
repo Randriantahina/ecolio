@@ -29,6 +29,22 @@ final class AbsenceService
         return $this->absences->forClasseDate((int) $acteur->ecole_id, $classe->id, $date, $periode);
     }
 
+    public function justifier(Utilisateur $acteur, int $absenceId, ?string $motif): Absence
+    {
+        $absence = $this->absences->findOrFail($absenceId, (int) $acteur->ecole_id);
+        $absence->justifiee = true;
+        $absence->motif = $motif;
+        $this->absences->save($absence);
+
+        return $absence;
+    }
+
+    /** RG-P5: a plain delete, journalised by the model's activity log. */
+    public function retirer(Utilisateur $acteur, int $absenceId): void
+    {
+        $this->absences->delete($this->absences->findOrFail($absenceId, (int) $acteur->ecole_id));
+    }
+
     /** @return array<string,int> The last $jours days ending today, oldest first, zero-filled for the chart. */
     public function parJour(Utilisateur $acteur, int $jours): array
     {

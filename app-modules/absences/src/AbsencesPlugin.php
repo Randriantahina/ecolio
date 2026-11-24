@@ -22,7 +22,8 @@ final class AbsencesPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->discoverPages(in: __DIR__.'/Filament/Pages', for: 'Modules\\Absences\\Filament\\Pages')
+        $panel->discoverResources(in: __DIR__.'/Filament/Resources', for: 'Modules\\Absences\\Filament\\Resources')
+            ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'Modules\\Absences\\Filament\\Pages')
             ->discoverWidgets(in: __DIR__.'/Filament/Widgets', for: 'Modules\\Absences\\Filament\\Widgets');
     }
 

@@ -178,3 +178,34 @@ it('never shows the tariffs or the payments of another school (tenant isolation)
     Livewire::test(ListTarifs::class)->assertCanNotSeeTableRecords([$etranger]);
     Livewire::test(EditTarif::class, ['record' => $etranger->uuid])->assertNotFound();
 });
+
+it('opens on the tuition tab and keeps one-off fees out of it', function () {
+    $inscription = app(FraisService::class)->creerType($this->directeur, ['nom' => 'Inscription', 'periodicite' => 'unique']);
+    app(FraisService::class)->creerTarif($this->directeur, ['type_frais_uuid' => $inscription->uuid, 'montant_ar' => 20000, 'classe_uuid' => $this->classeA->uuid]);
+
+    Livewire::test(RegistreEcolage::class)
+        ->assertSet('activeTab', 'ecolages')
+        ->assertSee('Rakoto')->assertSee('50 000 Ar')->assertDontSee('20 000 Ar');
+});
+
+it('lists the one-off fees on the registration tab without any month filter', function () {
+    $inscription = app(FraisService::class)->creerType($this->directeur, ['nom' => 'Inscription', 'periodicite' => 'unique']);
+    app(FraisService::class)->creerTarif($this->directeur, ['type_frais_uuid' => $inscription->uuid, 'montant_ar' => 20000, 'classe_uuid' => $this->classeA->uuid]);
+
+    Livewire::test(RegistreEcolage::class)
+        ->set('activeTab', 'inscriptions')
+        ->assertSee('Rakoto')->assertSee('20 000 Ar')->assertDontSee('50 000 Ar')
+        ->assertTableFilterHidden('periode');
+});
+
+it('collects a registration fee from the registration tab', function () {
+    $inscription = app(FraisService::class)->creerType($this->directeur, ['nom' => 'Inscription', 'periodicite' => 'unique']);
+    app(FraisService::class)->creerTarif($this->directeur, ['type_frais_uuid' => $inscription->uuid, 'montant_ar' => 20000, 'classe_uuid' => $this->classeA->uuid]);
+    $frais = Echeance::where('libelle', 'Inscription')->firstOrFail();
+
+    Livewire::test(RegistreEcolage::class)->set('activeTab', 'inscriptions')
+        ->callTableAction('encaisser', $frais->uuid, ['montant_ar' => 20000, 'mode' => 'especes', 'date_paiement' => '2026-10-12'])
+        ->assertNotified();
+
+    expect($frais->fresh()->statut->value)->toBe('paye');
+});

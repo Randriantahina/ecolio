@@ -7,6 +7,7 @@ namespace Modules\Absences\Domain\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Eleves\Domain\Models\Eleve;
+use Modules\Scolarite\Domain\Models\Classe;
 use Modules\Tenancy\Domain\BelongsToEcole;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
@@ -31,6 +32,11 @@ final class Absence extends Model
             ->logOnly(['date', 'periode', 'justifiee', 'motif'])
             ->logOnlyDirty()
             ->useLogName('absences');
+    }
+
+    public function classe(): BelongsTo
+    {
+        return $this->belongsTo(Classe::class);
     }
 
     public function eleve(): BelongsTo

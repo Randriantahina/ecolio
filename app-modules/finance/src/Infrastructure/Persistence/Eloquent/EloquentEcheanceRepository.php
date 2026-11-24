@@ -100,12 +100,15 @@ final class EloquentEcheanceRepository implements EcheanceRepository
         return Echeance::query()->with('typeFrais')->where('eleve_id', $eleveId)->orderBy('periode')->orderBy('id')->get();
     }
 
-    public function forClassePeriode(int $ecoleId, int $classeId, ?string $periode): Collection
+    public function forClassePeriode(int $ecoleId, int $classeId, ?string $periode, ?bool $ponctuels = null): Collection
     {
         return Echeance::query()->with(['typeFrais', 'eleve'])
             ->where('ecole_id', $ecoleId)
             ->whereHas('eleve.inscriptionActive', fn ($i) => $i->where('classe_id', $classeId))
             ->when($periode !== null, fn ($q) => $q->where('periode', $periode))
+            ->when($ponctuels !== null, fn ($q) => $q->whereHas('typeFrais', fn ($t) => $ponctuels
+                ? $t->whereIn('periodicite', ['unique', 'annuel'])
+                : $t->whereNotIn('periodicite', ['unique', 'annuel'])))
             ->orderBy('eleve_id')->orderBy('id')->get();
     }
 }

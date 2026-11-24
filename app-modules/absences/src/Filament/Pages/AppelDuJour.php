@@ -14,6 +14,7 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\EmbeddedSchema;
 use Filament\Schemas\Components\Form;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
@@ -74,17 +75,30 @@ final class AppelDuJour extends Page
         };
 
         return $schema->components([
-            Select::make('classe_uuid')->label('Classe')->options(fn (): array => $this->classes())->required()->live()
-                ->afterStateUpdated($recharger)->selectablePlaceholder(false),
-            DatePicker::make('date')->label('Date')->required()->maxDate(now())->live()->afterStateUpdated($recharger),
-            Select::make('periode')->label('Période')->required()->live()->afterStateUpdated($recharger)->selectablePlaceholder(false)
-                ->options(['journee' => 'Journée', 'matin' => 'Matin', 'apres_midi' => 'Après-midi']),
-            CheckboxList::make('absents')->label('Élèves absents')
-                ->helperText('Tout le monde est présent par défaut : cochez seulement les absents.')
-                ->options(fn (Get $get): array => $this->eleves($get('classe_uuid')))->columns(2)->searchable()->live(),
-            CheckboxList::make('justifiees')->label('Absences justifiées')
-                ->options(fn (Get $get): array => array_intersect_key($this->eleves($get('classe_uuid')), array_flip($get('absents') ?? [])))
-                ->columns(2)->visible(fn (Get $get): bool => filled($get('absents'))),
+            Section::make('Séance')
+                ->description('La classe, le jour et la période de l\'appel.')
+                ->columns(3)
+                ->schema([
+                    Select::make('classe_uuid')->label('Classe')->options(fn (): array => $this->classes())->required()->live()
+                        ->afterStateUpdated($recharger)->selectablePlaceholder(false),
+                    DatePicker::make('date')->label('Date')->required()->maxDate(now())->live()->afterStateUpdated($recharger),
+                    Select::make('periode')->label('Période')->required()->live()->afterStateUpdated($recharger)->selectablePlaceholder(false)
+                        ->options(['journee' => 'Journée', 'matin' => 'Matin', 'apres_midi' => 'Après-midi']),
+                ]),
+            Section::make('Absents')
+                ->description('Tout le monde est présent par défaut : cochez seulement les absents.')
+                ->schema([
+                    CheckboxList::make('absents')->label('Élèves absents')
+                        ->options(fn (Get $get): array => $this->eleves($get('classe_uuid')))->columns(3)->searchable()->live(),
+                ]),
+            Section::make('Justification')
+                ->description('Parmi les absents, ceux dont l\'absence est justifiée.')
+                ->visible(fn (Get $get): bool => filled($get('absents')))
+                ->schema([
+                    CheckboxList::make('justifiees')->label('Absences justifiées')
+                        ->options(fn (Get $get): array => array_intersect_key($this->eleves($get('classe_uuid')), array_flip($get('absents') ?? [])))
+                        ->columns(3),
+                ]),
         ]);
     }
 
