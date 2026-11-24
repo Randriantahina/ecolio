@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Finance\Models;
 
+use App\Domain\Scolarite\Models\AnneeScolaire;
 use App\Domain\Scolarite\Models\Classe;
 use App\Domain\Scolarite\Models\Niveau;
 use App\Domain\Tenancy\BelongsToEcole;
@@ -27,6 +28,11 @@ final class Tarif extends Model
     public function uniqueIds(): array
     {
         return ['uuid'];
+    }
+
+    public function anneeScolaire(): BelongsTo
+    {
+        return $this->belongsTo(AnneeScolaire::class);
     }
 
     public function typeFrais(): BelongsTo
