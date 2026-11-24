@@ -83,7 +83,12 @@ return new class extends Migration
 
             $table->index(['ecole_id', 'date_paiement']);
         });
-        DB::statement('ALTER TABLE paiements ADD CONSTRAINT paiements_total_positif CHECK (total_ar > 0)');
+        // SQLite (tests) cannot add a CHECK after creation; PostgreSQL enforces it in production.
+        if (DB::getDriverName() === 'pgsql') {
+            if (DB::getDriverName() === 'pgsql') {
+                DB::statement('ALTER TABLE paiements ADD CONSTRAINT paiements_total_positif CHECK (total_ar > 0)');
+            }
+        }
 
         Schema::create('paiement_lignes', function (Blueprint $table) {
             $table->id();
@@ -91,7 +96,12 @@ return new class extends Migration
             $table->foreignId('echeance_id')->constrained('echeances');
             $table->unsignedInteger('montant_ar');
         });
-        DB::statement('ALTER TABLE paiement_lignes ADD CONSTRAINT paiement_lignes_montant_positif CHECK (montant_ar > 0)');
+        // SQLite (tests) cannot add a CHECK after creation; PostgreSQL enforces it in production.
+        if (DB::getDriverName() === 'pgsql') {
+            if (DB::getDriverName() === 'pgsql') {
+                DB::statement('ALTER TABLE paiement_lignes ADD CONSTRAINT paiement_lignes_montant_positif CHECK (montant_ar > 0)');
+            }
+        }
 
         Schema::create('recus', function (Blueprint $table) {
             $table->id();

@@ -37,6 +37,12 @@ it('serves the cluster pages under /parametres and keeps them out of the top nav
     expect($nav)->toContain('Paramètres')->not->toContain('Niveaux')->not->toContain('Champs personnalisés');
 });
 
+it('puts the settings at the bottom of the menu, in the Configuration group', function () {
+    $groupes = collect(Filament::getNavigation())->map(fn ($g) => $g->getLabel());
+
+    expect($groupes->last())->toBe('Configuration');
+});
+
 it('hides the cluster from a user who can open none of its pages', function () {
     dansLePanelEcole(utilisateurAvecRole(Role::Enseignant, $this->ecole), $this->ecole);
 

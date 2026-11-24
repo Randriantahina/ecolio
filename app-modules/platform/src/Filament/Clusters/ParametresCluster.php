@@ -23,6 +23,8 @@ final class ParametresCluster extends Cluster
 
     protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Configuration';
+
     protected static ?int $navigationSort = 100;
 
     /** Settings are the administration's: an enseignant only ever sees the absences module. */
