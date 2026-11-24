@@ -13,8 +13,8 @@ Never write production code without a failing test that demands it. Bug fix = fi
 - Backend: every class under `app/` (Service, Action, Repository, Policy, FormRequest, Resource, DTO, Value Object, Job, route) has a **Pest Feature or Unit test**.
   - Feature (`tests/Feature/<Context>/`): HTTP endpoints, DB-backed flows, policies, repositories, jobs.
   - Unit (`tests/Unit/<Context>/`): pure logic (value objects, calculators, DTOs, enums, services with mocked repositories).
-- Frontend: every composable, util and `.vue` component with logic has a **Vitest test** next to it (`*.test.ts`). Critical journeys also get Playwright tests in `tests/e2e/`.
-- A change adding a file without its test is incomplete. A task is not done until `pest` and `pnpm test` are green.
+- Filament: every Resource, Page, Widget and action has a Pest test with `Livewire::test(...)` (render, create/edit through the Service, authorization per role, tenant isolation).
+- A change adding a file without its test is incomplete. A task is not done until `pest` is green.
 
 ## Test quality
 - Test behaviour, not implementation. Names state the business rule (`it('refuses a payment above the remaining balance')`).
@@ -25,4 +25,4 @@ Never write production code without a failing test that demands it. Bug fix = fi
 - Mandatory families (spec section 12): tenant isolation per model, receipt numbering (concurrency, void, grouped, partial, idempotency), grade calculations, import validation.
 
 ## Before declaring done
-Backend: `./vendor/bin/pest` and `./vendor/bin/pint --test`. Frontend: `pnpm test`, `pnpm typecheck`, `pnpm lint`. Report the real output; if something fails or was skipped, say so.
+`./vendor/bin/pest` and `./vendor/bin/pint --test`. Report the real output; if something fails or was skipped, say so.

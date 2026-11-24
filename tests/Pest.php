@@ -1,8 +1,12 @@
 <?php
 
+use App\Application\Scolarite\DTOs\CreateAnneeScolaireDto;
+use App\Application\Scolarite\Services\AnneeScolaireService;
+use App\Application\Scolarite\Services\StructureService;
 use App\Domain\Identity\Enums\Role;
 use App\Domain\Identity\Models\Utilisateur;
 use App\Domain\Platform\Models\Ecole;
+use App\Domain\Tenancy\TenantContext;
 use Database\Seeders\RolesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -58,4 +62,34 @@ function utilisateurAvecRole(Role $role, ?Ecole $ecole = null): Utilisateur
         : Utilisateur::factory()->for($ecole ?? Ecole::factory()->create())->create();
 
     return $user->assignRole($role->value);
+}
+
+/**
+ * Puts a Livewire/Filament test inside the school panel exactly as the tenant middleware does in a real
+ * request: signed in, panel and tenant selected, TenantContext bound to the school.
+ */
+function dansLePanelEcole(Utilisateur $user, Ecole $ecole): Utilisateur
+{
+    test()->actingAs($user);
+    Filament\Facades\Filament::setCurrentPanel('ecole');
+    Filament\Facades\Filament::setTenant($ecole);
+    app(TenantContext::class)->forEcole($ecole->id);
+
+    return $user;
+}
+
+/** A school with a current year, one level and two classes (the first holds a single pupil at most). */
+function ecoleAvecClasses(Ecole $ecole, Utilisateur $directeur): array
+{
+    return app(TenantContext::class)->runAs($ecole->id, function () use ($directeur) {
+        app(AnneeScolaireService::class)
+            ->creer($directeur, new CreateAnneeScolaireDto('2026-2027', '2026-09-01', '2027-06-30', true));
+        $structure = app(StructureService::class);
+        $niveau = $structure->creerNiveau($directeur, ['nom' => '6e']);
+
+        return [
+            $structure->creerClasse($directeur, ['nom' => '6e A', 'niveau_uuid' => $niveau->uuid, 'effectif_max' => 1]),
+            $structure->creerClasse($directeur, ['nom' => '6e B', 'niveau_uuid' => $niveau->uuid]),
+        ];
+    });
 }

@@ -10,33 +10,27 @@ The functional and technical source of truth is `docs/SPEC_ecolio_2026-11-18_v2.
 
 ## Repository layout
 
-One Laravel 13 application at the repository root (decision `0003`): PHP 8.5, Pest 5, **Inertia 3 + Vue 3 + TypeScript** pages in `resources/js`, Tailwind 4, shadcn-vue on Reka UI, **pnpm**. PostgreSQL in prod, in-memory SQLite in tests. Laravel Boost (dev) provides the MCP server (`.mcp.json`) and the guidelines block at the end of this file.
+One Laravel 13 application at the repository root (decisions `0003`, `0004`): PHP 8.5, Pest 5, **Filament 5** panel (Livewire) for the whole web UI; no Node toolchain. PostgreSQL in prod, in-memory SQLite in tests. Laravel Boost (dev) provides the MCP server (`.mcp.json`) and the guidelines block at the end of this file.
 
-- `app/`, `routes/`, `database/`, `tests/`: the Laravel application (DDD layers below). `routes/web.php` serves Inertia pages, `routes/api.php` keeps the JSON API (`/api/v1`) for the offline queue and future mobile.
-- `resources/js/`: Inertia pages, layouts, components, composables, i18n. `resources/views/app.blade.php` is the only Blade view.
+- `app/`, `routes/`, `database/`, `tests/`: the Laravel application (DDD layers below). `routes/web.php` only redirects to the panel, `routes/api.php` keeps the JSON API (`/api/v1`) for the offline queue and future mobile.
+- `app/Filament/<Context>/`: one Filament plugin per bounded context (Resources, Pages, Widgets), registered through `FilamentModulesServiceProvider`; the panel is `app/Providers/Filament/EcolePanelProvider.php` (`/ecole/{slug}`).
 - `docs/`: spec, OpenAPI, architecture decisions
-- `.claude/rules/process/`: portable workflow rules (session protocol, TDD, memory journal, comments, commits, branches, CI). `.claude/rules/stack/`: Laravel DDD and Inertia/Vue rules. **Read them before writing code.**
+- `.claude/rules/process/`: portable workflow rules (session protocol, TDD, memory journal, comments, commits, branches, CI). `.claude/rules/stack/`: Laravel DDD and Filament rules. **Read them before writing code.**
 - `.claude/memory/`: **project memory** (status, roadmap, per-phase checklists, changelog, decisions). **Read `status.md` and `roadmap.md` at the start of every session and update them in every commit**; a SessionStart hook injects them and a PreToolUse hook blocks commits without a memory change.
 
-Node is pinned in `.mise.toml`. Use pnpm only; lockfiles (`pnpm-lock.yaml`, `composer.lock`) are committed.
+`composer.lock` is committed. Composer needs a GitHub token for Filament downloads: the user runs `composer` with `COMPOSER_AUTH` themselves.
 
 ## Commands
 
 ```bash
-composer install && pnpm install
-php artisan migrate
-php artisan serve                                              # app on :8000 (uses public/build)
-pnpm dev                                                       # Vite HMR while editing resources/js
-pnpm build                                                     # vue-tsc + vite build
-./vendor/bin/pest                                              # whole PHP suite
-./vendor/bin/pest tests/Feature/Finance/PaiementTest.php       # one file
-./vendor/bin/pest --filter="refuses a payment above the balance"  # one test
+composer install                                               # needs COMPOSER_AUTH (GitHub token), run by the user
+php artisan migrate --seed                                     # demo school (local only)
+php artisan serve                                              # app on :8000, panel at /ecole
+./vendor/bin/pest                                              # whole suite
+./vendor/bin/pest tests/Feature/Filament/LoginTest.php         # one file
+./vendor/bin/pest --filter="locks the account"                 # one test
 ./vendor/bin/pint                                              # format PHP
-pnpm test                                                      # vitest run
-pnpm vitest run resources/js/lib/format.test.ts                # one JS file
-pnpm typecheck && pnpm lint && pnpm format:check
-pnpm e2e                                                       # Playwright
-pnpm dlx shadcn-vue@latest add button                          # add a UI component
+php artisan make:filament-resource Eleve --panel=ecole         # then move it under app/Filament/<Context>
 ```
 
 ## Architecture (big picture)
@@ -47,10 +41,10 @@ pnpm dlx shadcn-vue@latest add button                          # add a UI compon
 - `Domain/<Context>/`: models, enums, value objects (`Money` in integer ariary), events, exceptions, repository **interfaces**.
 - `Application/<Context>/`: Services (business logic), DTOs (the only thing crossing layers), Actions.
 - `Infrastructure/`: Eloquent repositories, PDF/Excel/SMS adapters, bound to interfaces in `DomainServiceProvider`.
-- `Http/`: thin Controllers (`Controllers/Web` for Inertia pages, the others for the JSON API), FormRequests (→ DTO), API Resources, Policies, `Navigation/MenuPrincipal` (server-decided menu per role).
+- `Http/`: thin Controllers for the JSON API, FormRequests (→ DTO), API Resources, Policies. `Filament/<Context>/`: panel plugins, as thin as controllers (call a Service, never business logic).
 Bounded contexts: Platform, Identity, Scolarite, Eleves, Finance, Absences, Notes, Imports, Communications.
 
-**Frontend: Inertia pages, server state as props.** A controller calls a Service and returns `Inertia::render('Page', $props)`; pages are presentational, mutations use `useForm`/`router` and the server answers with a redirect plus flash or validation errors. Local UI logic lives in composables. Auth for pages is the session guard `web`; the token API is only for the offline queue and mobile. Domain exceptions become form errors on pages and JSON status codes on the API (`bootstrap/app.php`).
+**UI: one Filament panel, one plugin per context.** The panel `ecole` is tenant-aware (`->tenant(Ecole::class)`); `BindEcoleContext` copies the tenant into `TenantContext` so the global scope still applies. Resources, pages and widgets of a context live in `app/Filament/<Context>/` and are discovered by that context's plugin; mutations go through Application Services, domain exceptions become Filament notifications. Login is a custom page over `AuthService` (lockout RG-A3). Staff only: parents get their own portal later.
 
 **Invariants that span files (spec M4, M5, section 8).**
 - Receipt numbers are gapless per school and year, allocated from `compteurs` under `SELECT ... FOR UPDATE` inside the payment transaction. Receipts are never edited or deleted, only voided.
@@ -65,7 +59,7 @@ Bounded contexts: Platform, Identity, Scolarite, Eleves, Finance, Absences, Note
 - **Comments explain why, never how** (business rule, constraint, trade-off). See `.claude/rules/process/03-comments.md`.
 - **Commits**: English Conventional Commits (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `build`, `ci`, `perf`, `style`), one logical change each, committed after every green change. See `.claude/rules/process/04-commits.md`.
 - **Branching**: all work (feat, fix, everything) is committed on `dev`; no per-feature branches. `main` only receives `dev` via PR after green CI. See `.claude/rules/process/05-branches-and-push.md`.
-- **CI** (`.github/workflows/ci.yml`): Pint + Pest (`php` job); lint, format, typecheck, Vitest, build (`js` job). Run the same gates locally before committing. See `.claude/rules/process/06-ci.md`.
+- **CI** (`.github/workflows/ci.yml`): one `php` job, Pint then Pest. Run the same gates locally before committing. See `.claude/rules/process/06-ci.md`.
 - **Test gate before push**: after each feature or fix, all tests and gates must be green; then commit and `git push origin dev` without asking. Never push a red state. Pushing `main` or other branches needs user approval.
 - Remote `origin` is `git@github.com:Randriantahina/ecolio.git`.
 
@@ -104,10 +98,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - Stick to existing directory structure; don't create new base folders without approval.
 - Do not change the application's dependencies without approval.
-
-## Frontend Bundling
-
-- If a frontend change doesn't show in the UI or you get a "Unable to locate file in Vite manifest" error, run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
 
 ## Documentation Files
 
@@ -182,28 +172,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - When test coverage applies, run the affected tests and ensure they pass.
 - Test the changed behavior and its important failure modes, but do not add tests beyond them.
 - Read the `testing-best-practices` skill before writing tests.
-
-=== inertia-laravel/core rules ===
-
-# Inertia
-
-- Inertia creates fully client-side rendered SPAs without modern SPA complexity, leveraging existing server-side patterns.
-- Components live in `resources/js/Pages` (unless specified in `vite.config.js`). Use `Inertia::render()` for server-side routing instead of Blade views.
-- ALWAYS use `search-docs` tool for version-specific Inertia documentation and updated code examples.
-
-# Inertia v3
-
-- Use all Inertia features from v1, v2, and v3. Check the documentation before making changes to ensure the correct approach.
-- New v3 features: standalone HTTP requests (`useHttp` hook), optimistic updates with automatic rollback, layout props (`useLayoutProps` hook), instant visits, simplified SSR via `@inertiajs/vite` plugin, custom exception handling for error pages.
-- Carried over from v2: deferred props, infinite scroll, merging props, polling, prefetching, once props, flash data.
-- When using deferred props, add an empty state with a pulsing or animated skeleton.
-- Axios has been removed. Use the built-in XHR client with interceptors, or install Axios separately if needed.
-- `Inertia::lazy()` / `LazyProp` has been removed. Use `Inertia::optional()` instead.
-- Prop types (`Inertia::optional()`, `Inertia::defer()`, `Inertia::merge()`) work inside nested arrays with dot-notation paths.
-- SSR works automatically in Vite dev mode with `@inertiajs/vite` - no separate Node.js server needed during development.
-- Event renames: `invalid` is now `httpException`, `exception` is now `networkError`.
-- `router.cancel()` replaced by `router.cancelAll()`.
-- The `future` configuration namespace has been removed - all v2 future options are now always enabled.
 
 === laravel/core rules ===
 

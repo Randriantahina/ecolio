@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Platform\Models;
 
 use Database\Factories\EcoleFactory;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 /** The tenant itself: not school-scoped, it is what the scope points to. */
-final class Ecole extends Model
+final class Ecole extends Model implements HasName
 {
     use HasFactory, HasUuids, LogsActivity;
 
@@ -37,6 +38,11 @@ final class Ecole extends Model
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
             ->useLogName('ecoles');
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->nom;
     }
 
     /** Public identifier lives in `uuid`; the numeric id stays internal. */

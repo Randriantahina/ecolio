@@ -10,7 +10,7 @@ Applies to every task. Commit message format is in `04-commits.md`.
 ## Daily flow
 1. Make sure you are on `dev` (`git branch --show-current`); if not, stop and switch (ask if the tree is dirty).
 2. Work with TDD, commit after every green change (one logical change per commit).
-3. **Test gate, then push.** After each finished feature or fix, run the full gates of the touched side (backend: `pest` + `pint --test`; frontend: `pnpm test`, `pnpm typecheck`, `pnpm lint`, `pnpm format:check`; both if both changed). Only if everything is green: commit, then `git push origin dev` without asking. If anything fails, fix it first; never commit or push a red state, and never push to "save progress".
+3. **Test gate, then push.** After each finished feature or fix, run the gates (`pint --test` and `pest`). Only if everything is green: commit, then `git push origin dev` without asking. If anything fails, fix it first; never commit or push a red state, and never push to "save progress".
 4. Promote to `main` only when the user asks: open a PR `dev → main` (`gh pr create --base main --head dev`) and let CI pass. Merge with a merge commit or squash as the user decides; never force-push `main`.
 
 ## Why a single branch

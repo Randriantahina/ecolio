@@ -7,8 +7,14 @@ namespace App\Domain\Identity\Models;
 use App\Domain\Identity\Enums\Role;
 use App\Domain\Platform\Models\Ecole;
 use Database\Factories\UtilisateurFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Models\Contracts\HasTenants;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,7 +28,7 @@ use Spatie\Permission\Traits\HasRoles;
  * Deliberately NOT using BelongsToEcole: login must find the account before any school is resolved,
  * and super admins have no school. Every school-side listing filters on ecole_id explicitly in its repository.
  */
-final class Utilisateur extends Authenticatable
+final class Utilisateur extends Authenticatable implements FilamentUser, HasName, HasTenants
 {
     use HasApiTokens, HasFactory, HasRoles, HasUuids, LogsActivity, Notifiable;
 
@@ -79,6 +85,30 @@ final class Utilisateur extends Authenticatable
     public function ecole(): BelongsTo
     {
         return $this->belongsTo(Ecole::class);
+    }
+
+    /** Staff of a school only; parents get their own portal in phase 5 and super admins the back-office panel. */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->actif
+            && $this->ecole_id !== null
+            && $this->hasAnyRole([Role::Directeur->value, Role::Secretaire->value, Role::Enseignant->value]);
+    }
+
+    /** @return Collection<int, Ecole> */
+    public function getTenants(Panel $panel): Collection
+    {
+        return Ecole::query()->whereKey($this->ecole_id)->get();
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->ecole_id !== null && $tenant instanceof Ecole && $tenant->getKey() === $this->ecole_id;
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->nom;
     }
 
     public function estSuperAdmin(): bool

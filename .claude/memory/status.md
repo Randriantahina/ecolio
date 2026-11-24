@@ -1,9 +1,9 @@
 # Status (read first; rewrite after every change)
 
-Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écolage (restructure to Inertia in progress)** · Phases done: 1/7 (+ bootstrap)
+Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écolage (UI rebuilt on Filament)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- RESTRUCTURE (decision 0003): DONE so far: Laravel moved to repo root, Inertia 3 + Vue + shadcn + vue-i18n wired, Laravel Boost + MCP installed, session login/logout + shared props + server-side menu, CI merged into `ci.yml`, rules and CLAUDE.md rewritten. TO DO: port screens from the old SPA (read them with `git show 673c07a:frontend/<path>`): élèves list/detail/edit/départ, registre écolage + paiement + reçu PDF, absences, réglages (années, niveaux, classes, types de frais, tarifs); then DELETE `frontend/` (user asked); then Phase 1 leftovers and ALL later phases. User wants everything REAL (no prototype shortcuts), picky UI (no generic AI look, no "facture", no cantine).
+- UI pivot (decision 0004): Vue/Inertia/pnpm removed, Filament 5 panel `ecole` with tenancy, custom login (lockout), context plugin mechanism (`FilamentModulesServiceProvider`) and the **Eleves** plugin (list/search/filter, create with duplicate confirm, edit, change class, departure) are DONE and tested (212 tests). Remaining Phase 1 UI: Scolarite (années, niveaux, classes), Finance (types de frais, tarifs, registre écolage with payment/void/receipt PDF), Absences, dashboard widgets. Then Phases 2-6 + Transverse, everything real, tested, CI green.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
@@ -17,7 +17,7 @@ Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-1) Port `Eleves/Index` (list + search + create dialog + duplicate confirm) as the reference Inertia CRUD page: web controller + FormRequest reuse + Pest `assertInertia` tests, add `eleves` to `MenuPrincipal`. 2) Registre écolage, absences, réglages, élève detail/edit/départ. 3) `git rm -r frontend` when nothing is left to port. Run the app: `php artisan serve` on :8000 after `pnpm build` (or `pnpm dev` for HMR); logins directeur|secretaire|enseignant@demo.ecolio.test / password.
+1) `app/Filament/Scolarite/` plugin (AnneeScolaire, Niveau, Classe resources, services already exist) registered in `FilamentModulesServiceProvider`, Livewire tests per Eleves pattern (helpers `dansLePanelEcole`, `ecoleAvecClasses` in tests/Pest.php). 2) Finance plugin (TypeFrais, Tarif, registre écolage page, reçu PDF download, void with motif). 3) Absences plugin. 4) Seeder demo login: directeur@demo.ecolio.test / password at `/ecole`. User must run `composer` commands needing GitHub auth.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.
@@ -40,3 +40,5 @@ Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écola
 - The Claude session exports `APP_ENV=local`; `phpunit.xml` forces `testing` (env + server) so CSRF and test behaviour stay hermetic.
 - Laravel Boost MCP (`.mcp.json`) needs approval at session start; `search-docs` is the reference for Inertia 3 / Laravel 13 APIs. `boost.json` lists skills (cloud skill removed on purpose, hosting undecided). Boost wrote files for other agents on install: deleted, Claude Code only.
 - Deleted the stock `tests/Feature/ExampleTest.php` and `tests/Unit/ExampleTest.php` (Laravel scaffolds asserting the old welcome page; superseded by `tests/Feature/Web/AuthTest.php`).
+- Filament Livewire tests: Livewire swallows aborts, assert `->assertNotFound()` not exceptions. Panel pages under `/ecole/{slug}`; `Utilisateur::canAccessPanel` admits active directeur/secretaire/enseignant only.
+- `composer require` of Filament needed `COMPOSER_AUTH` (GitHub token); the user ran it in their own shell.
