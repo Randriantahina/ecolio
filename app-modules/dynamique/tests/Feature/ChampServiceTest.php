@@ -17,7 +17,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     app(TenantContext::class)->forEcole($this->ecole->id);
     $this->champs = app(ChampService::class);
 });
@@ -156,7 +156,7 @@ it('changes the type when every value converts', function () {
 it('never exposes the fields of another school (tenant isolation)', function () {
     $this->champs->creer($this->directeur, EntiteChamp::Eleve, 'Quartier', TypeChamp::Texte);
     $autre = Ecole::factory()->create();
-    $dirAutre = utilisateurAvecRole(Role::Directeur, $autre);
+    $dirAutre = utilisateurAvecRole(Role::Administration, $autre);
 
     expect($this->champs->lister($dirAutre, EntiteChamp::Eleve))->toHaveCount(0);
 });

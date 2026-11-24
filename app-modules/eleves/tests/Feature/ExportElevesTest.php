@@ -17,7 +17,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     dansLePanelEcole($this->directeur, $this->ecole);
     app(ChampService::class)->creer($this->directeur, EntiteChamp::Eleve, 'Quartier', TypeChamp::Texte);
     app(ChampService::class)->creer($this->directeur, EntiteChamp::Eleve, 'Boursier', TypeChamp::Booleen);
@@ -54,7 +54,7 @@ it('exports only the current view, not the whole school', function () {
 
 it('never exports the pupils of another school (tenant isolation)', function () {
     $autre = Ecole::factory()->create();
-    dansLePanelEcole(utilisateurAvecRole(Role::Directeur, $autre), $autre);
+    dansLePanelEcole(utilisateurAvecRole(Role::Administration, $autre), $autre);
     Eleve::factory()->create(['nom' => 'Secret']);
     dansLePanelEcole($this->directeur, $this->ecole);
 

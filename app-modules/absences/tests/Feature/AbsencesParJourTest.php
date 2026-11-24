@@ -15,7 +15,7 @@ uses(RefreshDatabase::class);
 it('counts absences per day over a window, empty days included, other schools excluded', function () {
     $this->travelTo('2026-10-12');
     $ecole = Ecole::factory()->create();
-    $dir = utilisateurAvecRole(Role::Directeur, $ecole);
+    $dir = utilisateurAvecRole(Role::Administration, $ecole);
     [$classe] = ecoleAvecClasses($ecole, $dir);
     app(TenantContext::class)->forEcole($ecole->id);
     $eleve = app(EleveService::class)->creer($dir, new CreateEleveDto('Rakoto', null, null, null, null, null, $classe->uuid, 'nouvelle', false, false))['eleve'];
@@ -23,5 +23,5 @@ it('counts absences per day over a window, empty days included, other schools ex
     $autre = Ecole::factory()->create();
 
     expect(app(AbsenceService::class)->parJour($dir, 3))->toBe(['2026-10-10' => 0, '2026-10-11' => 0, '2026-10-12' => 1])
-        ->and(array_sum(app(AbsenceService::class)->parJour(utilisateurAvecRole(Role::Directeur, $autre), 3)))->toBe(0);
+        ->and(array_sum(app(AbsenceService::class)->parJour(utilisateurAvecRole(Role::Administration, $autre), 3)))->toBe(0);
 });

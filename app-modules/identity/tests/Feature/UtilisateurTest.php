@@ -49,22 +49,22 @@ it('seeds the five roles of the spec', function () {
 
     $names = Spatie\Permission\Models\Role::pluck('name')->sort()->values()->all();
 
-    expect($names)->toBe(['directeur', 'enseignant', 'parent', 'secretaire', 'super_admin']);
+    expect($names)->toBe(['administration', 'enseignant', 'super_admin']);
 });
 
 it('is idempotent so deploys can reseed safely', function () {
     $this->seed(RolesSeeder::class);
     $this->seed(RolesSeeder::class);
 
-    expect(Spatie\Permission\Models\Role::count())->toBe(5);
+    expect(Spatie\Permission\Models\Role::count())->toBe(3);
 });
 
 it('assigns and checks a role through the enum', function () {
     $this->seed(RolesSeeder::class);
     $user = Utilisateur::factory()->for(Ecole::factory())->create();
 
-    $user->assignRole(Role::Directeur->value);
+    $user->assignRole(Role::Administration->value);
 
-    expect($user->aRole(Role::Directeur))->toBeTrue()
-        ->and($user->aRole(Role::Secretaire))->toBeFalse();
+    expect($user->aRole(Role::Administration))->toBeTrue()
+        ->and($user->aRole(Role::Enseignant))->toBeFalse();
 });

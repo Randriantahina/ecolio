@@ -14,7 +14,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     JournalAudit::query()->delete(); // setup noise is not under test
 });
 
@@ -22,7 +22,7 @@ it('records who created a team member, in which school', function () {
     Sanctum::actingAs($this->directeur);
 
     $this->postJson('/api/v1/utilisateurs', [
-        'nom' => 'Rasoa', 'email' => 'rasoa@ecole.mg', 'password' => 'motdepasse-solide', 'role' => 'secretaire',
+        'nom' => 'Rasoa', 'email' => 'rasoa@ecole.mg', 'password' => 'motdepasse-solide', 'role' => 'enseignant',
     ])->assertCreated();
 
     $entry = JournalAudit::where('event', 'created')->where('subject_type', Utilisateur::class)->first();
@@ -35,7 +35,7 @@ it('never writes a password or its hash into the audit trail', function () {
     Sanctum::actingAs($this->directeur);
 
     $this->postJson('/api/v1/utilisateurs', [
-        'nom' => 'Rasoa', 'email' => 'rasoa@ecole.mg', 'password' => 'motdepasse-solide', 'role' => 'secretaire',
+        'nom' => 'Rasoa', 'email' => 'rasoa@ecole.mg', 'password' => 'motdepasse-solide', 'role' => 'enseignant',
     ])->assertCreated();
 
     $dump = json_encode(JournalAudit::all()->toArray());
@@ -69,7 +69,7 @@ it('lets the directeur read only the trail of their own school, newest first', f
     Sanctum::actingAs($this->directeur);
     $this->putJson('/api/v1/ecole', ['nom' => 'Premier'])->assertOk();
     $this->putJson('/api/v1/ecole', ['nom' => 'Second'])->assertOk();
-    $foreign = utilisateurAvecRole(Role::Directeur, $this->autre);
+    $foreign = utilisateurAvecRole(Role::Administration, $this->autre);
     Sanctum::actingAs($foreign);
     $this->putJson('/api/v1/ecole', ['nom' => 'Chez Autrui'])->assertOk();
     Sanctum::actingAs($this->directeur);
@@ -85,7 +85,7 @@ it('forbids non-directeur roles from reading the trail (spec section 1)', functi
     Sanctum::actingAs(utilisateurAvecRole($role, $this->ecole));
 
     $this->getJson('/api/v1/audit')->assertForbidden();
-})->with([Role::Secretaire, Role::Enseignant, Role::Parent]);
+})->with([Role::Enseignant]);
 
 it('exposes no way to alter the trail through the API', function () {
     Sanctum::actingAs($this->directeur);

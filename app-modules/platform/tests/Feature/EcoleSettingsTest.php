@@ -25,16 +25,16 @@ it('lets any school role read its own school', function (Role $role) {
         ->assertOk()
         ->assertJsonPath('ecole.nom', 'Ecole Pilote')
         ->assertJsonPath('ecole.devise', 'MGA');
-})->with([Role::Directeur, Role::Secretaire, Role::Enseignant]);
+})->with([Role::Administration, Role::Enseignant]);
 
 it('never exposes the numeric id', function () {
-    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->ecole));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->ecole));
 
     expect($this->getJson('/api/v1/ecole')->json('ecole'))->not->toHaveKey('id');
 });
 
 it('lets the directeur update the identity and receipt texts (US2.1)', function () {
-    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->ecole));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->ecole));
 
     $this->putJson('/api/v1/ecole', [
         'nom' => 'Ecole Pilote 2',
@@ -52,7 +52,7 @@ it('lets the directeur update the identity and receipt texts (US2.1)', function 
 
 it('keeps the other receipt text when only one is sent', function () {
     $this->ecole->update(['parametres' => ['signature_recu' => 'La Direction']]);
-    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->ecole));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->ecole));
 
     $this->putJson('/api/v1/ecole', ['nom' => 'Ecole Pilote', 'mention_legale' => 'NIF 9'])->assertOk();
 
@@ -65,10 +65,10 @@ it('forbids non-directeur roles from changing settings', function (Role $role) {
     $this->putJson('/api/v1/ecole', ['nom' => 'Hack'])->assertForbidden();
 
     expect($this->ecole->fresh()->nom)->toBe('Ecole Pilote');
-})->with([Role::Secretaire, Role::Enseignant, Role::Parent]);
+})->with([Role::Enseignant]);
 
 it('only ever touches the school of the caller', function () {
-    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->ecole));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->ecole));
 
     $this->putJson('/api/v1/ecole', ['nom' => 'Renamed', 'id' => $this->autre->id, 'slug' => 'steal'])->assertOk();
 
@@ -77,7 +77,7 @@ it('only ever touches the school of the caller', function () {
 });
 
 it('validates the payload', function () {
-    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->ecole));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->ecole));
 
     $this->putJson('/api/v1/ecole', ['nom' => '', 'email' => 'not-an-email'])
         ->assertStatus(422)

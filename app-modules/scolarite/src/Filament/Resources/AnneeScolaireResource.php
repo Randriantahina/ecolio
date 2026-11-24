@@ -9,6 +9,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Platform\Filament\Clusters\ParametresCluster;
 use Modules\Scolarite\Domain\Models\AnneeScolaire;
 use Modules\Scolarite\Filament\Resources\Pages\CreateAnneeScolaire;
 use Modules\Scolarite\Filament\Resources\Pages\EditAnneeScolaire;
@@ -26,7 +27,7 @@ final class AnneeScolaireResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Scolarité';
+    protected static ?string $cluster = ParametresCluster::class;
 
     protected static ?int $navigationSort = 1;
 

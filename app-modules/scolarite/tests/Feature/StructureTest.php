@@ -15,7 +15,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     Sanctum::actingAs($this->directeur);
     $this->postJson('/api/v1/annees-scolaires', ['libelle' => '2026-2027', 'date_debut' => '2026-09-01', 'date_fin' => '2027-06-30']);
 });
@@ -46,10 +46,10 @@ it('keeps levels and classes private to the school', function () {
     $this->postJson('/api/v1/classes', ['nom' => 'X', 'niveau_uuid' => $etranger->uuid])->assertNotFound();
 });
 
-it('lets staff read but only the directeur write', function () {
-    Sanctum::actingAs(utilisateurAvecRole(Role::Secretaire, $this->ecole));
+it('keeps enseignants out of the school structure', function () {
+    Sanctum::actingAs(utilisateurAvecRole(Role::Enseignant, $this->ecole));
 
-    $this->getJson('/api/v1/niveaux')->assertOk();
+    $this->getJson('/api/v1/niveaux')->assertForbidden();
     $this->postJson('/api/v1/niveaux', ['nom' => 'CP'])->assertForbidden();
     $this->postJson('/api/v1/classes', [])->assertForbidden();
 });

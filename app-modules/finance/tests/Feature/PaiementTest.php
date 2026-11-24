@@ -15,7 +15,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     Sanctum::actingAs($this->directeur);
 
     // Short school year (Sept-Nov) keeps the number of instalments small and predictable.
@@ -152,25 +152,16 @@ it('refuses to void twice', function () {
     $this->postJson("/api/v1/paiements/{$p['uuid']}/annulation", ['motif' => 'Encore'])->assertUnprocessable();
 });
 
-it('lets the secretaire take payments but not void them (RG-P7)', function () {
-    $secretaire = utilisateurAvecRole(Role::Secretaire, $this->ecole);
-    Sanctum::actingAs($secretaire);
-
-    $p = encaisser($this, [['echeance_uuid' => ($this->septembre)()['uuid'], 'montant_ar' => 50_000]])->assertCreated()->json('paiement');
-
-    $this->postJson("/api/v1/paiements/{$p['uuid']}/annulation", ['motif' => 'Erreur'])->assertForbidden();
-});
-
 it('keeps enseignants and parents away from money', function (Role $role) {
     Sanctum::actingAs(utilisateurAvecRole($role, $this->ecole));
 
     $this->postJson('/api/v1/paiements', [])->assertForbidden();
     $this->getJson("/api/v1/classes/{$this->classe['uuid']}/registre-ecolage")->assertForbidden();
-})->with([Role::Enseignant, Role::Parent]);
+})->with([Role::Enseignant]);
 
 it('never lets school A pay or read an instalment of school B (tenant isolation)', function () {
     $etranger = ($this->septembre)();
-    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->autre));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->autre));
 
     $this->postJson('/api/v1/paiements', [
         'eleve_uuid' => $this->eleve['uuid'],
@@ -214,7 +205,7 @@ it('downloads the receipt as an A5 PDF named after its number (RG-R4)', function
 
 it('refuses the PDF of another school receipt (tenant isolation)', function () {
     $p = encaisser($this, [['echeance_uuid' => ($this->septembre)()['uuid'], 'montant_ar' => 50_000]])->json('paiement');
-    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->autre));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->autre));
 
     $this->get("/api/v1/paiements/{$p['uuid']}/pdf")->assertNotFound();
 });

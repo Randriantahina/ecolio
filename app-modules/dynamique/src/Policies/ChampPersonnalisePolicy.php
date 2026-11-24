@@ -13,7 +13,7 @@ final class ChampPersonnalisePolicy
     public function viewAny(Utilisateur $acteur): bool
     {
         return $acteur->ecole_id !== null
-            && ($acteur->aRole(Role::Directeur) || $acteur->aRole(Role::Secretaire) || $acteur->aRole(Role::Enseignant));
+            && ($acteur->aRole(Role::Administration));
     }
 
     public function view(Utilisateur $acteur): bool
@@ -38,6 +38,6 @@ final class ChampPersonnalisePolicy
 
     public function manage(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && $acteur->aRole(Role::Directeur);
+        return $acteur->ecole_id !== null && $acteur->aRole(Role::Administration);
     }
 }

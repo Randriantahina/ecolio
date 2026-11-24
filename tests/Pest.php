@@ -64,6 +64,14 @@ function utilisateurAvecRole(Role $role, ?Ecole $ecole = null): Utilisateur
     return $user->assignRole($role->value);
 }
 
+/** A school member holding no role at all: must be refused everywhere. */
+function utilisateurSansRole(?Ecole $ecole = null): Utilisateur
+{
+    (new RolesSeeder)->run();
+
+    return Utilisateur::factory()->for($ecole ?? Ecole::factory()->create())->create();
+}
+
 /**
  * Puts a Livewire/Filament test inside the school panel exactly as the tenant middleware does in a real
  * request: signed in, panel and tenant selected, TenantContext bound to the school.

@@ -13,7 +13,7 @@ final class AnneeScolairePolicy
     public function viewAny(Utilisateur $acteur): bool
     {
         return $acteur->ecole_id !== null
-            && ($acteur->aRole(Role::Directeur) || $acteur->aRole(Role::Secretaire) || $acteur->aRole(Role::Enseignant));
+            && ($acteur->aRole(Role::Administration));
     }
 
     /** Filament's ability names; the same two spec roles decide them all. */
@@ -39,6 +39,6 @@ final class AnneeScolairePolicy
 
     public function manage(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && $acteur->aRole(Role::Directeur);
+        return $acteur->ecole_id !== null && $acteur->aRole(Role::Administration);
     }
 }

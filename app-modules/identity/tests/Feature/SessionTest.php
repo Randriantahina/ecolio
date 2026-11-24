@@ -21,14 +21,14 @@ it('returns the authenticated profile with role and school', function () {
     $this->seed(RolesSeeder::class);
     $ecole = Ecole::factory()->create(['nom' => 'Ecole Pilote']);
     $user = Utilisateur::factory()->for($ecole)->create();
-    $user->assignRole(Role::Directeur->value);
+    $user->assignRole(Role::Administration->value);
 
     Sanctum::actingAs($user);
 
     $this->getJson('/api/v1/me')
         ->assertOk()
         ->assertJsonPath('utilisateur.uuid', $user->uuid)
-        ->assertJsonPath('utilisateur.roles', ['directeur'])
+        ->assertJsonPath('utilisateur.roles', ['administration'])
         ->assertJsonPath('utilisateur.ecole.nom', 'Ecole Pilote');
 });
 

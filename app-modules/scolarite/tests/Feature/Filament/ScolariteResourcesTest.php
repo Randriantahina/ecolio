@@ -29,7 +29,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classeA, $this->classeB] = ecoleAvecClasses($this->ecole, $this->directeur);
     dansLePanelEcole($this->directeur, $this->ecole);
 });
@@ -106,14 +106,13 @@ it('deletes an empty class but refuses one that still holds pupils', function ()
     expect(Classe::where('uuid', $this->classeB->uuid)->exists())->toBeFalse();
 });
 
-it('lets staff read the structure but only the directeur change it', function () {
-    foreach ([Role::Secretaire, Role::Enseignant] as $role) {
-        dansLePanelEcole(utilisateurAvecRole($role, $this->ecole), $this->ecole);
-        expect(AnneeScolaireResource::canViewAny())->toBeTrue()->and(AnneeScolaireResource::canCreate())->toBeFalse();
-    }
+it('keeps the school structure to the administration', function () {
+    expect(AnneeScolaireResource::canViewAny())->toBeTrue()->and(AnneeScolaireResource::canCreate())->toBeTrue();
 
-    dansLePanelEcole(utilisateurAvecRole(Role::Parent, $this->ecole), $this->ecole);
-    expect(AnneeScolaireResource::canViewAny())->toBeFalse();
+    foreach ([utilisateurAvecRole(Role::Enseignant, $this->ecole), utilisateurSansRole($this->ecole)] as $autre) {
+        dansLePanelEcole($autre, $this->ecole);
+        expect(AnneeScolaireResource::canViewAny())->toBeFalse();
+    }
 });
 
 it('never shows the structure of another school (tenant isolation)', function () {

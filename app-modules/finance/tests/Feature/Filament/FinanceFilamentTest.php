@@ -31,7 +31,7 @@ beforeEach(function () {
     $this->travelTo('2026-10-12');
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classeA, $this->classeB] = ecoleAvecClasses($this->ecole, $this->directeur);
     dansLePanelEcole($this->directeur, $this->ecole);
 
@@ -141,31 +141,16 @@ it('voids a payment with a mandatory reason, keeping the receipt number (RG-P4)'
         ->and($this->echeance->refresh()->statut)->toBe(StatutEcheance::Du);
 });
 
-it('hides voiding from the secretaire but lets them collect (RG-P7)', function () {
-    dansLePanelEcole(utilisateurAvecRole(Role::Secretaire, $this->ecole), $this->ecole);
-
-    $page = Livewire::test(RegistreEcolage::class)
-        ->callTableAction('encaisser', $this->echeance->uuid, ['montant_ar' => 50000, 'mode' => 'especes', 'date_paiement' => '2026-10-12']);
-    $page->assertTableActionHidden('annuler', $this->echeance->uuid);
-    expect(Paiement::count())->toBe(1);
-});
-
 it('keeps the tuition register and prices away from enseignants and parents', function () {
-    foreach ([Role::Enseignant, Role::Parent] as $role) {
+    foreach ([Role::Enseignant] as $role) {
         dansLePanelEcole(utilisateurAvecRole($role, $this->ecole), $this->ecole);
         expect(RegistreEcolage::canAccess())->toBeFalse()->and(TarifResource::canViewAny())->toBeFalse();
     }
 });
 
-it('only lets the directeur set prices', function () {
-    dansLePanelEcole(utilisateurAvecRole(Role::Secretaire, $this->ecole), $this->ecole);
-
-    expect(TarifResource::canViewAny())->toBeTrue()->and(TarifResource::canCreate())->toBeFalse();
-});
-
 it('never shows the tariffs or the payments of another school (tenant isolation)', function () {
     $etranger = app(TenantContext::class)->runAs($this->autre->id, function () {
-        $directeur = utilisateurAvecRole(Role::Directeur, $this->autre);
+        $directeur = utilisateurAvecRole(Role::Administration, $this->autre);
         ecoleAvecClasses($this->autre, $directeur);
 
         return app(FraisService::class)->creerTarif($directeur, [

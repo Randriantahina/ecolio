@@ -18,7 +18,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classe] = ecoleAvecClasses($this->ecole, $this->directeur);
     dansLePanelEcole($this->directeur, $this->ecole);
 
@@ -83,7 +83,7 @@ it('filters the register by a list field', function () {
 
 it('only offers the custom fields of the school (tenant isolation)', function () {
     $autre = Ecole::factory()->create();
-    $dirAutre = utilisateurAvecRole(Role::Directeur, $autre);
+    $dirAutre = utilisateurAvecRole(Role::Administration, $autre);
     dansLePanelEcole($dirAutre, $autre);
     app(ChampService::class)->creer($dirAutre, EntiteChamp::Eleve, 'Secret', TypeChamp::Texte);
     dansLePanelEcole($this->directeur, $this->ecole);

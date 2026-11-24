@@ -19,7 +19,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     dansLePanelEcole($this->directeur, $this->ecole);
     $this->quartier = app(ChampService::class)->creer($this->directeur, EntiteChamp::Eleve, 'Quartier', TypeChamp::Texte);
 });
@@ -78,18 +78,18 @@ it('changes the type when values convert and refuses it otherwise (RG-D3)', func
     expect($this->quartier->fresh()->type)->toBe(TypeChamp::Nombre);
 });
 
-it('is manageable by the directeur only; staff just read', function () {
-    foreach ([Role::Secretaire, Role::Enseignant] as $role) {
-        dansLePanelEcole(utilisateurAvecRole($role, $this->ecole), $this->ecole);
-        expect(ChampPersonnaliseResource::canViewAny())->toBeTrue()->and(ChampPersonnaliseResource::canCreate())->toBeFalse();
+it('is managed by the administration only', function () {
+    expect(ChampPersonnaliseResource::canViewAny())->toBeTrue()->and(ChampPersonnaliseResource::canCreate())->toBeTrue();
+
+    foreach ([utilisateurAvecRole(Role::Enseignant, $this->ecole), utilisateurSansRole($this->ecole)] as $autre) {
+        dansLePanelEcole($autre, $this->ecole);
+        expect(ChampPersonnaliseResource::canViewAny())->toBeFalse();
     }
-    dansLePanelEcole(utilisateurAvecRole(Role::Parent, $this->ecole), $this->ecole);
-    expect(ChampPersonnaliseResource::canViewAny())->toBeFalse();
 });
 
 it('never lists or opens the fields of another school (tenant isolation)', function () {
     $autre = Ecole::factory()->create();
-    $dirAutre = utilisateurAvecRole(Role::Directeur, $autre);
+    $dirAutre = utilisateurAvecRole(Role::Administration, $autre);
     dansLePanelEcole($dirAutre, $autre);
     $secret = app(ChampService::class)->creer($dirAutre, EntiteChamp::Eleve, 'Secret', TypeChamp::Texte);
     dansLePanelEcole($this->directeur, $this->ecole);

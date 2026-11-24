@@ -30,6 +30,7 @@ use Modules\Dynamique\Domain\Models\ChampPersonnalise;
 use Modules\Dynamique\Filament\Resources\Pages\CreateChampPersonnalise;
 use Modules\Dynamique\Filament\Resources\Pages\EditChampPersonnalise;
 use Modules\Dynamique\Filament\Resources\Pages\ListChampsPersonnalises;
+use Modules\Platform\Filament\Clusters\ParametresCluster;
 
 final class ChampPersonnaliseResource extends Resource
 {
@@ -41,7 +42,7 @@ final class ChampPersonnaliseResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedViewColumns;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Configuration';
+    protected static ?string $cluster = ParametresCluster::class;
 
     protected static ?int $navigationSort = 1;
 

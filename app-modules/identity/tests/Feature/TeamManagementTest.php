@@ -14,7 +14,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
 });
 
 it('requires authentication', function () {
@@ -36,7 +36,7 @@ it('forbids non-directeur roles from managing the team (spec section 1)', functi
 
     $this->getJson('/api/v1/utilisateurs')->assertForbidden();
     $this->postJson('/api/v1/utilisateurs', [])->assertForbidden();
-})->with([Role::Secretaire, Role::Enseignant, Role::Parent]);
+})->with([Role::Enseignant]);
 
 it('creates a team member in the directeur school with the chosen role (US1.3)', function () {
     Sanctum::actingAs($this->directeur);
@@ -45,14 +45,14 @@ it('creates a team member in the directeur school with the chosen role (US1.3)',
         'nom' => 'Rasoa Secretaire',
         'email' => 'rasoa@ecole.mg',
         'password' => 'motdepasse-solide',
-        'role' => 'secretaire',
+        'role' => 'enseignant',
     ])->assertCreated();
 
     $created = Utilisateur::where('email', 'rasoa@ecole.mg')->first();
     expect($created->ecole_id)->toBe($this->ecole->id)
-        ->and($created->aRole(Role::Secretaire))->toBeTrue()
+        ->and($created->aRole(Role::Enseignant))->toBeTrue()
         ->and(Hash::check('motdepasse-solide', $created->mot_de_passe))->toBeTrue()
-        ->and($response->json('utilisateur.roles'))->toBe(['secretaire']);
+        ->and($response->json('utilisateur.roles'))->toBe(['enseignant']);
 });
 
 it('ignores an ecole_id sent by the client so a directeur cannot plant users elsewhere', function () {
@@ -84,7 +84,7 @@ it('enforces the minimum password length (RG-A2)', function () {
     Sanctum::actingAs($this->directeur);
 
     $this->postJson('/api/v1/utilisateurs', [
-        'nom' => 'X', 'email' => 'x@ecole.mg', 'password' => 'short', 'role' => 'parent',
+        'nom' => 'X', 'email' => 'x@ecole.mg', 'password' => 'short', 'role' => 'inconnu',
     ])->assertStatus(422)->assertJsonValidationErrors('password');
 });
 
@@ -92,7 +92,7 @@ it('requires an e-mail or a phone number', function () {
     Sanctum::actingAs($this->directeur);
 
     $this->postJson('/api/v1/utilisateurs', [
-        'nom' => 'X', 'password' => 'motdepasse-solide', 'role' => 'parent',
+        'nom' => 'X', 'password' => 'motdepasse-solide', 'role' => 'inconnu',
     ])->assertStatus(422)->assertJsonValidationErrors('email');
 });
 
@@ -101,12 +101,12 @@ it('rejects an e-mail already used', function () {
     Sanctum::actingAs($this->directeur);
 
     $this->postJson('/api/v1/utilisateurs', [
-        'nom' => 'X', 'email' => 'dup@ecole.mg', 'password' => 'motdepasse-solide', 'role' => 'parent',
+        'nom' => 'X', 'email' => 'dup@ecole.mg', 'password' => 'motdepasse-solide', 'role' => 'inconnu',
     ])->assertStatus(422)->assertJsonValidationErrors('email');
 });
 
 it('deactivates a member and revokes their tokens so access ends immediately', function () {
-    $membre = utilisateurAvecRole(Role::Secretaire, $this->ecole);
+    $membre = utilisateurAvecRole(Role::Enseignant, $this->ecole);
     $membre->createToken('phone');
     Sanctum::actingAs($this->directeur);
 

@@ -12,7 +12,7 @@ final class PaiementPolicy
 {
     public function viewAny(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && ($acteur->aRole(Role::Directeur) || $acteur->aRole(Role::Secretaire));
+        return $acteur->ecole_id !== null && ($acteur->aRole(Role::Administration));
     }
 
     public function create(Utilisateur $acteur): bool
@@ -23,6 +23,6 @@ final class PaiementPolicy
     /** [Hypothèse] the secretaire voiding with the directeur's validation is not built yet. */
     public function annuler(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && $acteur->aRole(Role::Directeur);
+        return $acteur->ecole_id !== null && $acteur->aRole(Role::Administration);
     }
 }

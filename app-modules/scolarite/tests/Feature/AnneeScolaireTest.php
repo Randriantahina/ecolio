@@ -26,7 +26,7 @@ function annee(Ecole $ecole, array $attributs = []): AnneeScolaire
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
 });
 
 it('requires authentication', function () {
@@ -43,23 +43,23 @@ it('lists only the years of the user school (tenant isolation)', function () {
     expect($libelles)->toContain('Notre annee')->not->toContain('Annee etrangere');
 });
 
-it('lets directeur, secretaire and enseignant read the years', function (Role $role) {
-    Sanctum::actingAs(utilisateurAvecRole($role, $this->ecole));
+it('lets the administration read the years', function () {
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->ecole));
 
     $this->getJson('/api/v1/annees-scolaires')->assertOk();
-})->with([Role::Directeur, Role::Secretaire, Role::Enseignant]);
+});
 
-it('keeps parents out of the school calendar', function () {
-    Sanctum::actingAs(utilisateurAvecRole(Role::Parent, $this->ecole));
+it('keeps role-less users out of the school calendar', function () {
+    Sanctum::actingAs(utilisateurSansRole($this->ecole));
 
     $this->getJson('/api/v1/annees-scolaires')->assertForbidden();
 });
 
-it('only lets the directeur change years (spec section 1)', function (Role $role) {
+it('only lets the administration change years (spec section 1)', function (Role $role) {
     Sanctum::actingAs(utilisateurAvecRole($role, $this->ecole));
 
     $this->postJson('/api/v1/annees-scolaires', [])->assertForbidden();
-})->with([Role::Secretaire, Role::Enseignant, Role::Parent]);
+})->with([Role::Enseignant]);
 
 it('creates a year and exposes a uuid, never the numeric id', function () {
     Sanctum::actingAs($this->directeur);

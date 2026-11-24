@@ -38,7 +38,7 @@ final class VueService
     /** @param  array<string, mixed>  $etat */
     public function enregistrer(Utilisateur $acteur, EntiteVue $entite, string $nom, array $etat, bool $partagee = false, bool $parDefaut = false): VueTableau
     {
-        if ($partagee && ! $acteur->aRole(Role::Directeur)) {
+        if ($partagee && ! $acteur->aRole(Role::Administration)) {
             throw ValidationException::withMessages(['est_partagee' => 'Seul le directeur peut partager une vue avec l\'école.']);
         }
 
@@ -62,7 +62,7 @@ final class VueService
     public function supprimer(Utilisateur $acteur, string $uuid): void
     {
         $vue = $this->vues->visibleOrFail($uuid, (int) $acteur->ecole_id, $acteur->id);
-        if ($vue->utilisateur_id !== $acteur->id && ! $acteur->aRole(Role::Directeur)) {
+        if ($vue->utilisateur_id !== $acteur->id && ! $acteur->aRole(Role::Administration)) {
             throw new AuthorizationException('Cette vue appartient à un collègue.');
         }
         $this->vues->delete($vue);

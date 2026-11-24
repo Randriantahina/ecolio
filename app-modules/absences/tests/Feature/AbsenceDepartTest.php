@@ -14,7 +14,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     Sanctum::actingAs($this->directeur);
 
     $this->postJson('/api/v1/annees-scolaires', ['libelle' => '2026-2027', 'date_debut' => '2026-09-01', 'date_fin' => '2026-12-31']);
@@ -78,12 +78,12 @@ it('lets enseignants take attendance but keeps parents out', function () {
     Sanctum::actingAs(utilisateurAvecRole(Role::Enseignant, $this->ecole));
     $this->putJson("/api/v1/classes/{$this->classe['uuid']}/absences", ['date' => '2026-09-10', 'absents' => []])->assertOk();
 
-    Sanctum::actingAs(utilisateurAvecRole(Role::Parent, $this->ecole));
+    Sanctum::actingAs(utilisateurSansRole($this->ecole));
     $this->putJson("/api/v1/classes/{$this->classe['uuid']}/absences", ['date' => '2026-09-10', 'absents' => []])->assertForbidden();
 });
 
 it('hides another school class', function () {
-    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->autre));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Administration, $this->autre));
 
     $this->putJson("/api/v1/classes/{$this->classe['uuid']}/absences", ['date' => '2026-09-10', 'absents' => []])->assertNotFound();
 });

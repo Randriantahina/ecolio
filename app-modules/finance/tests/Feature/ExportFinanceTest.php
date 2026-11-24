@@ -20,7 +20,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->travelTo('2026-10-12');
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classe] = ecoleAvecClasses($this->ecole, $this->directeur);
     dansLePanelEcole($this->directeur, $this->ecole);
 
@@ -62,5 +62,5 @@ it('downloads the register view and the unpaid list from the register page', fun
 it('never exports the instalments of another school (tenant isolation)', function () {
     $autre = Ecole::factory()->create();
 
-    expect(app(ExportFinanceService::class)->impayes(utilisateurAvecRole(Role::Directeur, $autre))[1])->toBe([]);
+    expect(app(ExportFinanceService::class)->impayes(utilisateurAvecRole(Role::Administration, $autre))[1])->toBe([]);
 });

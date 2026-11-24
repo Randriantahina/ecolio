@@ -19,7 +19,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->travelTo('2026-10-12');
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classe] = ecoleAvecClasses($this->ecole, $this->directeur);
     app(TenantContext::class)->forEcole($this->ecole->id);
 
@@ -69,7 +69,7 @@ it('counts only the payments of the current month as cash in', function () {
 
 it('never counts the money of another school (tenant isolation)', function () {
     $autre = Ecole::factory()->create();
-    $dirAutre = utilisateurAvecRole(Role::Directeur, $autre);
+    $dirAutre = utilisateurAvecRole(Role::Administration, $autre);
 
     expect(app(TableauDeBordFinanceService::class)->pour($dirAutre))
         ->toBe(['encaisse_mois_ar' => 0, 'reste_a_payer_ar' => 0, 'echeances_impayees' => 0]);

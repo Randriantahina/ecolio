@@ -15,7 +15,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classe] = ecoleAvecClasses($this->ecole, $this->directeur);
     app(TenantContext::class)->forEcole($this->ecole->id);
     $this->creer = fn (string $nom, ?string $classe) => app(EleveService::class)->creer($this->directeur, new CreateEleveDto(
@@ -41,5 +41,5 @@ it('never counts the pupils of another school (tenant isolation)', function () {
     ($this->creer)('Rakoto', $this->classe->uuid);
     $autre = Ecole::factory()->create();
 
-    expect(app(EleveService::class)->effectifs(utilisateurAvecRole(Role::Directeur, $autre)))->toBe(['actifs' => 0, 'sans_classe' => 0]);
+    expect(app(EleveService::class)->effectifs(utilisateurAvecRole(Role::Administration, $autre)))->toBe(['actifs' => 0, 'sans_classe' => 0]);
 });

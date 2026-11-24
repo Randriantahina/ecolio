@@ -11,6 +11,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Platform\Filament\Clusters\ParametresCluster;
 use Modules\Scolarite\Domain\Enums\Cycle;
 use Modules\Scolarite\Domain\Models\Niveau;
 use Modules\Scolarite\Filament\Resources\Pages\CreateNiveau;
@@ -28,7 +29,7 @@ final class NiveauResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedQueueList;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Scolarité';
+    protected static ?string $cluster = ParametresCluster::class;
 
     protected static ?int $navigationSort = 2;
 

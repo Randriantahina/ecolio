@@ -19,7 +19,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classeA, $this->classeB] = ecoleAvecClasses($this->ecole, $this->directeur);
     dansLePanelEcole($this->directeur, $this->ecole);
 
@@ -108,11 +108,6 @@ it('lets only the directeur correct the matricule (RG-E1)', function () {
     Livewire::test(EditEleve::class, ['record' => $eleve->uuid])->fillForm(['matricule' => 'X-1'])->call('save');
     expect($eleve->refresh()->matricule)->toBe('X-1');
 
-    dansLePanelEcole(utilisateurAvecRole(Role::Secretaire, $this->ecole), $this->ecole);
-    Livewire::test(EditEleve::class, ['record' => $eleve->uuid])
-        ->assertFormFieldIsDisabled('matricule')
-        ->fillForm(['nom' => 'Autre'])->call('save');
-    expect($eleve->refresh()->matricule)->toBe('X-1')->and($eleve->nom)->toBe('Autre');
 });
 
 it('moves a pupil to another class', function () {
@@ -135,14 +130,14 @@ it('records a departure and then hides the departure actions (RG-P5)', function 
     Livewire::test(EditEleve::class, ['record' => $eleve->uuid])->assertActionHidden('depart')->assertActionHidden('changerClasse');
 });
 
-it('lets enseignants read the registry but not change it, and keeps parents out', function () {
+it('keeps enseignants and role-less users out of the registry', function () {
     $eleve = ($this->creerEleve)();
 
     dansLePanelEcole(utilisateurAvecRole(Role::Enseignant, $this->ecole), $this->ecole);
-    expect(EleveResource::canViewAny())->toBeTrue()->and(EleveResource::canCreate())->toBeFalse()
+    expect(EleveResource::canViewAny())->toBeFalse()->and(EleveResource::canCreate())->toBeFalse()
         ->and(EleveResource::canEdit($eleve))->toBeFalse();
 
-    dansLePanelEcole(utilisateurAvecRole(Role::Parent, $this->ecole), $this->ecole);
+    dansLePanelEcole(utilisateurSansRole($this->ecole), $this->ecole);
     expect(EleveResource::canViewAny())->toBeFalse();
 });
 

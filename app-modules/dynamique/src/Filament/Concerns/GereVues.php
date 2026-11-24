@@ -46,7 +46,7 @@ trait GereVues
             ->modalDescription('Mémorise la recherche, les filtres, le tri et les colonnes affichées.')
             ->schema([
                 TextInput::make('nom')->label('Nom de la vue')->required()->maxLength(80)->placeholder('6e A, impayés septembre'),
-                Toggle::make('est_partagee')->label('Partager avec toute l\'école')->visible(fn (): bool => auth()->user()->aRole(Role::Directeur)),
+                Toggle::make('est_partagee')->label('Partager avec toute l\'école')->visible(fn (): bool => auth()->user()->aRole(Role::Administration)),
                 Toggle::make('est_par_defaut')->label('Ouvrir cette vue par défaut'),
             ])
             ->action(function (array $data): void {

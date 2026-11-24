@@ -14,7 +14,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
     $this->autre = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     Sanctum::actingAs($this->directeur);
 
     $this->postJson('/api/v1/annees-scolaires', ['libelle' => '2026-2027', 'date_debut' => '2026-09-01', 'date_fin' => '2027-06-30']);
@@ -92,9 +92,8 @@ it('moves a pupil to another class and keeps the history', function () {
 it('reserves matricule correction to the directeur (RG-E1)', function () {
     $uuid = $this->postJson('/api/v1/eleves', ['nom' => 'Rakoto', 'matricule' => 'M-1'])->json('eleve.uuid');
 
-    Sanctum::actingAs(utilisateurAvecRole(Role::Secretaire, $this->ecole));
+    Sanctum::actingAs(utilisateurAvecRole(Role::Enseignant, $this->ecole));
     $this->patchJson("/api/v1/eleves/{$uuid}", ['matricule' => 'M-2'])->assertForbidden();
-    $this->patchJson("/api/v1/eleves/{$uuid}", ['nom' => 'Rakotoson'])->assertOk();
 
     Sanctum::actingAs($this->directeur);
     $this->patchJson("/api/v1/eleves/{$uuid}", ['matricule' => 'M-2'])->assertOk()->assertJsonPath('eleve.matricule', 'M-2');
@@ -116,11 +115,11 @@ it('never shows or touches another school pupil (tenant isolation)', function ()
     $this->patchJson("/api/v1/eleves/{$etranger->uuid}", ['nom' => 'Pirate'])->assertNotFound();
 });
 
-it('lets enseignants read but not write, and keeps parents out', function () {
+it('keeps enseignants and role-less users out of the registry', function () {
     Sanctum::actingAs(utilisateurAvecRole(Role::Enseignant, $this->ecole));
-    $this->getJson('/api/v1/eleves')->assertOk();
+    $this->getJson('/api/v1/eleves')->assertForbidden();
     $this->postJson('/api/v1/eleves', ['nom' => 'X'])->assertForbidden();
 
-    Sanctum::actingAs(utilisateurAvecRole(Role::Parent, $this->ecole));
+    Sanctum::actingAs(utilisateurSansRole($this->ecole));
     $this->getJson('/api/v1/eleves')->assertForbidden();
 });

@@ -50,8 +50,7 @@ final class DemoSeeder extends Seeder
             ['nom' => 'École Démo (données fictives)', 'telephone' => '034 00 000 00', 'adresse' => 'Antananarivo'],
         );
 
-        $directeur = $this->utilisateur($ecole, 'directeur@demo.ecolio.test', 'Directrice Démo', Role::Directeur);
-        $this->utilisateur($ecole, 'secretaire@demo.ecolio.test', 'Secrétaire Démo', Role::Secretaire);
+        $directeur = $this->utilisateur($ecole, 'administration@demo.ecolio.test', 'Administration Démo', Role::Administration);
         $this->utilisateur($ecole, 'enseignant@demo.ecolio.test', 'Enseignant Démo', Role::Enseignant);
 
         app(TenantContext::class)->runAs($ecole->id, function () use ($directeur): void {

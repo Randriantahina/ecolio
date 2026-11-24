@@ -25,7 +25,7 @@ function chartData(string $widget): array
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classe] = ecoleAvecClasses($this->ecole, $this->directeur);
     dansLePanelEcole($this->directeur, $this->ecole);
 
@@ -42,10 +42,10 @@ it('shows the headcount on the dashboard', function () {
     Livewire::test(EffectifsStats::class)->assertSee('Élèves actifs')->assertSee('Sans classe');
 });
 
-it('hides the money widget from enseignants but keeps the headcount', function () {
+it('hides the dashboard figures from enseignants', function () {
     dansLePanelEcole(utilisateurAvecRole(Role::Enseignant, $this->ecole), $this->ecole);
 
-    expect(FinanceStats::canView())->toBeFalse()->and(EffectifsStats::canView())->toBeTrue();
+    expect(FinanceStats::canView())->toBeFalse()->and(EffectifsStats::canView())->toBeFalse();
 });
 
 it('registers both widgets on the school panel and serves the dashboard in French', function () {

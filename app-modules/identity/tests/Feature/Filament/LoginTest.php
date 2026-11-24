@@ -13,7 +13,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->user = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->user = utilisateurAvecRole(Role::Administration, $this->ecole);
     $this->user->update(['email' => 'dir@ecole.test', 'mot_de_passe' => 'secret-pass']);
     Filament\Facades\Filament::setCurrentPanel('ecole');
 });
@@ -52,7 +52,7 @@ it('locks the account after repeated failures even with the right password (RG-A
 });
 
 it('does not let a parent in through the staff login', function () {
-    $parent = utilisateurAvecRole(Role::Parent, $this->ecole);
+    $parent = utilisateurSansRole($this->ecole);
     $parent->update(['email' => 'parent@ecole.test', 'mot_de_passe' => 'secret-pass']);
 
     Livewire::test(Login::class)

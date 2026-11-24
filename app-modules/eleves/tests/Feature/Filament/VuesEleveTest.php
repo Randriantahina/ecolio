@@ -16,7 +16,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     dansLePanelEcole($this->directeur, $this->ecole);
     $this->rakoto = Eleve::factory()->create(['nom' => 'Rakoto']);
     $this->rabe = Eleve::factory()->create(['nom' => 'Rabe']);
@@ -50,11 +50,11 @@ it('opens on the user\'s default view', function () {
     Livewire::test(ListEleves::class)->assertSet('tableSearch', 'Rabe')->assertCanSeeTableRecords([$this->rabe])->assertCanNotSeeTableRecords([$this->rakoto]);
 });
 
-it('lets the directeur share a view and shows it to the secretaire', function () {
+it('lets the directeur share a view and shows it to another administrator', function () {
     Livewire::test(ListEleves::class)->searchTable('Rakoto')
         ->callAction('enregistrerVue', ['nom' => 'Partagée', 'est_partagee' => true]);
 
-    $secretaire = utilisateurAvecRole(Role::Secretaire, $this->ecole);
+    $secretaire = utilisateurAvecRole(Role::Administration, $this->ecole);
     dansLePanelEcole($secretaire, $this->ecole);
     $vue = VueTableau::firstOrFail();
 

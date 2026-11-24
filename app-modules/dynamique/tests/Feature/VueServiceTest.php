@@ -16,8 +16,8 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
-    $this->secretaire = utilisateurAvecRole(Role::Secretaire, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
+    $this->secretaire = utilisateurAvecRole(Role::Enseignant, $this->ecole);
     app(TenantContext::class)->forEcole($this->ecole->id);
     $this->vues = app(VueService::class);
     $this->etat = ['filtres' => ['statut' => ['value' => 'actif']], 'recherche' => 'Rakoto', 'tri' => 'nom:asc', 'colonnes' => []];
@@ -70,7 +70,7 @@ it('has at most one default view per user and entity', function () {
 
 it('deletes a view only for its owner or the directeur', function () {
     $vue = $this->vues->enregistrer($this->secretaire, EntiteVue::Eleve, 'A', $this->etat);
-    $autre = utilisateurAvecRole(Role::Secretaire, $this->ecole);
+    $autre = utilisateurAvecRole(Role::Enseignant, $this->ecole);
     $partagee = $this->vues->enregistrer($this->directeur, EntiteVue::Eleve, 'P', $this->etat, partagee: true);
 
     expect(fn () => $this->vues->supprimer($autre, $vue->uuid))->toThrow(ModelNotFoundException::class)
@@ -84,7 +84,7 @@ it('deletes a view only for its owner or the directeur', function () {
 it('never exposes the views of another school (tenant isolation)', function () {
     $this->vues->enregistrer($this->directeur, EntiteVue::Eleve, 'A', $this->etat, partagee: true);
     $autre = Ecole::factory()->create();
-    $dirAutre = utilisateurAvecRole(Role::Directeur, $autre);
+    $dirAutre = utilisateurAvecRole(Role::Administration, $autre);
 
     expect($this->vues->lister($dirAutre, EntiteVue::Eleve))->toHaveCount(0);
 });

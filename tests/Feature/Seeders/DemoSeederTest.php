@@ -18,11 +18,11 @@ it('creates a fictional school with a directeur who can log in', function () {
 
     $this->seed(DemoSeeder::class);
 
-    $directeur = Utilisateur::where('email', 'directeur@demo.ecolio.test')->firstOrFail();
-    expect($directeur->aRole(Role::Directeur))->toBeTrue()
+    $directeur = Utilisateur::where('email', 'administration@demo.ecolio.test')->firstOrFail();
+    expect($directeur->aRole(Role::Administration))->toBeTrue()
         ->and($directeur->ecole->nom)->toBe('École Démo (données fictives)');
 
-    $this->postJson('/api/v1/auth/login', ['login' => 'directeur@demo.ecolio.test', 'password' => 'password'])
+    $this->postJson('/api/v1/auth/login', ['login' => 'administration@demo.ecolio.test', 'password' => 'password'])
         ->assertOk();
 });
 
@@ -34,7 +34,7 @@ it('can run twice without duplicating the school, accounts, pupils or payments',
     $this->seed(DemoSeeder::class);
 
     expect(Ecole::count())->toBe(1)
-        ->and(Utilisateur::count())->toBe(3)
+        ->and(Utilisateur::count())->toBe(2)
         ->and(Eleve::withoutGlobalScopes()->count())->toBe(24)
         ->and(Paiement::withoutGlobalScopes()->count())->toBe($paiements);
 });

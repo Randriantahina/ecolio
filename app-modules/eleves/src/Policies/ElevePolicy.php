@@ -13,7 +13,7 @@ final class ElevePolicy
     public function viewAny(Utilisateur $acteur): bool
     {
         return $acteur->ecole_id !== null
-            && ($acteur->aRole(Role::Directeur) || $acteur->aRole(Role::Secretaire) || $acteur->aRole(Role::Enseignant));
+            && ($acteur->aRole(Role::Administration));
     }
 
     /** The abilities below are the ones Filament asks; they all reduce to the two spec roles of section 1. */
@@ -34,12 +34,12 @@ final class ElevePolicy
 
     public function manage(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && ($acteur->aRole(Role::Directeur) || $acteur->aRole(Role::Secretaire));
+        return $acteur->ecole_id !== null && ($acteur->aRole(Role::Administration));
     }
 
     /** RG-E1 */
     public function corrigerMatricule(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && $acteur->aRole(Role::Directeur);
+        return $acteur->ecole_id !== null && $acteur->aRole(Role::Administration);
     }
 }

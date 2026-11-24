@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.3",
         "barryvdh/laravel-dompdf": "^3.1",
+        "bezhansalleh/filament-shield": "^4.3",
         "filament/filament": "^5.0",
         "internachi/modular": "^3.0",
         "laravel/framework": "^13.17",
@@ -23,6 +24,7 @@
         "modules/eleves": "*",
         "modules/finance": "*",
         "modules/identity": "*",
+        "modules/imports": "*",
         "modules/platform": "*",
         "modules/scolarite": "*",
         "modules/tenancy": "*",

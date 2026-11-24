@@ -92,7 +92,7 @@ final class Utilisateur extends Authenticatable implements FilamentUser, HasName
     {
         return $this->actif
             && $this->ecole_id !== null
-            && $this->hasAnyRole([Role::Directeur->value, Role::Secretaire->value, Role::Enseignant->value]);
+            && $this->hasAnyRole([Role::Administration->value, Role::Enseignant->value]);
     }
 
     /** @return Collection<int, Ecole> */

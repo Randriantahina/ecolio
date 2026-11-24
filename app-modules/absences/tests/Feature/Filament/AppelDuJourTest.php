@@ -16,7 +16,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->travelTo('2026-10-12');
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classeA, $this->classeB] = ecoleAvecClasses($this->ecole, $this->directeur);
     dansLePanelEcole($this->directeur, $this->ecole);
 
@@ -79,13 +79,13 @@ it('is open to enseignants and closed to parents', function () {
     dansLePanelEcole(utilisateurAvecRole(Role::Enseignant, $this->ecole), $this->ecole);
     expect(AppelDuJour::canAccess())->toBeTrue();
 
-    dansLePanelEcole(utilisateurAvecRole(Role::Parent, $this->ecole), $this->ecole);
+    dansLePanelEcole(utilisateurSansRole($this->ecole), $this->ecole);
     expect(AppelDuJour::canAccess())->toBeFalse();
 });
 
 it('never lists the classes of another school (tenant isolation)', function () {
     $autre = Ecole::factory()->create();
-    ecoleAvecClasses($autre, utilisateurAvecRole(Role::Directeur, $autre));
+    ecoleAvecClasses($autre, utilisateurAvecRole(Role::Administration, $autre));
     dansLePanelEcole($this->directeur, $this->ecole);
 
     expect(Livewire::test(AppelDuJour::class)->instance()->form->getComponent('classe_uuid')->getOptions())->toHaveCount(2);

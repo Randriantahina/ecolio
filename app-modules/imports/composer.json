@@ -1,0 +1,24 @@
+{
+	"name": "modules/imports",
+	"description": "",
+	"type": "library",
+	"version": "1.0",
+	"license": "proprietary",
+	"require": {},
+	"autoload": {
+		"psr-4": {
+			"Modules\\Imports\\": "src/",
+			"Modules\\Imports\\Tests\\": "tests/",
+			"Modules\\Imports\\Database\\Factories\\": "database/factories/",
+			"Modules\\Imports\\Database\\Seeders\\": "database/seeders/"
+		}
+	},
+	"minimum-stability": "stable",
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Modules\\Imports\\Providers\\ImportsServiceProvider"
+			]
+		}
+	}
+}

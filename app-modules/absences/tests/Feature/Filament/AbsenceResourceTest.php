@@ -20,7 +20,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->travelTo('2026-10-12');
     $this->ecole = Ecole::factory()->create();
-    $this->directeur = utilisateurAvecRole(Role::Directeur, $this->ecole);
+    $this->directeur = utilisateurAvecRole(Role::Administration, $this->ecole);
     [$this->classeA, $this->classeB] = ecoleAvecClasses($this->ecole, $this->directeur);
     dansLePanelEcole($this->directeur, $this->ecole);
 
@@ -78,13 +78,13 @@ it('is open to enseignants and closed to parents', function () {
     dansLePanelEcole(utilisateurAvecRole(Role::Enseignant, $this->ecole), $this->ecole);
     expect(AbsenceResource::canViewAny())->toBeTrue();
 
-    dansLePanelEcole(utilisateurAvecRole(Role::Parent, $this->ecole), $this->ecole);
+    dansLePanelEcole(utilisateurSansRole($this->ecole), $this->ecole);
     expect(AbsenceResource::canViewAny())->toBeFalse();
 });
 
 it('never lists the absences of another school (tenant isolation)', function () {
     $autre = Ecole::factory()->create();
-    dansLePanelEcole(utilisateurAvecRole(Role::Directeur, $autre), $autre);
+    dansLePanelEcole(utilisateurAvecRole(Role::Administration, $autre), $autre);
 
     Livewire::test(ListAbsences::class)->assertCountTableRecords(0);
 });
@@ -92,7 +92,7 @@ it('never lists the absences of another school (tenant isolation)', function () 
 it('cannot justify an absence of another school', function () {
     $absence = Absence::withoutGlobalScopes()->first();
     $autre = Ecole::factory()->create();
-    $dir = utilisateurAvecRole(Role::Directeur, $autre);
+    $dir = utilisateurAvecRole(Role::Administration, $autre);
 
     expect(fn () => app(AbsenceService::class)->justifier($dir, $absence->id, 'x'))
         ->toThrow(ModelNotFoundException::class);

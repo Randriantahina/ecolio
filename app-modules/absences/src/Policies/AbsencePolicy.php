@@ -13,7 +13,7 @@ final class AbsencePolicy
     public function viewAny(Utilisateur $acteur): bool
     {
         return $acteur->ecole_id !== null
-            && ($acteur->aRole(Role::Directeur) || $acteur->aRole(Role::Secretaire) || $acteur->aRole(Role::Enseignant));
+            && ($acteur->aRole(Role::Administration) || $acteur->aRole(Role::Enseignant));
     }
 
     public function manage(Utilisateur $acteur): bool

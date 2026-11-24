@@ -12,7 +12,7 @@ final class FraisPolicy
 {
     public function viewAny(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && ($acteur->aRole(Role::Directeur) || $acteur->aRole(Role::Secretaire));
+        return $acteur->ecole_id !== null && ($acteur->aRole(Role::Administration));
     }
 
     /** Filament's ability names; prices are set by the directeur only (spec section 1). */
@@ -38,6 +38,6 @@ final class FraisPolicy
 
     public function manage(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && $acteur->aRole(Role::Directeur);
+        return $acteur->ecole_id !== null && $acteur->aRole(Role::Administration);
     }
 }
