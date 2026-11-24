@@ -21,8 +21,9 @@ use Modules\Finance\Infrastructure\Persistence\Eloquent\EloquentCompteurReposito
 use Modules\Finance\Infrastructure\Persistence\Eloquent\EloquentEcheanceRepository;
 use Modules\Finance\Infrastructure\Persistence\Eloquent\EloquentFraisRepository;
 use Modules\Finance\Infrastructure\Persistence\Eloquent\EloquentPaiementRepository;
-use Modules\Finance\Policies\FraisPolicy;
 use Modules\Finance\Policies\PaiementPolicy;
+use Modules\Finance\Policies\TarifPolicy;
+use Modules\Finance\Policies\TypeFraisPolicy;
 
 final class FinanceServiceProvider extends ServiceProvider
 {
@@ -49,7 +50,7 @@ final class FinanceServiceProvider extends ServiceProvider
     {
         // Models live under Domain/, so Laravel's name-based policy discovery cannot find these.
         Gate::policy(Paiement::class, PaiementPolicy::class);
-        Gate::policy(TypeFrais::class, FraisPolicy::class);
-        Gate::policy(Tarif::class, FraisPolicy::class);
+        Gate::policy(TypeFrais::class, TypeFraisPolicy::class);
+        Gate::policy(Tarif::class, TarifPolicy::class);
     }
 }

@@ -2,6 +2,11 @@
 
 Applies to every task. Commit message format is in `04-commits.md`.
 
+## Where `dev` lives (worktree, since 2026-11-24)
+`dev` is checked out in a **git worktree**: `~/chezmoi/dev/sideProjects/worktree/ecolio`. **All development, tests, commits and pushes happen there.**
+The original folder `~/chezmoi/dev/sideProjects/ecolio` stays on `main` and is what the client demo runs: never edit or commit there; update it only with `git pull origin main` after a `dev → main` merge.
+A branch can be checked out in one worktree only, so `git checkout dev` in the main folder fails by design. A fresh worktree lacks the git-ignored files: copy `vendor/`, `.env`, `database/database.sqlite` and `.claude/settings.local.json` from the main folder (or run `composer install` with `COMPOSER_AUTH`).
+
 ## Branches
 - `main`: stable, deployable. **Never work or commit directly on it** once the project structure is in place (the initial scaffolding was the only exception).
 - `dev`: **the single working branch.** Every `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci` is committed here.

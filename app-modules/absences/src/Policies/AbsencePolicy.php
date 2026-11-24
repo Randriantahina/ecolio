@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Absences\Policies;
 
-use Modules\Identity\Domain\Enums\Role;
-use Modules\Identity\Domain\Models\Utilisateur;
+use Modules\Identity\Policies\PolitiqueShield;
 
-/** Spec section 1: staff take attendance. TODO(phase-3): restrict enseignants to their own classes. */
-final class AbsencePolicy
+final class AbsencePolicy extends PolitiqueShield
 {
-    public function viewAny(Utilisateur $acteur): bool
+    protected function sujet(): string
     {
-        return $acteur->ecole_id !== null
-            && ($acteur->aRole(Role::Administration) || $acteur->aRole(Role::Enseignant));
-    }
-
-    public function manage(Utilisateur $acteur): bool
-    {
-        return $this->viewAny($acteur);
+        return 'Absence';
     }
 }

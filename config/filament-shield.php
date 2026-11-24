@@ -5,6 +5,8 @@ use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Modules\Identity\Domain\Models\Utilisateur;
+use Modules\Platform\Filament\Clusters\ParametresCluster;
 
 return [
 
@@ -22,12 +24,12 @@ return [
     'shield_resource' => [
         'slug' => 'shield/roles',
         'show_model_path' => true,
-        'cluster' => null,
+        'cluster' => ParametresCluster::class,
         'tabs' => [
-            'pages' => true,
-            'widgets' => true,
+            'pages' => false,
+            'widgets' => false,
             'resources' => true,
-            'custom_permissions' => false,
+            'custom_permissions' => true,
         ],
     ],
 
@@ -55,7 +57,7 @@ return [
     |
     */
 
-    'auth_provider_model' => 'App\\Models\\User',
+    'auth_provider_model' => Utilisateur::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -87,7 +89,7 @@ return [
     */
 
     'panel_user' => [
-        'enabled' => true,
+        'enabled' => false,
         'name' => 'panel_user',
     ],
 
@@ -120,7 +122,7 @@ return [
         'separator' => ':',
         'case' => 'pascal',
         'generate' => true,
-        'format_custom_permission_keys' => true,
+        'format_custom_permission_keys' => false,
     ],
 
     /*
@@ -252,7 +254,12 @@ return [
     |
     */
 
-    'custom_permissions' => [],
+    'custom_permissions' => [
+        // Payments have no Filament resource: their rights are listed by hand (RG-P7 keeps voiding apart).
+        'ViewAny:Paiement' => 'Voir le registre et encaisser',
+        'Create:Paiement' => 'Encaisser un paiement',
+        'Delete:Paiement' => 'Annuler un paiement (reçu annulé)',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -282,6 +289,6 @@ return [
     |
     */
 
-    'register_role_policy' => true,
+    'register_role_policy' => false,
 
 ];

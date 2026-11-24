@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Modules\Identity\Policies;
 
-use Modules\Identity\Domain\Enums\Role;
 use Modules\Identity\Domain\Models\Utilisateur;
 
-/** Spec section 1: only the directeur manages users and settings of their school. */
-final class UtilisateurPolicy
+final class UtilisateurPolicy extends PolitiqueShield
 {
+    protected function sujet(): string
+    {
+        return 'Utilisateur';
+    }
+
+    /** Inviting and managing the school team. */
     public function gererEquipe(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && $acteur->aRole(Role::Administration);
+        return $this->permis($acteur, 'Create');
     }
 }

@@ -4,25 +4,20 @@ declare(strict_types=1);
 
 namespace Modules\Finance\Policies;
 
-use Modules\Identity\Domain\Enums\Role;
 use Modules\Identity\Domain\Models\Utilisateur;
+use Modules\Identity\Policies\PolitiqueShield;
 
-/** Spec section 1: the directeur and the secretaire handle money; only the directeur voids (RG-P7). */
-final class PaiementPolicy
+/** Payments have no Filament resource, so their keys are Shield custom permissions (config/filament-shield.php). */
+final class PaiementPolicy extends PolitiqueShield
 {
-    public function viewAny(Utilisateur $acteur): bool
+    protected function sujet(): string
     {
-        return $acteur->ecole_id !== null && ($acteur->aRole(Role::Administration));
+        return 'Paiement';
     }
 
-    public function create(Utilisateur $acteur): bool
-    {
-        return $this->viewAny($acteur);
-    }
-
-    /** [Hypothèse] the secretaire voiding with the directeur's validation is not built yet. */
+    /** RG-P7: voiding is its own right, kept apart from collecting. */
     public function annuler(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && $acteur->aRole(Role::Administration);
+        return $this->permis($acteur, 'Delete');
     }
 }

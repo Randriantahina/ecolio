@@ -15,6 +15,8 @@ use Modules\Scolarite\Domain\Models\Niveau;
 use Modules\Scolarite\Infrastructure\Persistence\Eloquent\EloquentAnneeScolaireRepository;
 use Modules\Scolarite\Infrastructure\Persistence\Eloquent\EloquentStructureRepository;
 use Modules\Scolarite\Policies\AnneeScolairePolicy;
+use Modules\Scolarite\Policies\ClassePolicy;
+use Modules\Scolarite\Policies\NiveauPolicy;
 use Modules\Scolarite\ScolaritePlugin;
 
 final class ScolariteServiceProvider extends ServiceProvider
@@ -40,7 +42,7 @@ final class ScolariteServiceProvider extends ServiceProvider
         // Models live under Domain/, so Laravel's name-based policy discovery cannot find these.
         // Calendar, levels and classes share one rule: staff read, the directeur writes (spec section 1).
         Gate::policy(AnneeScolaire::class, AnneeScolairePolicy::class);
-        Gate::policy(Niveau::class, AnneeScolairePolicy::class);
-        Gate::policy(Classe::class, AnneeScolairePolicy::class);
+        Gate::policy(Niveau::class, NiveauPolicy::class);
+        Gate::policy(Classe::class, ClassePolicy::class);
     }
 }

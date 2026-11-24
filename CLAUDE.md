@@ -59,7 +59,7 @@ Bounded contexts: Platform, Identity, Scolarite, Eleves, Finance, Absences, Note
 - **TDD is mandatory**: failing test first, then code, then refactor. Every class has a Pest (Feature or Unit) test; every composable and component with logic has a Vitest test.
 - **Comments explain why, never how** (business rule, constraint, trade-off). See `.claude/rules/process/03-comments.md`.
 - **Commits**: English Conventional Commits (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `build`, `ci`, `perf`, `style`), one logical change each, committed after every green change. See `.claude/rules/process/04-commits.md`.
-- **Branching**: all work (feat, fix, everything) is committed on `dev`; no per-feature branches. `main` only receives `dev` via PR after green CI. See `.claude/rules/process/05-branches-and-push.md`.
+- **Branching**: all work (feat, fix, everything) is committed on `dev`, **checked out in the worktree `~/chezmoi/dev/sideProjects/worktree/ecolio`** (the folder `.../ecolio` stays on `main` for the client demo); no per-feature branches. `main` only receives `dev` via PR after green CI. See `.claude/rules/process/05-branches-and-push.md`.
 - **CI** (`.github/workflows/ci.yml`): one `php` job, Pint then Pest. Run the same gates locally before committing. See `.claude/rules/process/06-ci.md`.
 - **Test gate before push**: after each feature or fix, all tests and gates must be green; then commit and `git push origin dev` without asking. Never push a red state. Pushing `main` or other branches needs user approval.
 - Remote `origin` is `git@github.com:Randriantahina/ecolio.git`.

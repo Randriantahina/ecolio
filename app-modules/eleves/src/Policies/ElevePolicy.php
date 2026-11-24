@@ -4,42 +4,19 @@ declare(strict_types=1);
 
 namespace Modules\Eleves\Policies;
 
-use Modules\Identity\Domain\Enums\Role;
 use Modules\Identity\Domain\Models\Utilisateur;
+use Modules\Identity\Policies\PolitiqueShield;
 
-/** Spec section 1: directeur and secretaire run the registry, enseignants read it, parents never. */
-final class ElevePolicy
+final class ElevePolicy extends PolitiqueShield
 {
-    public function viewAny(Utilisateur $acteur): bool
+    protected function sujet(): string
     {
-        return $acteur->ecole_id !== null
-            && ($acteur->aRole(Role::Administration));
+        return 'Eleve';
     }
 
-    /** The abilities below are the ones Filament asks; they all reduce to the two spec roles of section 1. */
-    public function view(Utilisateur $acteur): bool
-    {
-        return $this->viewAny($acteur);
-    }
-
-    public function create(Utilisateur $acteur): bool
-    {
-        return $this->manage($acteur);
-    }
-
-    public function update(Utilisateur $acteur): bool
-    {
-        return $this->manage($acteur);
-    }
-
-    public function manage(Utilisateur $acteur): bool
-    {
-        return $acteur->ecole_id !== null && ($acteur->aRole(Role::Administration));
-    }
-
-    /** RG-E1 */
+    /** RG-E1: correcting a matricule is a rare, audited act: it needs the right to update pupils. */
     public function corrigerMatricule(Utilisateur $acteur): bool
     {
-        return $acteur->ecole_id !== null && $acteur->aRole(Role::Administration);
+        return $this->update($acteur);
     }
 }

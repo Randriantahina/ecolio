@@ -17,12 +17,15 @@ Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-In order, one commit each: 1) Shield wiring: FilamentShieldPlugin in PlatformPlugin, RoleResource + Users page (invite by email or SMS, channel chosen in a field) inside the Paramètres cluster, permissions seeded per resource, policies read Shield permissions. 2) module `imports` wizard (reader + tables done, services/UI to do; RG-M1..M5). 3) Phase 3 tutors/siblings/re-enrolment/promotion/grouped payments/discounts. 4) Phase 4 grades+report cards. 5) Phase 5 communications. 6) Phase 6 offline + mobile sync API for teachers. 7) super_admin back-office. `main` = what the client sees: merge `dev` into `main` when stable (user asked 2026-11-24).
+Shield + Users page done (policies read permissions seeded by RolesSeeder; payments use custom permissions). Next, one commit each: 1) finish module `imports` (reader, tables, models done in app-modules/imports: add services, staging validation, queued run, rollback, Filament 5-step wizard; RG-M1..M5). 2) real SMS gateway adapter for `EnvoyeurSms` + mobile sync API for teachers (absences). 3) Phase 3 tutors/siblings/re-enrolment/promotion/grouped payments/discounts. 4) Phase 4 grades + report cards. 5) Phase 5 communications. 6) Phase 6 offline. 7) super_admin back-office. Work in the worktree (see Environment notes); merge dev into main only when the user asks.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.
 
 ## Environment notes (non-derivable)
+- **Worktree (2026-11-24)**: work on `dev` ONLY in `~/chezmoi/dev/sideProjects/worktree/ecolio`; `~/chezmoi/dev/sideProjects/ecolio` stays on `main` (client demo, update with `git pull origin main`). The worktree needs vendor/.env/sqlite copied (git-ignored).
+- **Open risk**: Spatie roles are global (teams off), so the Roles page lets one school's administration edit the permissions of `enseignant` for every school. Fine with one school; switch on Spatie teams (ecole_id) or restrict the page before a second school.
+- SMS invitations go through `EnvoyeurSms` whose only adapter just logs (no gateway chosen): email works, SMS does not actually send yet.
 - SQLite (tests) ignores `lockForUpdate`: concurrency of `compteurs` is not proven by the suite; run a real two-process check on PostgreSQL before phase 1 closes.
 - This project's commit-guard hook checks Écolio's memory even for commits in other repos opened from here (fixed in Cairn's version of the hook).
 - Project settings deny `curl`/`wget` and reading `./.env*`: live HTTP smoke tests are not possible for Claude; rely on Pest Feature tests. Never grep `.env`; use `php artisan env`.
