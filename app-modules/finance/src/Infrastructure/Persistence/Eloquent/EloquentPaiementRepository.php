@@ -46,6 +46,12 @@ final class EloquentPaiementRepository implements PaiementRepository
         return Paiement::query()->where('ecole_id', $ecoleId)->where('uuid', $uuid)->lockForUpdate()->firstOrFail();
     }
 
+    public function totalEncaisse(int $ecoleId, string $from, string $to): int
+    {
+        return (int) Paiement::query()->where('ecole_id', $ecoleId)->where('statut', 'valide')
+            ->whereBetween('date_paiement', [$from, $to])->sum('total_ar');
+    }
+
     public function forEleve(int $eleveId): Collection
     {
         return Paiement::query()->with(['recu'])->where('eleve_id', $eleveId)->orderByDesc('date_paiement')->orderByDesc('id')->get();

@@ -22,6 +22,9 @@ interface EleveRepository
 
     public function save(Eleve $eleve): void;
 
+    /** @return array{actifs:int, sans_classe:int} Active pupils, and those among them without an active enrolment. */
+    public function effectifs(int $ecoleId): array;
+
     public function matriculeExists(int $ecoleId, string $matricule, ?int $sauf = null): bool;
 
     /** RG-E4: same name, first names and birth date. */

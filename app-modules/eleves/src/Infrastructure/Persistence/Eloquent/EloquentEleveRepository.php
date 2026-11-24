@@ -42,6 +42,16 @@ final class EloquentEleveRepository implements EleveRepository
             ->where('ecole_id', $ecoleId)->where('uuid', $uuid)->firstOrFail();
     }
 
+    public function effectifs(int $ecoleId): array
+    {
+        $actifs = Eleve::query()->where('ecole_id', $ecoleId)->where('statut', 'actif');
+
+        return [
+            'actifs' => (clone $actifs)->count(),
+            'sans_classe' => (clone $actifs)->whereDoesntHave('inscriptionActive')->count(),
+        ];
+    }
+
     public function save(Eleve $eleve): void
     {
         $eleve->save();

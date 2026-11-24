@@ -32,6 +32,12 @@ final class EleveService
         return $this->eleves->paginate((int) $acteur->ecole_id, $filtres, $perPage);
     }
 
+    /** @return array{actifs:int, sans_classe:int} */
+    public function effectifs(Utilisateur $acteur): array
+    {
+        return $this->eleves->effectifs((int) $acteur->ecole_id);
+    }
+
     public function voir(Utilisateur $acteur, string $uuid): Eleve
     {
         return $this->eleves->findOrFail($uuid, (int) $acteur->ecole_id);

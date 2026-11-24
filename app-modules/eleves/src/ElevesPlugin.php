@@ -22,7 +22,9 @@ final class ElevesPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->discoverResources(in: __DIR__.'/Filament/Resources', for: 'Modules\\Eleves\\Filament\\Resources');
+        $panel
+            ->discoverResources(in: __DIR__.'/Filament/Resources', for: 'Modules\\Eleves\\Filament\\Resources')
+            ->discoverWidgets(in: __DIR__.'/Filament/Widgets', for: 'Modules\\Eleves\\Filament\\Widgets');
     }
 
     public function boot(Panel $panel): void {}

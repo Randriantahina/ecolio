@@ -24,7 +24,8 @@ final class FinancePlugin implements Plugin
     {
         $panel
             ->discoverResources(in: __DIR__.'/Filament/Resources', for: 'Modules\\Finance\\Filament\\Resources')
-            ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'Modules\\Finance\\Filament\\Pages');
+            ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'Modules\\Finance\\Filament\\Pages')
+            ->discoverWidgets(in: __DIR__.'/Filament/Widgets', for: 'Modules\\Finance\\Filament\\Widgets');
     }
 
     public function boot(Panel $panel): void {}

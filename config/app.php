@@ -81,7 +81,8 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'fr'),
+    // The product language is French (spec): not read from the environment, so a stale .env cannot switch the UI to English.
+    'locale' => 'fr',
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 

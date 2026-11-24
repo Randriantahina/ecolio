@@ -22,6 +22,12 @@ interface EcheanceRepository
      */
     public function lockByUuids(array $uuids, int $ecoleId): Collection;
 
+    /** What is still owed across the school: net of discounts, minus valid payments, cancelled instalments excluded. */
+    public function resteAPayerTotal(int $ecoleId): int;
+
+    /** Instalments that are neither fully paid nor cancelled. */
+    public function countImpayees(int $ecoleId): int;
+
     /** Sum of the lines of VALID payments only: a void gives the money back to the balance. */
     public function paidAmount(int $echeanceId): int;
 

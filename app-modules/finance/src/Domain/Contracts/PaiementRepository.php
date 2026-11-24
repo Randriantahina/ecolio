@@ -25,6 +25,9 @@ interface PaiementRepository
     /** Locks the row so a concurrent void and replay cannot both succeed. */
     public function findForUpdateOrFail(string $uuid, int $ecoleId): Paiement;
 
+    /** Cash in over [from, to] (inclusive dates), VALID payments only: a void is not money received. */
+    public function totalEncaisse(int $ecoleId, string $from, string $to): int;
+
     /** @return Collection<int, Paiement> */
     public function forEleve(int $eleveId): Collection;
 }

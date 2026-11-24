@@ -34,6 +34,25 @@ final class EloquentEcheanceRepository implements EcheanceRepository
             ->whereHas('paiement', fn ($p) => $p->where('statut', 'valide'))->sum('montant_ar');
     }
 
+    public function resteAPayerTotal(int $ecoleId): int
+    {
+        $du = (int) Echeance::query()->where('ecole_id', $ecoleId)->where('statut', '!=', 'annule')
+            ->selectRaw('coalesce(sum(montant_ar - remise_ar), 0) as total')->value('total');
+
+        // Capped per instalment would need a join; valid lines can never exceed the net (checked at payment time).
+        $paye = (int) PaiementLigne::query()
+            ->whereHas('paiement', fn ($p) => $p->where('statut', 'valide'))
+            ->whereHas('echeance', fn ($e) => $e->where('ecole_id', $ecoleId)->where('statut', '!=', 'annule'))
+            ->sum('montant_ar');
+
+        return max(0, $du - $paye);
+    }
+
+    public function countImpayees(int $ecoleId): int
+    {
+        return Echeance::query()->where('ecole_id', $ecoleId)->whereIn('statut', ['du', 'partiel'])->count();
+    }
+
     public function paidAmounts(array $ids): array
     {
         if ($ids === []) {
