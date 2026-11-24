@@ -12,6 +12,9 @@ interface AbsenceRepository
     /** @return Collection<int, Absence> */
     public function forClasseDate(int $ecoleId, int $classeId, string $date, string $periode): Collection;
 
+    /** @return array<string,int> Y-m-d => number of absence rows (days without any are missing). */
+    public function countParJour(int $ecoleId, string $from, string $to): array;
+
     public function save(Absence $absence): void;
 
     public function delete(Absence $absence): void;

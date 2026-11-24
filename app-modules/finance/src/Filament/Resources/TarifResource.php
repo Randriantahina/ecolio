@@ -10,6 +10,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -43,18 +44,28 @@ final class TarifResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Select::make('type_frais_uuid')->label('Type de frais')->required()->visibleOn('create')
-                ->options(fn (): array => app(FraisService::class)->types(auth()->user())->where('actif', true)->pluck('nom', 'uuid')->all()),
-            TextInput::make('montant_ar')->label('Montant')->suffix('Ar')->numeric()->integer()->minValue(0)->required()
-                ->helperText('Modifier un montant ne change pas les échéances déjà émises.'),
-            // The portée is derived from the filled field: the service refuses both at once.
-            Select::make('niveau_uuid')->label('Niveau (facultatif)')->visibleOn('create')
-                ->options(fn (): array => app(StructureService::class)->niveaux(auth()->user())->pluck('nom', 'uuid')->all())
-                ->disabled(fn (Get $get): bool => filled($get('classe_uuid')))->live(),
-            Select::make('classe_uuid')->label('Classe (facultatif)')->visibleOn('create')
-                ->options(fn (): array => app(StructureService::class)->classes(auth()->user(), null)->pluck('nom', 'uuid')->all())
-                ->disabled(fn (Get $get): bool => filled($get('niveau_uuid')))->live()
-                ->helperText('Sans niveau ni classe, le tarif vaut pour toute l\'école. Le plus précis l\'emporte.'),
+            Section::make('Montant')
+                ->description('Le type de frais et le montant en ariary.')
+                ->columns(2)
+                ->schema([
+                    Select::make('type_frais_uuid')->label('Type de frais')->required()->visibleOn('create')
+                        ->options(fn (): array => app(FraisService::class)->types(auth()->user())->where('actif', true)->pluck('nom', 'uuid')->all()),
+                    TextInput::make('montant_ar')->label('Montant')->suffix('Ar')->numeric()->integer()->minValue(0)->required()
+                        ->helperText('Modifier un montant ne change pas les échéances déjà émises.'),
+                    // The portée is derived from the filled field: the service refuses both at once.
+                ]),
+            Section::make('Portée')
+                ->description('À quel niveau ou quelle classe s\'applique le tarif.')
+                ->columns(2)
+                ->schema([
+                    Select::make('niveau_uuid')->label('Niveau (facultatif)')->visibleOn('create')
+                        ->options(fn (): array => app(StructureService::class)->niveaux(auth()->user())->pluck('nom', 'uuid')->all())
+                        ->disabled(fn (Get $get): bool => filled($get('classe_uuid')))->live(),
+                    Select::make('classe_uuid')->label('Classe (facultatif)')->visibleOn('create')
+                        ->options(fn (): array => app(StructureService::class)->classes(auth()->user(), null)->pluck('nom', 'uuid')->all())
+                        ->disabled(fn (Get $get): bool => filled($get('niveau_uuid')))->live()
+                        ->helperText('Sans niveau ni classe, le tarif vaut pour toute l\'école. Le plus précis l\'emporte.'),
+                ]),
         ]);
     }
 

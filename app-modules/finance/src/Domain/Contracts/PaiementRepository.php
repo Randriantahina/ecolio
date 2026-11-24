@@ -28,6 +28,9 @@ interface PaiementRepository
     /** Cash in over [from, to] (inclusive dates), VALID payments only: a void is not money received. */
     public function totalEncaisse(int $ecoleId, string $from, string $to): int;
 
+    /** @return array<string,int> 'Y-m' => ariary, months without payment are missing. */
+    public function totalEncaisseParMois(int $ecoleId, string $from, string $to): array;
+
     /** @return Collection<int, Paiement> */
     public function forEleve(int $eleveId): Collection;
 }

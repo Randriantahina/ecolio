@@ -48,6 +48,12 @@ final class EloquentEcheanceRepository implements EcheanceRepository
         return max(0, $du - $paye);
     }
 
+    public function countParStatut(int $ecoleId): array
+    {
+        return Echeance::query()->where('ecole_id', $ecoleId)->selectRaw('statut, count(*) as total')->groupBy('statut')
+            ->pluck('total', 'statut')->map(fn ($v): int => (int) $v)->all();
+    }
+
     public function countImpayees(int $ecoleId): int
     {
         return Echeance::query()->where('ecole_id', $ecoleId)->whereIn('statut', ['du', 'partiel'])->count();

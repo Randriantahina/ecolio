@@ -29,6 +29,21 @@ final class AbsenceService
         return $this->absences->forClasseDate((int) $acteur->ecole_id, $classe->id, $date, $periode);
     }
 
+    /** @return array<string,int> The last $jours days ending today, oldest first, zero-filled for the chart. */
+    public function parJour(Utilisateur $acteur, int $jours): array
+    {
+        $fin = now()->startOfDay();
+        $debut = $fin->copy()->subDays($jours - 1);
+        $comptes = $this->absences->countParJour((int) $acteur->ecole_id, $debut->toDateString(), $fin->toDateString());
+
+        $serie = [];
+        for ($jour = $debut->copy(); $jour <= $fin; $jour->addDay()) {
+            $serie[$jour->toDateString()] = $comptes[$jour->toDateString()] ?? 0;
+        }
+
+        return $serie;
+    }
+
     /**
      * "Everyone present, then untick the absentees" (spec 0.1): the screen sends the absentees only and
      * the stored set becomes exactly that list. Removing one is the plain delete of RG-P5.

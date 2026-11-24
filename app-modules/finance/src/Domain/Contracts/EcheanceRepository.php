@@ -25,6 +25,9 @@ interface EcheanceRepository
     /** What is still owed across the school: net of discounts, minus valid payments, cancelled instalments excluded. */
     public function resteAPayerTotal(int $ecoleId): int;
 
+    /** @return array<string,int> status value => count, cancelled included. */
+    public function countParStatut(int $ecoleId): array;
+
     /** Instalments that are neither fully paid nor cancelled. */
     public function countImpayees(int $ecoleId): int;
 

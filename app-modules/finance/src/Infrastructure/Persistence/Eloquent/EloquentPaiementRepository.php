@@ -52,6 +52,15 @@ final class EloquentPaiementRepository implements PaiementRepository
             ->whereBetween('date_paiement', [$from, $to])->sum('total_ar');
     }
 
+    public function totalEncaisseParMois(int $ecoleId, string $from, string $to): array
+    {
+        // Grouped in PHP: strftime/to_char differ between SQLite (tests) and PostgreSQL (prod).
+        return Paiement::query()->where('ecole_id', $ecoleId)->where('statut', 'valide')
+            ->whereBetween('date_paiement', [$from, $to])->get(['date_paiement', 'total_ar'])
+            ->groupBy(fn (Paiement $p): string => $p->date_paiement->format('Y-m'))
+            ->map(fn ($g): int => (int) $g->sum('total_ar'))->all();
+    }
+
     public function forEleve(int $eleveId): Collection
     {
         return Paiement::query()->with(['recu'])->where('eleve_id', $eleveId)->orderByDesc('date_paiement')->orderByDesc('id')->get();

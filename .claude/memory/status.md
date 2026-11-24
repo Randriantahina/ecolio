@@ -17,7 +17,7 @@ Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-1) Verify the demo in the browser (`php artisan migrate:fresh --seed`, `php artisan serve`, `/ecole`, directeur@demo.ecolio.test / password) and fix anything visual. 2) Close Phase 1: PostgreSQL two-process check of receipt numbering, tick Phase 1 in roadmap if the definition of done holds. 3) Phase 2: custom fields (`champs_perso`), saved views, Excel import wizard + exports (new module `imports`: `php artisan make:module imports`, then `composer update modules/imports`).
+User asked (2026-11-24) for EVERYTHING in the spec at once, tested together at the end: build in this order, one commit per step, push each. 1) Phase 2 module `dynamique`: champs_personnalises (RG-D1..D6, JSON champs_perso, dynamic form section + table columns), vues_tableaux, Excel/CSV export of the registry. 2) Module `imports`: 5-step Filament wizard (upload, mapping, validation staging, fix, run + 7-day rollback). 3) Phase 3: tutors/siblings (RG-I3), re-enrolment, mass promotion, grouped payments, remises. 4) Phase 4 notes/bulletins (RG-N1..N6, PDF). 5) Phase 5 communications + portail parent. 6) Phase 6 offline (client_uuid, PROV- numbers, /api/v1/sync). 7) Transverse super_admin panel, abonnements. Use Filament Section in every form.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.

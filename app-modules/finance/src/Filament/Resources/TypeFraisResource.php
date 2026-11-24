@@ -10,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
@@ -51,13 +52,18 @@ final class TypeFraisResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            TextInput::make('nom')->label('Nom')->placeholder('Écolage')->required()->maxLength(80),
-            Select::make('periodicite')->label('Périodicité')->required()->options(self::periodicites())
-                ->default(Periodicite::Mensuel->value)
-                ->helperText('Mensuel : une échéance par mois de l\'année scolaire.'),
-            Toggle::make('est_obligatoire')->label('Obligatoire')->default(true),
-            Toggle::make('actif')->label('Actif')->default(true)
-                ->helperText('Un type inactif ne génère plus d\'échéances.'),
+            Section::make('Type de frais')
+                ->description('Nom, rythme de facturation et statut.')
+                ->columns(2)
+                ->schema([
+                    TextInput::make('nom')->label('Nom')->placeholder('Écolage')->required()->maxLength(80),
+                    Select::make('periodicite')->label('Périodicité')->required()->options(self::periodicites())
+                        ->default(Periodicite::Mensuel->value)
+                        ->helperText('Mensuel : une échéance par mois de l\'année scolaire.'),
+                    Toggle::make('est_obligatoire')->label('Obligatoire')->default(true),
+                    Toggle::make('actif')->label('Actif')->default(true)
+                        ->helperText('Un type inactif ne génère plus d\'échéances.'),
+                ]),
         ]);
     }
 

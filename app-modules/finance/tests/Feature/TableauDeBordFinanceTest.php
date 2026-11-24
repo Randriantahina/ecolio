@@ -74,3 +74,19 @@ it('never counts the money of another school (tenant isolation)', function () {
     expect(app(TableauDeBordFinanceService::class)->pour($dirAutre))
         ->toBe(['encaisse_mois_ar' => 0, 'reste_a_payer_ar' => 0, 'echeances_impayees' => 0]);
 });
+
+it('gives the cash in of the last six months, oldest first, empty months included', function () {
+    ($this->payer)(10000, '2026-08-15');
+    ($this->payer)(20000, '2026-10-02');
+
+    expect(app(TableauDeBordFinanceService::class)->encaisseParMois($this->directeur, 6))->toBe([
+        '2026-05' => 0, '2026-06' => 0, '2026-07' => 0, '2026-08' => 10000, '2026-09' => 0, '2026-10' => 20000,
+    ]);
+});
+
+it('splits instalments by status for the doughnut', function () {
+    ($this->payer)(20000);
+
+    expect(app(TableauDeBordFinanceService::class)->repartitionEcheances($this->directeur))
+        ->toBe(['du' => 0, 'partiel' => 1, 'paye' => 0, 'annule' => 0]);
+});

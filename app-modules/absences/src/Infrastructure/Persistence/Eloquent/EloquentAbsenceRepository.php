@@ -16,6 +16,13 @@ final class EloquentAbsenceRepository implements AbsenceRepository
             ->whereDate('date', $date)->where('periode', $periode)->get();
     }
 
+    public function countParJour(int $ecoleId, string $from, string $to): array
+    {
+        return Absence::query()->where('ecole_id', $ecoleId)->whereDate('date', '>=', $from)->whereDate('date', '<=', $to)
+            ->selectRaw('date, count(*) as total')->groupBy('date')->get()
+            ->mapWithKeys(fn ($r): array => [substr((string) $r->date, 0, 10) => (int) $r->total])->all();
+    }
+
     public function save(Absence $absence): void
     {
         $absence->save();
