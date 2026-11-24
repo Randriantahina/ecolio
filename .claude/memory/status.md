@@ -3,7 +3,7 @@
 Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écolage (UI rebuilt on Filament)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- UI pivot (decision 0004): Vue/Inertia/pnpm removed, Filament 5 panel `ecole` with tenancy, custom login (lockout), context plugin mechanism (`FilamentModulesServiceProvider`) and the **Eleves** plugin (list/search/filter, create with duplicate confirm, edit, change class, departure) are DONE and tested (212 tests). Scolarite plugin (années incl. set current, niveaux, classes, refuses deleting a class that holds pupils) DONE. Finance plugin (types de frais, tarifs, registre écolage page: encaisser / reçu PDF / annuler, one table row per échéance via array `records()`) DONE. Remaining Phase 1 UI: Absences, dashboard widgets, grouped sibling payments. Then Phases 2-6 + Transverse, everything real, tested, CI green.
+- Architecture (decisions 0004 + 0005): Filament 5 panel `ecole`, every bounded context is an InterNACHI/Modular module in `app-modules/` (tenancy, platform, identity, audit, scolarite, eleves, finance, absences), each with its plugin, provider, migrations, tests. Eleves, Scolarite, Finance UI done and tested (236 tests). Remaining Phase 1 UI: Absences roll-call page, dashboard widgets, grouped sibling payments. Then Phases 2-6 + Transverse, everything real, tested, CI green.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
@@ -17,7 +17,7 @@ Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-1) Absences plugin in `app/Filament/Absences/` (daily roll-call page per class: tous présents, toggle absent/justifiée; services in `app/Application/Absences`), same test pattern. 2) Dashboard widgets (impayés, effectifs). 3) Check demo seeder at `/ecole`, then Phase 2 (custom fields, saved views, Excel import/export). Register each plugin in `FilamentModulesServiceProvider`.
+1) Absences UI in `app-modules/absences/src/Filament/` (roll-call page per class/date/period via a Filament form page: CheckboxList of absentees + justified, saved through `AbsenceService::saisir`; plugin + provider hook like `app-modules/eleves`). 2) Dashboard widgets (unpaid, headcount). 3) Verify demo at `/ecole` after `php artisan migrate:fresh --seed` (directeur@demo.ecolio.test / password). 4) Phase 2. New context = `php artisan make:module <name>` then `composer update modules/<name>`.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.
@@ -43,3 +43,4 @@ Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écola
 - Filament Livewire tests: Livewire swallows aborts, assert `->assertNotFound()` not exceptions. Panel pages under `/ecole/{slug}`; `Utilisateur::canAccessPanel` admits active directeur/secretaire/enseignant only.
 - `composer require` of Filament needed `COMPOSER_AUTH` (GitHub token); the user ran it in their own shell.
 - Filament array-record tables (registre): after an action, build a fresh `Livewire::test` in tests (records are cached per component); after failed action validation use a new component too. Custom Blade is limited (no Node, so no Tailwind build): prefer Filament components.
+- Modules migration (2026-11-24): moved 211 files with `git mv` (history kept) using a class map; activity-log/permission rows of old dev DBs reference old class names: use `migrate:fresh --seed`. Module tests are discovered by Pest through `in('Feature','../app-modules/*/tests/Feature')`.

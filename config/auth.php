@@ -1,6 +1,6 @@
 <?php
 
-use App\Domain\Identity\Models\Utilisateur;
+use Modules\Identity\Domain\Models\Utilisateur;
 
 return [
 

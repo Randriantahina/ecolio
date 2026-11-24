@@ -1,14 +1,14 @@
 <?php
 
-use App\Application\Scolarite\DTOs\CreateAnneeScolaireDto;
-use App\Application\Scolarite\Services\AnneeScolaireService;
-use App\Application\Scolarite\Services\StructureService;
-use App\Domain\Identity\Enums\Role;
-use App\Domain\Identity\Models\Utilisateur;
-use App\Domain\Platform\Models\Ecole;
-use App\Domain\Tenancy\TenantContext;
-use Database\Seeders\RolesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Identity\Database\Seeders\RolesSeeder;
+use Modules\Identity\Domain\Enums\Role;
+use Modules\Identity\Domain\Models\Utilisateur;
+use Modules\Platform\Domain\Models\Ecole;
+use Modules\Scolarite\Application\DTOs\CreateAnneeScolaireDto;
+use Modules\Scolarite\Application\Services\AnneeScolaireService;
+use Modules\Scolarite\Application\Services\StructureService;
+use Modules\Tenancy\Domain\TenantContext;
 use Tests\TestCase;
 
 /*
@@ -24,7 +24,7 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
  // ->use(RefreshDatabase::class)
-    ->in('Feature');
+    ->in('Feature', '../app-modules/*/tests/Feature');
 
 /*
 |--------------------------------------------------------------------------

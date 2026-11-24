@@ -12,8 +12,8 @@ The functional and technical source of truth is `docs/SPEC_ecolio_2026-11-18_v2.
 
 One Laravel 13 application at the repository root (decisions `0003`, `0004`): PHP 8.5, Pest 5, **Filament 5** panel (Livewire) for the whole web UI; no Node toolchain. PostgreSQL in prod, in-memory SQLite in tests. Laravel Boost (dev) provides the MCP server (`.mcp.json`) and the guidelines block at the end of this file.
 
-- `app/`, `routes/`, `database/`, `tests/`: the Laravel application (DDD layers below). `routes/web.php` only redirects to the panel, `routes/api.php` keeps the JSON API (`/api/v1`) for the offline queue and future mobile.
-- `app/Filament/<Context>/`: one Filament plugin per bounded context (Resources, Pages, Widgets), registered through `FilamentModulesServiceProvider`; the panel is `app/Providers/Filament/EcolePanelProvider.php` (`/ecole/{slug}`).
+- `app/`, `routes/`, `database/`, `tests/`: the application shell (panel provider, API routes, demo seeder, panel/CORS/seeder tests). `routes/web.php` only redirects to the panel, `routes/api.php` keeps the JSON API (`/api/v1`) for the offline queue and future mobile.
+- `app-modules/<context>/`: one Composer module per bounded context (InterNACHI/Modular, decision `0005`): `src/Domain`, `src/Application`, `src/Infrastructure`, `src/Http`, `src/Filament`, its plugin `src/<Name>Plugin.php`, `database/`, `tests/`. The panel is `app/Providers/Filament/EcolePanelProvider.php` (`/ecole/{slug}`); `app/` holds only the shell.
 - `docs/`: spec, OpenAPI, architecture decisions
 - `.claude/rules/process/`: portable workflow rules (session protocol, TDD, memory journal, comments, commits, branches, CI). `.claude/rules/stack/`: Laravel DDD and Filament rules. **Read them before writing code.**
 - `.claude/memory/`: **project memory** (status, roadmap, per-phase checklists, changelog, decisions). **Read `status.md` and `roadmap.md` at the start of every session and update them in every commit**; a SessionStart hook injects them and a PreToolUse hook blocks commits without a memory change.
@@ -30,21 +30,22 @@ php artisan serve                                              # app on :8000, p
 ./vendor/bin/pest tests/Feature/Filament/LoginTest.php         # one file
 ./vendor/bin/pest --filter="locks the account"                 # one test
 ./vendor/bin/pint                                              # format PHP
-php artisan make:filament-resource Eleve --panel=ecole         # then move it under app/Filament/<Context>
+php artisan make:module notes                                  # new bounded context (then composer update modules/notes)
+php artisan modules:list
 ```
 
 ## Architecture (big picture)
 
 **Multi-tenancy (spec 6.3).** One database; every business table carries `ecole_id`. A `BelongsToEcole` trait adds a global scope and fills `ecole_id` on create; unique indexes are composite (`ecole_id`, ...); queued jobs carry `ecole_id` explicitly. Every model needs a test proving school A never sees school B. `super_admin` users have `ecole_id = null` and live outside the school app. Web routes run `auth` then `tenant` (the school comes from the signed-in user only).
 
-**Backend: layered DDD under `app/`.** `Http` → `Application` → `Domain` ← `Infrastructure`.
+**Backend: layered DDD inside each module under `app-modules/<context>/src/`.** `Http` → `Application` → `Domain` ← `Infrastructure`.
 - `Domain/<Context>/`: models, enums, value objects (`Money` in integer ariary), events, exceptions, repository **interfaces**.
 - `Application/<Context>/`: Services (business logic), DTOs (the only thing crossing layers), Actions.
 - `Infrastructure/`: Eloquent repositories, PDF/Excel/SMS adapters, bound to interfaces in `DomainServiceProvider`.
 - `Http/`: thin Controllers for the JSON API, FormRequests (→ DTO), API Resources, Policies. `Filament/<Context>/`: panel plugins, as thin as controllers (call a Service, never business logic).
 Bounded contexts: Platform, Identity, Scolarite, Eleves, Finance, Absences, Notes, Imports, Communications.
 
-**UI: one Filament panel, one plugin per context.** The panel `ecole` is tenant-aware (`->tenant(Ecole::class)`); `BindEcoleContext` copies the tenant into `TenantContext` so the global scope still applies. Resources, pages and widgets of a context live in `app/Filament/<Context>/` and are discovered by that context's plugin; mutations go through Application Services, domain exceptions become Filament notifications. Login is a custom page over `AuthService` (lockout RG-A3). Staff only: parents get their own portal later.
+**UI: one Filament panel, one plugin per module** (structure imposed by the Filament modular guide: https://filamentphp.com/docs/5.x/advanced/modular-architecture, rules in `.claude/rules/stack/filament-modular-ddd.md`). The panel `ecole` is tenant-aware (`->tenant(Ecole::class)`); `BindEcoleContext` copies the tenant into `TenantContext` so the global scope still applies. Resources, pages and widgets of a module live in `src/Filament/` and are discovered by that module's plugin, attached to the panel by the module's own service provider; mutations go through Application Services, domain exceptions become Filament notifications. Login is a custom page over `AuthService` (lockout RG-A3). Staff only: parents get their own portal later.
 
 **Invariants that span files (spec M4, M5, section 8).**
 - Receipt numbers are gapless per school and year, allocated from `compteurs` under `SELECT ... FOR UPDATE` inside the payment transaction. Receipts are never edited or deleted, only voided.

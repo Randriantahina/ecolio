@@ -1,14 +1,11 @@
 <?php
 
 use App\Providers\AppServiceProvider;
-use App\Providers\DomainServiceProvider;
 use App\Providers\Filament\EcolePanelProvider;
-use App\Providers\Filament\FilamentModulesServiceProvider;
 
+// Bounded contexts are modules (app-modules/*) whose providers Laravel discovers through Composer,
+// before these ones: their Panel::configureUsing callbacks exist when the panel is built.
 return [
     AppServiceProvider::class,
-    DomainServiceProvider::class,
-    // Before the panel provider: its configureUsing callback must exist when the panel is built.
-    FilamentModulesServiceProvider::class,
     EcolePanelProvider::class,
 ];

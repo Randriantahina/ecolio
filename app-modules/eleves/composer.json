@@ -1,0 +1,24 @@
+{
+	"name": "modules/eleves",
+	"description": "",
+	"type": "library",
+	"version": "1.0",
+	"license": "proprietary",
+	"require": {},
+	"autoload": {
+		"psr-4": {
+			"Modules\\Eleves\\": "src/",
+			"Modules\\Eleves\\Tests\\": "tests/",
+			"Modules\\Eleves\\Database\\Factories\\": "database/factories/",
+			"Modules\\Eleves\\Database\\Seeders\\": "database/seeders/"
+		}
+	},
+	"minimum-stability": "stable",
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Modules\\Eleves\\Providers\\ElevesServiceProvider"
+			]
+		}
+	}
+}

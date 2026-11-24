@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\Identity\Enums\Role;
-use App\Domain\Platform\Models\Ecole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Identity\Domain\Enums\Role;
+use Modules\Platform\Domain\Models\Ecole;
 
 uses(RefreshDatabase::class);
 

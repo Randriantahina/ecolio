@@ -1,6 +1,7 @@
 ---
 paths:
   - "app/**/*.php"
+  - "app-modules/**/*.php"
   - "routes/**/*.php"
   - "tests/**/*.php"
 ---
@@ -9,14 +10,16 @@ paths:
 
 Stack: PHP 8.5, Laravel 13, Pest 5, Sanctum, spatie/laravel-permission, spatie/laravel-activitylog, PostgreSQL. Every PHP file starts with `declare(strict_types=1);`.
 
+Each bounded context is a module `app-modules/<context>/` (see `filament-modular-ddd.md`); the paths below are relative to its `src/` and namespaced `Modules\<Context>\`.
+
 ## Layers (dependencies point inward only)
 ```
 Http  →  Application  →  Domain  ←  Infrastructure
 ```
-- `app/Domain/<Context>/`: models, enums, value objects, domain events, domain exceptions, **repository interfaces** (`Contracts/`). No HTTP, no concrete infra.
-- `app/Application/<Context>/`: `Services/` (business logic), `DTOs/`, `Actions/`.
-- `app/Infrastructure/`: `Persistence/Eloquent/` repository implementations, `Pdf/`, `Excel/`, `Sms/` adapters, bound to interfaces in a dedicated service provider.
-- `app/Http/`: Controllers, FormRequests, API Resources, Middleware. Policies in `app/Policies`.
+- `src/Domain/`: models, enums, value objects, domain events, domain exceptions, **repository interfaces** (`Contracts/`). No HTTP, no concrete infra.
+- `src/Application/`: `Services/` (business logic), `DTOs/`, `Actions/`.
+- `src/Infrastructure/`: `Persistence/Eloquent/` repository implementations, `Pdf/`, `Excel/`, `Sms/` adapters, bound to interfaces in a dedicated service provider.
+- `src/Http/`: Controllers, FormRequests, API Resources, Middleware. `src/Policies/`. `src/Filament/`: panel UI.
 
 Bounded contexts: Platform, Identity, Scolarite, Eleves, Finance, Absences, Notes, Imports, Communications. A context talks to another through its Service or domain events, never through its models or tables.
 

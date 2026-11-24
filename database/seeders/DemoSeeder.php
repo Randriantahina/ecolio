@@ -4,21 +4,22 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Application\Absences\Services\AbsenceService;
-use App\Application\Eleves\DTOs\CreateEleveDto;
-use App\Application\Eleves\Services\EleveService;
-use App\Application\Finance\DTOs\EncaisserDto;
-use App\Application\Finance\Services\FraisService;
-use App\Application\Finance\Services\PaiementService;
-use App\Application\Scolarite\DTOs\CreateAnneeScolaireDto;
-use App\Application\Scolarite\Services\AnneeScolaireService;
-use App\Application\Scolarite\Services\StructureService;
-use App\Domain\Finance\Contracts\EcheanceRepository;
-use App\Domain\Identity\Enums\Role;
-use App\Domain\Identity\Models\Utilisateur;
-use App\Domain\Platform\Models\Ecole;
-use App\Domain\Tenancy\TenantContext;
 use Illuminate\Database\Seeder;
+use Modules\Absences\Application\Services\AbsenceService;
+use Modules\Eleves\Application\DTOs\CreateEleveDto;
+use Modules\Eleves\Application\Services\EleveService;
+use Modules\Finance\Application\DTOs\EncaisserDto;
+use Modules\Finance\Application\Services\FraisService;
+use Modules\Finance\Application\Services\PaiementService;
+use Modules\Finance\Domain\Contracts\EcheanceRepository;
+use Modules\Identity\Database\Seeders\RolesSeeder;
+use Modules\Identity\Domain\Enums\Role;
+use Modules\Identity\Domain\Models\Utilisateur;
+use Modules\Platform\Domain\Models\Ecole;
+use Modules\Scolarite\Application\DTOs\CreateAnneeScolaireDto;
+use Modules\Scolarite\Application\Services\AnneeScolaireService;
+use Modules\Scolarite\Application\Services\StructureService;
+use Modules\Tenancy\Domain\TenantContext;
 use RuntimeException;
 
 /** Fictional data only (spec section 10: no real student data outside production). */

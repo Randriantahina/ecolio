@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Domain\Eleves\Models\Eleve;
-use App\Domain\Finance\Models\Echeance;
-use App\Domain\Finance\Models\Paiement;
-use App\Domain\Identity\Enums\Role;
-use App\Domain\Identity\Models\Utilisateur;
-use App\Domain\Platform\Models\Ecole;
 use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Eleves\Domain\Models\Eleve;
+use Modules\Finance\Domain\Models\Echeance;
+use Modules\Finance\Domain\Models\Paiement;
+use Modules\Identity\Domain\Enums\Role;
+use Modules\Identity\Domain\Models\Utilisateur;
+use Modules\Platform\Domain\Models\Ecole;
 
 uses(RefreshDatabase::class);
 

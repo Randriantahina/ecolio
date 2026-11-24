@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Absences\AbsenceController;
-use App\Http\Controllers\Audit\AuditController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\Ecole\EcoleController;
-use App\Http\Controllers\Eleves\EleveController;
-use App\Http\Controllers\Finance\FraisController;
-use App\Http\Controllers\Finance\PaiementController;
-use App\Http\Controllers\Scolarite\AnneeScolaireController;
-use App\Http\Controllers\Scolarite\StructureController;
-use App\Http\Controllers\Team\UtilisateurController;
 use Illuminate\Support\Facades\Route;
+use Modules\Absences\Http\Controllers\AbsenceController;
+use Modules\Audit\Http\Controllers\AuditController;
+use Modules\Eleves\Http\Controllers\EleveController;
+use Modules\Finance\Http\Controllers\FraisController;
+use Modules\Finance\Http\Controllers\PaiementController;
+use Modules\Identity\Http\Controllers\AuthController;
+use Modules\Identity\Http\Controllers\PasswordController;
+use Modules\Identity\Http\Controllers\UtilisateurController;
+use Modules\Platform\Http\Controllers\EcoleController;
+use Modules\Scolarite\Http\Controllers\AnneeScolaireController;
+use Modules\Scolarite\Http\Controllers\StructureController;
 
 Route::prefix('v1')->group(function () {
     Route::post('auth/login', [AuthController::class, 'login'])->middleware('throttle:20,1');

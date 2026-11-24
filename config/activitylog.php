@@ -1,6 +1,6 @@
 <?php
 
-use App\Domain\Audit\Models\JournalAudit;
+use Modules\Audit\Domain\Models\JournalAudit;
 use Spatie\Activitylog\Actions\CleanActivityLogAction;
 use Spatie\Activitylog\Actions\LogActivityAction;
 use Spatie\Activitylog\Models\Activity;

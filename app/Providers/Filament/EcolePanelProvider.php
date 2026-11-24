@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
-use App\Domain\Platform\Models\Ecole;
-use App\Filament\Identity\Pages\Login;
-use App\Filament\Support\Middleware\BindEcoleContext;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -21,6 +18,9 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Modules\Identity\Filament\Pages\Login;
+use Modules\Platform\Domain\Models\Ecole;
+use Modules\Tenancy\Http\Middleware\BindEcoleContext;
 
 /**
  * The school panel. Bounded contexts plug their own pages and resources in through a Filament
