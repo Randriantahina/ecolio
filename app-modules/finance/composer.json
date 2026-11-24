@@ -1,0 +1,24 @@
+{
+	"name": "modules/finance",
+	"description": "",
+	"type": "library",
+	"version": "1.0",
+	"license": "proprietary",
+	"require": {},
+	"autoload": {
+		"psr-4": {
+			"Modules\\Finance\\": "src/",
+			"Modules\\Finance\\Tests\\": "tests/",
+			"Modules\\Finance\\Database\\Factories\\": "database/factories/",
+			"Modules\\Finance\\Database\\Seeders\\": "database/seeders/"
+		}
+	},
+	"minimum-stability": "stable",
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Modules\\Finance\\Providers\\FinanceServiceProvider"
+			]
+		}
+	}
+}

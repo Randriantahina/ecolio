@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Identity\Application\DTOs;
+
+use Modules\Identity\Domain\Models\Utilisateur;
+
+final readonly class AuthResult
+{
+    public function __construct(
+        public string $token,
+        public Utilisateur $utilisateur,
+    ) {}
+}

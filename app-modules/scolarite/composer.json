@@ -1,0 +1,24 @@
+{
+	"name": "modules/scolarite",
+	"description": "",
+	"type": "library",
+	"version": "1.0",
+	"license": "proprietary",
+	"require": {},
+	"autoload": {
+		"psr-4": {
+			"Modules\\Scolarite\\": "src/",
+			"Modules\\Scolarite\\Tests\\": "tests/",
+			"Modules\\Scolarite\\Database\\Factories\\": "database/factories/",
+			"Modules\\Scolarite\\Database\\Seeders\\": "database/seeders/"
+		}
+	},
+	"minimum-stability": "stable",
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Modules\\Scolarite\\Providers\\ScolariteServiceProvider"
+			]
+		}
+	}
+}
