@@ -57,6 +57,9 @@ interface EcheanceRepository
      */
     public function cancelFutureUnpaid(int $eleveId, string $moisSortie): int;
 
+    /** @return Collection<int, Echeance> instalments not yet fully paid, with pupil, class and fee type loaded */
+    public function impayees(int $ecoleId): Collection;
+
     /** @return Collection<int, Echeance> */
     public function forEleve(int $eleveId): Collection;
 

@@ -17,13 +17,7 @@ final class StatutEleveLabels
 
     public static function label(StatutEleve $statut): string
     {
-        return match ($statut) {
-            StatutEleve::Actif => 'Actif',
-            StatutEleve::Sorti => 'Sorti',
-            StatutEleve::Transfere => 'Transféré',
-            StatutEleve::Abandon => 'Abandon',
-            StatutEleve::Diplome => 'Diplômé',
-        };
+        return $statut->libelle();
     }
 
     public static function color(StatutEleve $statut): string

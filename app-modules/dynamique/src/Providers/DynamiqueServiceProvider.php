@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Dynamique\Application\Services\ChampService;
 use Modules\Dynamique\Domain\Contracts\ChampRepository;
+use Modules\Dynamique\Domain\Contracts\ExporteurTableau;
 use Modules\Dynamique\Domain\Contracts\VueRepository;
 use Modules\Dynamique\Domain\Models\ChampPersonnalise;
 use Modules\Dynamique\DynamiquePlugin;
+use Modules\Dynamique\Infrastructure\Excel\ExcelExporteurTableau;
 use Modules\Dynamique\Infrastructure\Persistence\Eloquent\EloquentChampRepository;
 use Modules\Dynamique\Infrastructure\Persistence\Eloquent\EloquentVueRepository;
 use Modules\Dynamique\Policies\ChampPersonnalisePolicy;
@@ -22,6 +24,7 @@ final class DynamiqueServiceProvider extends ServiceProvider
     public array $bindings = [
         ChampRepository::class => EloquentChampRepository::class,
         VueRepository::class => EloquentVueRepository::class,
+        ExporteurTableau::class => ExcelExporteurTableau::class,
     ];
 
     public function register(): void

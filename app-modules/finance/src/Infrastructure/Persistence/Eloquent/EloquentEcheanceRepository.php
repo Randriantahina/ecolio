@@ -95,6 +95,13 @@ final class EloquentEcheanceRepository implements EcheanceRepository
             ->update(['statut' => 'annule']);
     }
 
+    public function impayees(int $ecoleId): Collection
+    {
+        return Echeance::query()->with(['typeFrais', 'eleve.inscriptionActive.classe'])
+            ->where('ecole_id', $ecoleId)->whereIn('statut', ['du', 'partiel'])->get()
+            ->sortBy(fn (Echeance $e) => $e->eleve->matricule.'|'.$e->id)->values();
+    }
+
     public function forEleve(int $eleveId): Collection
     {
         return Echeance::query()->with('typeFrais')->where('eleve_id', $eleveId)->orderBy('periode')->orderBy('id')->get();

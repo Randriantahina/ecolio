@@ -12,4 +12,15 @@ enum StatutEleve: string
     case Transfere = 'transfere';
     case Abandon = 'abandon';
     case Diplome = 'diplome';
+
+    public function libelle(): string
+    {
+        return match ($this) {
+            self::Actif => 'Actif',
+            self::Sorti => 'Sorti',
+            self::Transfere => 'Transféré',
+            self::Abandon => 'Abandon',
+            self::Diplome => 'Diplômé',
+        };
+    }
 }

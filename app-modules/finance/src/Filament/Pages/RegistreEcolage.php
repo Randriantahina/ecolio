@@ -22,8 +22,10 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
+use Modules\Dynamique\Domain\Contracts\ExporteurTableau;
 use Modules\Eleves\Filament\Resources\EleveResource;
 use Modules\Finance\Application\DTOs\EncaisserDto;
+use Modules\Finance\Application\Services\ExportFinanceService;
 use Modules\Finance\Application\Services\FraisService;
 use Modules\Finance\Application\Services\PaiementService;
 use Modules\Finance\Application\Services\RegistreEcolageService;
@@ -88,10 +90,26 @@ final class RegistreEcolage extends Page implements HasTable
                     $n = app(FraisService::class)->genererEcheancesManquantes(auth()->user());
                     Notification::make()->success()->title($n > 0 ? "$n échéance(s) créée(s)" : 'Rien à créer')->send();
                 }),
+            $this->exportAction('exporter', 'Exporter cette vue', fn (): array => app(ExportFinanceService::class)->registre(array_values($this->lignes($this->tableSearch, $this->tableFilters))), 'registre-'.($this->enInscriptions() ? 'inscriptions' : 'ecolages')),
+            $this->exportAction('exporterImpayes', 'Exporter les impayés', fn (): array => app(ExportFinanceService::class)->impayes(auth()->user()), 'impayes'),
             Action::make('typesFrais')->label('Types de frais')->color('gray')->url(fn (): string => TypeFraisResource::getUrl()),
             Action::make('tarifs')->label('Tarifs')->color('gray')->url(fn (): string => TarifResource::getUrl()),
             Action::make('eleves')->label('Ajouter un élève')->url(fn (): string => EleveResource::getUrl('create')),
         ];
+    }
+
+    /** @param  \Closure(): array{0: list<string>, 1: list<list<scalar|null>>}  $tableau */
+    private function exportAction(string $nom, string $label, \Closure $tableau, string $fichier): Action
+    {
+        return Action::make($nom)->label($label)->icon(Heroicon::OutlinedArrowDownTray)->color('gray')
+            ->schema([Select::make('format')->label('Format')->required()->default('xlsx')->options(['xlsx' => 'Excel (.xlsx)', 'csv' => 'CSV (.csv)'])])
+            ->action(function (array $data) use ($tableau, $fichier): StreamedResponse {
+                [$entetes, $lignes] = $tableau();
+                $exporteur = app(ExporteurTableau::class);
+                $contenu = $exporteur->contenu($entetes, $lignes, $data['format']);
+
+                return response()->streamDownload(fn () => print ($contenu), $exporteur->nomDeFichier($fichier, $data['format']));
+            });
     }
 
     public function table(Table $table): Table

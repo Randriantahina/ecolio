@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Absences\Application\Services\AbsenceService;
+use Modules\Absences\Application\Services\ExportAbsencesService;
 use Modules\Absences\Domain\Models\Absence;
 use Modules\Absences\Filament\Resources\AbsenceResource;
 use Modules\Absences\Filament\Resources\Pages\ListAbsences;
@@ -95,4 +96,14 @@ it('cannot justify an absence of another school', function () {
 
     expect(fn () => app(AbsenceService::class)->justifier($dir, $absence->id, 'x'))
         ->toThrow(ModelNotFoundException::class);
+});
+
+it('exports the filtered absences with pupil, class, period and justification', function () {
+    $lignes = app(ExportAbsencesService::class)->tableau(Absence::query()->orderBy('date')->get());
+
+    expect($lignes[0])->toBe(['Date', 'Matricule', 'Élève', 'Classe', 'Période', 'Justifiée', 'Motif'])
+        ->and($lignes[1][0])->toBe('05/10/2026')->and($lignes[1][2])->toBe('Hery')->and($lignes[1][5])->toBe('Oui')->and($lignes[1][6])->toBe('Malade')
+        ->and($lignes[2][5])->toBe('Non');
+
+    Livewire::test(ListAbsences::class)->callAction('exporter', ['format' => 'xlsx'])->assertFileDownloaded();
 });
