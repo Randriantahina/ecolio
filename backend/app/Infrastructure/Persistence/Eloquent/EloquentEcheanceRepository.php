@@ -55,8 +55,11 @@ final class EloquentEcheanceRepository implements EcheanceRepository
         return PaiementLigne::query()->whereIn('echeance_id', $ids)
             ->whereHas('paiement', fn ($p) => $p->where('statut', 'valide'))
             ->with('paiement.recu')->orderBy('id')->get()
-            ->mapWithKeys(fn (PaiementLigne $l) => [$l->echeance_id => $l->paiement->recu?->numero_affiche])
-            ->filter()->all();
+            ->filter(fn (PaiementLigne $l) => $l->paiement->recu !== null)
+            ->mapWithKeys(fn (PaiementLigne $l) => [$l->echeance_id => [
+                'numero' => $l->paiement->recu->numero_affiche,
+                'paiement_uuid' => $l->paiement->uuid,
+            ]])->all();
     }
 
     public function cancelFutureUnpaid(int $eleveId, string $moisSortie): int

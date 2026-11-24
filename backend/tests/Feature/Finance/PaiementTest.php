@@ -189,6 +189,7 @@ it('shows the register with one row per pupil and the box state for a month', fu
     expect($rows)->toHaveCount(2)
         ->and($rows->firstWhere('eleve.nom', 'Rakoto')['echeances'][0]['statut'])->toBe('paye')
         ->and($rows->firstWhere('eleve.nom', 'Rakoto')['echeances'][0]['recu'])->toBe(now()->year.'-0001')
+        ->and($rows->firstWhere('eleve.nom', 'Rakoto')['echeances'][0]['paiement_uuid'])->toBeString()
         ->and($rows->firstWhere('eleve.uuid', $autre['uuid'])['echeances'][0]['statut'])->toBe('du');
 });
 
@@ -199,4 +200,21 @@ it('reports the remaining balance on the receipt (RG-R4)', function () {
 
     // 3 monthly fees + registration = 180 000; 50 000 paid.
     expect($p['reste_a_payer_ar'])->toBe(130_000);
+});
+
+it('downloads the receipt as an A5 PDF named after its number (RG-R4)', function () {
+    $p = encaisser($this, [['echeance_uuid' => ($this->septembre)()['uuid'], 'montant_ar' => 50_000]])->json('paiement');
+
+    $response = $this->get("/api/v1/paiements/{$p['uuid']}/pdf")->assertOk();
+
+    expect($response->headers->get('content-type'))->toBe('application/pdf')
+        ->and($response->headers->get('content-disposition'))->toContain('recu-'.$p['numero'].'.pdf')
+        ->and(substr($response->getContent(), 0, 4))->toBe('%PDF');
+});
+
+it('refuses the PDF of another school receipt (tenant isolation)', function () {
+    $p = encaisser($this, [['echeance_uuid' => ($this->septembre)()['uuid'], 'montant_ar' => 50_000]])->json('paiement');
+    Sanctum::actingAs(utilisateurAvecRole(Role::Directeur, $this->autre));
+
+    $this->get("/api/v1/paiements/{$p['uuid']}/pdf")->assertNotFound();
 });

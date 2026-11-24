@@ -91,11 +91,9 @@ final class DemoSeeder extends Seeder
         $frais = app(FraisService::class);
         $ecolage = $frais->creerType($directeur, ['nom' => 'Écolage', 'periodicite' => 'mensuel']);
         $inscription = $frais->creerType($directeur, ['nom' => 'Frais d\'inscription', 'periodicite' => 'unique']);
-        $cantine = $frais->creerType($directeur, ['nom' => 'Cantine', 'periodicite' => 'mensuel', 'est_obligatoire' => false]);
         $frais->creerTarif($directeur, ['type_frais_uuid' => $inscription->uuid, 'montant_ar' => 60_000]);
         $frais->creerTarif($directeur, ['type_frais_uuid' => $ecolage->uuid, 'niveau_uuid' => $sixieme->uuid, 'montant_ar' => 45_000]);
         $frais->creerTarif($directeur, ['type_frais_uuid' => $ecolage->uuid, 'niveau_uuid' => $cinquieme->uuid, 'montant_ar' => 50_000]);
-        $frais->creerTarif($directeur, ['type_frais_uuid' => $cantine->uuid, 'montant_ar' => 20_000]);
 
         $eleves = app(EleveService::class);
         $creees = [];
@@ -125,7 +123,7 @@ final class DemoSeeder extends Seeder
             if ($i % 6 === 5) {
                 continue; // never paid anything: shows the "dû" state
             }
-            $liste = $echeances->forEleve($eleve->id)->filter(fn ($e) => in_array($e->periode, [null, '2026-09', '2026-10'], true) && $e->typeFrais->nom !== 'Cantine');
+            $liste = $echeances->forEleve($eleve->id)->filter(fn ($e) => in_array($e->periode, [null, '2026-09', '2026-10'], true));
             $lignes = [];
             foreach ($liste as $e) {
                 // Every fourth pupil pays October only in part.

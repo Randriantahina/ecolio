@@ -17,19 +17,19 @@ Goal: what the directrice described (spec 0.1): registry by matricule, tuition/a
 12. [x] Registre écolage `GET /classes/{id}/registre-ecolage?periode=` (feat, finance)
 13. [x] Absences (`PUT/GET /classes/{uuid}/absences`, sets exactly the absentees, client_uuid replay safe): batch `PUT /classes/{id}/absences`, unique (élève, date, période) (RG-P5) (feat, absences)
 14. [x] Départ (`POST /eleves/{uuid}/sortie`; future unpaid MONTHLY instalments -> annule, partial/paid kept): `POST /eleves/{id}/sortie`, future unpaid échéances become `annule`, owed stays owed (RG-P6) (feat, eleves)
-15. [ ] Receipt PDF A5 (dompdf) with school identity and legal mention (RG-R4), word "reçu" not "facture" (RG-R6) (feat, finance)
+15. [x] (done 2026-11-24) Receipt PDF A5 (dompdf) with school identity and legal mention (RG-R4), word "reçu" not "facture" (RG-R6) (feat, finance)
 16. [ ] Tenant-isolation test for every model above; policies per spec section 1
 
 Note 2026-11-24: tasks 8-12 done in one batch (`/types-frais`, `/tarifs`, `/paiements`, `/paiements/{uuid}/annulation`, `/eleves/{uuid}/echeances`, `/classes/{uuid}/registre-ecolage`). Known gaps: grouped payment across SIBLINGS not built (all lines must belong to one pupil); secretaire void with director validation not built (RG-P7 hypothesis, directeur only); a class tariff added after enrolment does not reprice instalments already generated; weak spots in tests: no true concurrency test (SQLite).
 
 ## Frontend
 17. [ ] Settings screens: year, levels, classes, tariffs (directeur)
-18. [ ] Élèves table (TanStack Table), search by matricule/name, create/edit form
-19. [ ] Registre écolage screen: class + month, one checkbox per student; check = open minimal payment panel (amount prefilled, date, mode) = pay + receipt; 3 interactions max (CA M4)
-20. [ ] Absences screen: class + date, "tous présents" then uncheck absentees
+18. [~] Élèves list + create dialog with duplicate confirmation done 2026-11-24 (plain table, no edit form yet)
+19. [x] (done 2026-11-24, checked in browser) Registre écolage screen: class + month, one checkbox per student; check = open minimal payment panel (amount prefilled, date, mode) = pay + receipt; 3 interactions max (CA M4)
+20. [x] (done 2026-11-24) Absences screen: class + date, "tous présents" then uncheck absentees
 21. [ ] Départ action (date, reason, comment)
-22. [ ] Receipt view/print/share (PDF)
-23. [ ] Void flow with mandatory reason
+22. [x] (done 2026-11-24) Receipt view and PDF download
+23. [x] (done 2026-11-24) Void flow with mandatory reason
 24. [ ] Playwright journey: "encaisser en 3 interactions"
 
 ## Quality

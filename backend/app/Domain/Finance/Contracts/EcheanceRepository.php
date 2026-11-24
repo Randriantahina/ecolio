@@ -34,10 +34,11 @@ interface EcheanceRepository
     public function paidAmounts(array $ids): array;
 
     /**
-     * Latest VALID receipt number per instalment, shown inside the ticked box.
+     * Latest VALID receipt per instalment: its number is shown inside the ticked box and its payment
+     * uuid lets the screen void it (unchecking, RG-P4).
      *
      * @param  list<int>  $ids
-     * @return array<int,string> echeance id => numero_affiche
+     * @return array<int,array{numero:string,paiement_uuid:string}> echeance id => receipt
      */
     public function lastReceiptNumbers(array $ids): array;
 

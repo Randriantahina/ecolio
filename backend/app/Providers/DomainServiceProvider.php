@@ -15,6 +15,7 @@ use App\Domain\Finance\Contracts\CompteurRepository;
 use App\Domain\Finance\Contracts\EcheanceRepository;
 use App\Domain\Finance\Contracts\FraisRepository;
 use App\Domain\Finance\Contracts\PaiementRepository;
+use App\Domain\Finance\Contracts\RecuPdfGenerator;
 use App\Domain\Finance\Models\Paiement;
 use App\Domain\Finance\Models\Tarif;
 use App\Domain\Finance\Models\TypeFrais;
@@ -27,6 +28,7 @@ use App\Domain\Scolarite\Contracts\StructureRepository;
 use App\Domain\Scolarite\Models\AnneeScolaire;
 use App\Domain\Scolarite\Models\Classe;
 use App\Domain\Scolarite\Models\Niveau;
+use App\Infrastructure\Pdf\DompdfRecuPdfGenerator;
 use App\Infrastructure\Persistence\Eloquent\EloquentAbsenceRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentAnneeScolaireRepository;
 use App\Infrastructure\Persistence\Eloquent\EloquentCompteurRepository;
@@ -65,6 +67,7 @@ final class DomainServiceProvider extends ServiceProvider
         InscriptionRepository::class => EloquentInscriptionRepository::class,
         FraisRepository::class => EloquentFraisRepository::class,
         EcheanceRepository::class => EloquentEcheanceRepository::class,
+        RecuPdfGenerator::class => DompdfRecuPdfGenerator::class,
         PaiementRepository::class => EloquentPaiementRepository::class,
         AbsenceRepository::class => EloquentAbsenceRepository::class,
     ];

@@ -52,6 +52,7 @@ Route::prefix('v1')->group(function () {
 
         Route::post('paiements', [PaiementController::class, 'store']);
         Route::get('paiements/{uuid}', [PaiementController::class, 'show']);
+        Route::get('paiements/{uuid}/pdf', [PaiementController::class, 'pdf']);
         Route::post('paiements/{uuid}/annulation', [PaiementController::class, 'annuler']);
         Route::get('eleves/{uuid}/echeances', [PaiementController::class, 'echeancesEleve']);
         Route::get('classes/{uuid}/registre-ecolage', [PaiementController::class, 'registre']);

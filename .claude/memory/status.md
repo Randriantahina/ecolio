@@ -1,9 +1,9 @@
 # Status (read first; rewrite after every change)
 
-Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écolage (planned, not started)** · Phases done: 1/7 (+ bootstrap)
+Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écolage (demo prototype usable)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- Phase 1 backend: only task 15 (receipt PDF) left; then DemoSeeder and frontend 17-24. User wants ALL of the spec, built fast (prototype demo tomorrow): batch whole slices, test business rules not getters, UI design must be excellent. Phase 0 closed; phase 1 paused on purpose: the user is building the separate side project **Cairn** (`~/chezmoi/dev/sideProjects/cairn`, remote `Randriantahina/cairn`) first, then resumes phase 1.
+- Phase 1 UI delivered for the demo prototype: login, shell, home, élèves, registre écolage, absences, receipt PDF. User wants ALL spec phases built fast; UI design must stay excellent (user is picky: avoid generic AI look, no "facture", no cantine).
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
@@ -17,7 +17,7 @@ Updated: 2026-11-23 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-1) (done) DemoSeeder. 2) FRONTEND (priority for tomorrow's demo): app shell with nav, élèves list, registre écolage (checkbox -> payment panel -> receipt), absences, receipt view; excellent design, French copy. 3) Receipt PDF A5 with dompdf (needs `COMPOSER_AUTH` from `gh auth token`) - the JSON receipt (`GET /paiements/{uuid}`) already carries every RG-R4 field, so a printable HTML receipt in the frontend can cover the demo.
+1) Run the demo end to end in the browser (api `php artisan serve` on 8000, `pnpm dev` on localhost:5173 - origin must be `localhost`, CORS rejects 127.0.0.1). Logins directeur|secretaire|enseignant@demo.ecolio.test. 2) Remaining Phase 1: Playwright journey (task 24), settings screens (17), élèves edit form, departure UI (21), PostgreSQL concurrency check. 3) Then Phase 2 (custom fields, saved views, Excel import).
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.

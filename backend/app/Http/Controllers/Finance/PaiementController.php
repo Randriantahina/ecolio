@@ -8,6 +8,7 @@ use App\Application\Finance\Services\PaiementService;
 use App\Application\Finance\Services\RegistreEcolageService;
 use App\Domain\Eleves\Contracts\EleveRepository;
 use App\Domain\Finance\Contracts\EcheanceRepository;
+use App\Domain\Finance\Contracts\RecuPdfGenerator;
 use App\Domain\Finance\Models\Paiement;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Finance\AnnulerPaiementRequest;
@@ -17,6 +18,7 @@ use App\Http\Resources\PaiementResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 final class PaiementController extends Controller
 {
@@ -25,6 +27,7 @@ final class PaiementController extends Controller
         private readonly RegistreEcolageService $registre,
         private readonly EleveRepository $eleves,
         private readonly EcheanceRepository $echeances,
+        private readonly RecuPdfGenerator $pdf,
     ) {}
 
     public function store(EncaisserRequest $request): JsonResponse
@@ -42,6 +45,18 @@ final class PaiementController extends Controller
         Gate::authorize('viewAny', Paiement::class);
 
         return response()->json(['paiement' => $this->resource($this->paiements->voir($request->user(), $uuid))]);
+    }
+
+    public function pdf(Request $request, string $uuid): Response
+    {
+        Gate::authorize('viewAny', Paiement::class);
+
+        $recu = $this->resource($this->paiements->voir($request->user(), $uuid));
+
+        return response($this->pdf->generate($recu), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="recu-'.$recu['numero'].'.pdf"',
+        ]);
     }
 
     public function annuler(AnnulerPaiementRequest $request, string $uuid): JsonResponse

@@ -53,7 +53,8 @@ final class RegistreEcolageService
                         'paye_ar' => $paye,
                         'solde_ar' => $e->net()->amount() - $paye,
                         'statut' => $e->statut->value,
-                        'recu' => $recus[$e->id] ?? null,
+                        'recu' => $recus[$e->id]['numero'] ?? null,
+                        'paiement_uuid' => $recus[$e->id]['paiement_uuid'] ?? null,
                     ];
                 })->values()->all(),
             ];
