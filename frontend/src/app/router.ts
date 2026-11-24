@@ -15,9 +15,26 @@ export function createAppRouter(history: RouterHistory = createWebHistory()) {
     routes: [
       {
         path: '/',
-        name: 'home',
-        component: () => import('@/features/home/ui/HomeView.vue'),
+        component: () => import('./layout/AppShell.vue'),
         meta: { requiresAuth: true },
+        children: [
+          { path: '', name: 'home', component: () => import('@/features/home/ui/HomeView.vue') },
+          {
+            path: 'ecolage',
+            name: 'ecolage',
+            component: () => import('@/features/ecolage/ui/RegistreView.vue'),
+          },
+          {
+            path: 'eleves',
+            name: 'eleves',
+            component: () => import('@/features/eleves/ui/ElevesView.vue'),
+          },
+          {
+            path: 'absences',
+            name: 'absences',
+            component: () => import('@/features/absences/ui/AbsencesView.vue'),
+          },
+        ],
       },
       {
         path: '/connexion',

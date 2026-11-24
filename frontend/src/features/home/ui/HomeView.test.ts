@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { mount, RouterLinkStub } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useSessionStore } from '@/features/auth/session.store'
@@ -11,7 +11,7 @@ beforeEach(() => {
 })
 
 describe('HomeView', () => {
-  it('greets the user and names their school', () => {
+  it('greets the user and offers the three daily tasks', () => {
     useSessionStore().setSession('t', {
       uuid: 'u',
       nom: 'Rasoa',
@@ -22,9 +22,12 @@ describe('HomeView', () => {
       ecole: { uuid: 'e', nom: 'Ecole Pilote' },
     })
 
-    const wrapper = mount(HomeView, { global: { plugins: [createAppI18n()] } })
+    const wrapper = mount(HomeView, {
+      global: { plugins: [createAppI18n()], stubs: { RouterLink: RouterLinkStub } },
+    })
 
     expect(wrapper.text()).toContain('Bonjour, Rasoa')
-    expect(wrapper.text()).toContain('École : Ecole Pilote')
+    const destinations = wrapper.findAllComponents(RouterLinkStub).map((l) => l.props('to'))
+    expect(destinations).toEqual([{ name: 'ecolage' }, { name: 'absences' }, { name: 'eleves' }])
   })
 })

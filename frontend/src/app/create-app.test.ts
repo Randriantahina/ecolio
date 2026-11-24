@@ -6,7 +6,7 @@ import { createEcolioApp } from './create-app'
 beforeEach(() => localStorage.clear())
 
 describe('createEcolioApp', () => {
-  it('boots to the login page for an anonymous visitor, with the connectivity indicator', async () => {
+  it('boots to the login page for an anonymous visitor', async () => {
     const { app, router } = createEcolioApp({
       history: createMemoryHistory(),
       apiBaseUrl: 'http://api.test/api/v1',
@@ -18,8 +18,7 @@ describe('createEcolioApp', () => {
     await router.isReady()
     await flushPromises()
 
-    expect(root.textContent).toContain('Connexion')
-    expect(root.querySelector('[role="status"]')).not.toBeNull()
+    expect(root.textContent).toContain('Bon retour')
     app.unmount()
   })
 

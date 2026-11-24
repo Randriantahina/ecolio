@@ -116,3 +116,29 @@ describe('http client', () => {
     await expect(client.get('/x')).rejects.toBeInstanceOf(NetworkError)
   })
 })
+
+describe('http client blob download', () => {
+  it('fetches a binary file with the bearer token', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(new Response('%PDF-1.4', { status: 200 }))
+    const { client } = clientWith(fetchImpl, 'tok')
+
+    const blob = await client.blob('paiements/x/pdf')
+
+    expect(await blob.text()).toBe('%PDF-1.4')
+    const headers = (fetchImpl.mock.calls[0]![1] as RequestInit).headers as Headers
+    expect(headers.get('Authorization')).toBe('Bearer tok')
+  })
+
+  it('drops the session when the token is refused during a download', async () => {
+    const onUnauthorized = vi.fn()
+    const { client } = clientWith(
+      vi.fn().mockResolvedValue(new Response(null, { status: 401 })),
+      'tok',
+      onUnauthorized,
+    )
+
+    await rejectionOf<UnauthorizedError>(client.blob('paiements/x/pdf'))
+
+    expect(onUnauthorized).toHaveBeenCalledOnce()
+  })
+})

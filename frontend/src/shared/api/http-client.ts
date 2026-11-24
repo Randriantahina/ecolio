@@ -6,6 +6,8 @@ export interface HttpClient {
   put<T = unknown>(path: string, body?: unknown): Promise<T>
   patch<T = unknown>(path: string, body?: unknown): Promise<T>
   delete<T = unknown>(path: string): Promise<T>
+  /** Binary download (PDF): same auth and error mapping as JSON calls. */
+  blob(path: string): Promise<Blob>
 }
 
 export interface HttpClientOptions {
@@ -22,15 +24,19 @@ type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 export function createHttpClient(options: HttpClientOptions): HttpClient {
   const base = options.baseUrl.replace(/\/+$/, '')
 
-  async function request<T>(method: Method, path: string, body?: unknown): Promise<T> {
-    const headers = new Headers({ Accept: 'application/json' })
+  async function send(
+    method: Method,
+    path: string,
+    body: unknown,
+    accept: string,
+  ): Promise<Response> {
+    const headers = new Headers({ Accept: accept })
     const token = options.getToken()
     if (token) headers.set('Authorization', `Bearer ${token}`)
     if (body !== undefined) headers.set('Content-Type', 'application/json')
 
-    let response: Response
     try {
-      response = await (options.fetchImpl ?? fetch)(`${base}/${path.replace(/^\/+/, '')}`, {
+      return await (options.fetchImpl ?? fetch)(`${base}/${path.replace(/^\/+/, '')}`, {
         method,
         headers,
         body: body === undefined ? undefined : JSON.stringify(body),
@@ -38,6 +44,10 @@ export function createHttpClient(options: HttpClientOptions): HttpClient {
     } catch {
       throw new NetworkError()
     }
+  }
+
+  async function request<T>(method: Method, path: string, body?: unknown): Promise<T> {
+    const response = await send(method, path, body, 'application/json')
 
     if (response.status === 204) return undefined as T
 
@@ -58,7 +68,7 @@ export function createHttpClient(options: HttpClientOptions): HttpClient {
       case 423:
         throw new LockedError(message)
       default:
-        throw new ApiError(message, response.status)
+        throw new ApiError(message, response.status, payload)
     }
   }
 
@@ -68,5 +78,14 @@ export function createHttpClient(options: HttpClientOptions): HttpClient {
     put: (path, body) => request('PUT', path, body),
     patch: (path, body) => request('PATCH', path, body),
     delete: (path) => request('DELETE', path),
+    blob: async (path) => {
+      const response = await send('GET', path, undefined, 'application/pdf')
+      if (response.ok) return response.blob()
+      if (response.status === 401) {
+        options.onUnauthorized?.()
+        throw new UnauthorizedError()
+      }
+      throw new ApiError(`HTTP ${response.status}`, response.status)
+    },
   }
 }

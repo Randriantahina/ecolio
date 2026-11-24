@@ -4,11 +4,14 @@
  */
 export class ApiError extends Error {
   readonly status: number
+  /** Parsed JSON body, kept so a caller can read structured details (e.g. the duplicate found by the server). */
+  readonly body: unknown
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, body: unknown = undefined) {
     super(message)
     this.name = new.target.name
     this.status = status
+    this.body = body
   }
 }
 
