@@ -85,6 +85,7 @@ final class EditEleve extends EditRecord
             dateNaissance: isset($data['date_naissance']) ? (string) $data['date_naissance'] : null,
             lieuNaissance: $data['lieu_naissance'] ?? null,
             matricule: $data['matricule'] ?? null,
+            champsPerso: $data['champs_perso'] ?? [],
         ));
     }
 

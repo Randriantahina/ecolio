@@ -33,6 +33,7 @@ final class CreateEleve extends CreateRecord
                 typeInscription: 'nouvelle',
                 estRedoublant: (bool) ($data['est_redoublant'] ?? false),
                 confirmerDoublon: (bool) ($data['confirmer_doublon'] ?? false),
+                champsPerso: $data['champs_perso'] ?? [],
             ));
         } catch (DuplicateEleveException $e) {
             // RG-E4: a question, not an error. The user confirms with the switch and saves again.

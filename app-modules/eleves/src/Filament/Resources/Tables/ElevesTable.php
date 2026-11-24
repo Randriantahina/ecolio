@@ -9,6 +9,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Dynamique\Domain\Enums\EntiteChamp;
+use Modules\Dynamique\Filament\Support\ChampsFilament;
 use Modules\Eleves\Domain\Enums\StatutEleve;
 use Modules\Eleves\Filament\Support\StatutEleveLabels;
 use Modules\Scolarite\Application\Services\StructureService;
@@ -26,6 +28,7 @@ final class ElevesTable
                 TextColumn::make('statut')->label('Statut')->badge()
                     ->formatStateUsing(fn (StatutEleve $state): string => StatutEleveLabels::label($state))
                     ->color(fn (StatutEleve $state): string => StatutEleveLabels::color($state)),
+                ...ChampsFilament::colonnes(EntiteChamp::Eleve),
             ])
             ->defaultSort('matricule')
             ->filters([
@@ -36,6 +39,7 @@ final class ElevesTable
                         $data['value'] ?? null,
                         fn (Builder $q, string $uuid) => $q->whereHas('inscriptionActive.classe', fn (Builder $c) => $c->where('uuid', $uuid)),
                     )),
+                ...ChampsFilament::filtres(EntiteChamp::Eleve),
             ])
             ->recordActions([EditAction::make()->label('Ouvrir')])
             ->emptyStateHeading('Aucun élève')

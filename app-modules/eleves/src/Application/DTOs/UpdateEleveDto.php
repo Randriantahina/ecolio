@@ -14,5 +14,7 @@ final readonly class UpdateEleveDto
         public ?string $dateNaissance = null,
         public ?string $lieuNaissance = null,
         public ?string $matricule = null,
+        /** @var array<string, mixed>|null null leaves the custom values untouched */
+        public ?array $champsPerso = null,
     ) {}
 }

@@ -8,6 +8,8 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Modules\Dynamique\Application\Services\ChampService;
+use Modules\Dynamique\Domain\Enums\EntiteChamp;
 use Modules\Eleves\Application\DTOs\CreateEleveDto;
 use Modules\Eleves\Application\DTOs\UpdateEleveDto;
 use Modules\Eleves\Domain\Contracts\EleveRepository;
@@ -21,6 +23,7 @@ final class EleveService
         private readonly EleveRepository $eleves,
         private readonly MatriculeGenerator $matricules,
         private readonly InscriptionService $inscriptions,
+        private readonly ChampService $champs,
     ) {}
 
     /**
@@ -58,6 +61,8 @@ final class EleveService
                 throw ValidationException::withMessages(['matricule' => 'Ce matricule existe déjà dans l\'école.']);
             }
 
+            $champsPerso = $this->champs->valider($acteur, EntiteChamp::Eleve, $dto->champsPerso);
+
             $eleve = new Eleve([
                 'matricule' => $dto->matricule ?? $this->matricules->next($ecoleId),
                 'nom' => $dto->nom,
@@ -66,6 +71,7 @@ final class EleveService
                 'date_naissance' => $dto->dateNaissance,
                 'lieu_naissance' => $dto->lieuNaissance,
                 'date_entree' => now()->toDateString(),
+                'champs_perso' => $champsPerso,
             ]);
             $eleve->ecole_id = $acteur->ecole_id;
             $this->eleves->save($eleve);
@@ -103,6 +109,12 @@ final class EleveService
                 'date_naissance' => $dto->dateNaissance,
                 'lieu_naissance' => $dto->lieuNaissance,
             ], fn ($v) => $v !== null));
+            if ($dto->champsPerso !== null) {
+                // Values of deactivated fields stay stored (data kept); active ones follow the form, so a cleared field disappears.
+                $actives = $this->champs->lister($acteur, EntiteChamp::Eleve)->pluck('cle')->all();
+                $conserves = array_diff_key($eleve->champs_perso ?? [], array_flip($actives));
+                $eleve->champs_perso = $conserves + $this->champs->valider($acteur, EntiteChamp::Eleve, $dto->champsPerso);
+            }
             $this->eleves->save($eleve);
 
             return $eleve;

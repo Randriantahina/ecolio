@@ -1,0 +1,24 @@
+{
+	"name": "modules/dynamique",
+	"description": "",
+	"type": "library",
+	"version": "1.0",
+	"license": "proprietary",
+	"require": {},
+	"autoload": {
+		"psr-4": {
+			"Modules\\Dynamique\\": "src/",
+			"Modules\\Dynamique\\Tests\\": "tests/",
+			"Modules\\Dynamique\\Database\\Factories\\": "database/factories/",
+			"Modules\\Dynamique\\Database\\Seeders\\": "database/seeders/"
+		}
+	},
+	"minimum-stability": "stable",
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Modules\\Dynamique\\Providers\\DynamiqueServiceProvider"
+			]
+		}
+	}
+}

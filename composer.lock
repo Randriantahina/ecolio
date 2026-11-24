@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf9bc5ce775e53b65a4494ac0f8aec1a",
+    "content-hash": "d6f80e2f04d581dd399b09717186aa8c",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4628,6 +4628,38 @@
                     "Modules\\Audit\\Tests\\": "tests/",
                     "Modules\\Audit\\Database\\Factories\\": "database/factories/",
                     "Modules\\Audit\\Database\\Seeders\\": "database/seeders/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "modules/dynamique",
+            "version": "1.0",
+            "dist": {
+                "type": "path",
+                "url": "app-modules/dynamique",
+                "reference": "26d96351f0d9c54186c9a9359c3fcb17ccfc2457"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Modules\\Dynamique\\Providers\\DynamiqueServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Modules\\Dynamique\\": "src/",
+                    "Modules\\Dynamique\\Tests\\": "tests/",
+                    "Modules\\Dynamique\\Database\\Factories\\": "database/factories/",
+                    "Modules\\Dynamique\\Database\\Seeders\\": "database/seeders/"
                 }
             },
             "license": [

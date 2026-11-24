@@ -10,6 +10,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Modules\Dynamique\Domain\Enums\EntiteChamp;
+use Modules\Dynamique\Filament\Support\ChampsFilament;
 use Modules\Eleves\Domain\Models\Eleve;
 use Modules\Scolarite\Application\Services\StructureService;
 
@@ -17,7 +19,13 @@ final class EleveForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->components([
+        return $schema->components([...self::noyau(), ...ChampsFilament::sections(EntiteChamp::Eleve)]);
+    }
+
+    /** @return list<Section> */
+    private static function noyau(): array
+    {
+        return [
             Section::make('Identité')
                 ->description('Le noyau de la fiche : matricule, nom et prénoms.')
                 ->columns(2)
@@ -55,6 +63,6 @@ final class EleveForm
                         ->visibleOn('create')
                         ->visible(fn ($livewire): bool => (bool) ($livewire->doublonDetecte ?? false)),
                 ]),
-        ]);
+        ];
     }
 }

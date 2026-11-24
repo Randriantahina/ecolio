@@ -17,5 +17,7 @@ final readonly class CreateEleveDto
         public string $typeInscription,
         public bool $estRedoublant,
         public bool $confirmerDoublon,
+        /** @var array<string, mixed> raw values of the school's custom fields, validated by the service */
+        public array $champsPerso = [],
     ) {}
 }
