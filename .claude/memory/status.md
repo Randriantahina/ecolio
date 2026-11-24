@@ -3,7 +3,7 @@
 Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écolage (UI rebuilt on Filament)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
-- UI pivot (decision 0004): Vue/Inertia/pnpm removed, Filament 5 panel `ecole` with tenancy, custom login (lockout), context plugin mechanism (`FilamentModulesServiceProvider`) and the **Eleves** plugin (list/search/filter, create with duplicate confirm, edit, change class, departure) are DONE and tested (212 tests). Remaining Phase 1 UI: Scolarite (années, niveaux, classes), Finance (types de frais, tarifs, registre écolage with payment/void/receipt PDF), Absences, dashboard widgets. Then Phases 2-6 + Transverse, everything real, tested, CI green.
+- UI pivot (decision 0004): Vue/Inertia/pnpm removed, Filament 5 panel `ecole` with tenancy, custom login (lockout), context plugin mechanism (`FilamentModulesServiceProvider`) and the **Eleves** plugin (list/search/filter, create with duplicate confirm, edit, change class, departure) are DONE and tested (212 tests). Scolarite plugin (années incl. set current, niveaux, classes, refuses deleting a class that holds pupils) DONE. Remaining Phase 1 UI: Finance (types de frais, tarifs, registre écolage with payment/void/receipt PDF), Absences, dashboard widgets. Then Phases 2-6 + Transverse, everything real, tested, CI green.
 
 ## Last done
 - 2026-11-23 · Repo bootstrap: Laravel 13 + Pest 5, Vue 3 + Vite + Tailwind 4 + shadcn-vue + PWA, pnpm, CI workflows, rules, `main`/`dev` branches pushed.
@@ -17,7 +17,7 @@ Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
-1) `app/Filament/Scolarite/` plugin (AnneeScolaire, Niveau, Classe resources, services already exist) registered in `FilamentModulesServiceProvider`, Livewire tests per Eleves pattern (helpers `dansLePanelEcole`, `ecoleAvecClasses` in tests/Pest.php). 2) Finance plugin (TypeFrais, Tarif, registre écolage page, reçu PDF download, void with motif). 3) Absences plugin. 4) Seeder demo login: directeur@demo.ecolio.test / password at `/ecole`. User must run `composer` commands needing GitHub auth.
+1) Finance plugin in `app/Filament/Finance/` (TypeFrais, Tarif with niveau/classe scope, registre écolage page with payment/void/receipt PDF; services in `app/Application/Finance`), same test pattern as `tests/Feature/Filament/Scolarite`. 2) Absences plugin. 3) Dashboard widgets. 4) Demo seeder check at `/ecole` (directeur@demo.ecolio.test / password). Register each plugin in `FilamentModulesServiceProvider`.
 
 ## Blockers / open questions
 - None technical. Spec items `[À confirmer]` (real Excel file, bulletin format, fees) are not available: build with the spec's hypotheses, keep rules parametrable.

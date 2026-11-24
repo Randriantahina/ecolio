@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Eleves\ElevesPlugin;
+use App\Filament\Scolarite\ScolaritePlugin;
 use Filament\Panel;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,7 +22,7 @@ final class FilamentModulesServiceProvider extends ServiceProvider
                 return;
             }
 
-            $panel->plugins([ElevesPlugin::make()]);
+            $panel->plugins([ScolaritePlugin::make(), ElevesPlugin::make()]);
         });
     }
 }

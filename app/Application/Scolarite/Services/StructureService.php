@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Scolarite\Services;
 
+use App\Domain\Eleves\Contracts\InscriptionRepository;
 use App\Domain\Identity\Models\Utilisateur;
 use App\Domain\Scolarite\Contracts\AnneeScolaireRepository;
 use App\Domain\Scolarite\Contracts\StructureRepository;
@@ -17,6 +18,7 @@ final class StructureService
     public function __construct(
         private readonly StructureRepository $structure,
         private readonly AnneeScolaireRepository $annees,
+        private readonly InscriptionRepository $inscriptions,
     ) {}
 
     /** @return Collection<int, Niveau> */
@@ -103,6 +105,13 @@ final class StructureService
 
     public function supprimerClasse(Utilisateur $acteur, string $uuid): void
     {
-        $this->structure->deleteClasse($this->structure->classeOrFail($uuid, (int) $acteur->ecole_id));
+        $classe = $this->structure->classeOrFail($uuid, (int) $acteur->ecole_id);
+
+        // Deleting a class that still holds pupils would leave them enrolled in nothing.
+        if ($this->inscriptions->countActiveInClasse($classe->id) > 0) {
+            throw ValidationException::withMessages(['classe' => 'Cette classe contient encore des élèves : déplacez-les avant de la supprimer.']);
+        }
+
+        $this->structure->deleteClasse($classe);
     }
 }
