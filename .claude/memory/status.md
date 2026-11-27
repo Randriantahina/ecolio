@@ -1,6 +1,6 @@
 # Status (read first; rewrite after every change)
 
-Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écolage (UI rebuilt on Filament)** · Phases done: 1/7 (+ bootstrap)
+Updated: 2026-11-27 (imports committed unverified, see Next action) · Branch: `dev` · Active phase: **1 – Registre et écolage (UI rebuilt on Filament)** · Phases done: 1/7 (+ bootstrap)
 
 ## In progress
 - Architecture (decisions 0004 + 0005): Filament 5 panel `ecole`, every bounded context is an InterNACHI/Modular module in `app-modules/` (tenancy, platform, identity, audit, scolarite, eleves, finance, absences), each with its plugin, provider, migrations, tests. Eleves, Scolarite, Finance, Absences (roll-call page) UI and dashboard widgets (headcount, money) done and tested (257 tests). Remaining Phase 1: grouped sibling payments, real PostgreSQL concurrency check of `compteurs`, Playwright-free browser check of the demo. Then Phases 2-6 + Transverse, everything real, tested, CI green.
@@ -17,6 +17,8 @@ Updated: 2026-11-24 · Branch: `dev` · Active phase: **1 – Registre et écola
 - 2026-11-23 · Auth API and team management (policy-protected): 93 backend tests green (incl. settings, password reset, audit).
 
 ## Next action
+**First**: run `./vendor/bin/pint --test` and `./vendor/bin/pest`. The imports services, queued run, rollback, Filament pages and tests were committed and pushed on 2026-11-27 at the user's request WITHOUT running either gate. Fix any failure before item 1 is considered done.
+
 Shield + Users page done (policies read permissions seeded by RolesSeeder; payments use custom permissions). Next, one commit each: 1) finish module `imports` (reader, tables, models done in app-modules/imports: add services, staging validation, queued run, rollback, Filament 5-step wizard; RG-M1..M5). 2) real SMS gateway adapter for `EnvoyeurSms` + mobile sync API for teachers (absences). 3) Phase 3 tutors/siblings/re-enrolment/promotion/grouped payments/discounts. 4) Phase 4 grades + report cards. 5) Phase 5 communications. 6) Phase 6 offline. 7) super_admin back-office. Work in the worktree (see Environment notes); merge dev into main only when the user asks.
 
 ## Blockers / open questions

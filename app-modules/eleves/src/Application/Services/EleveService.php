@@ -85,6 +85,31 @@ final class EleveService
         });
     }
 
+    public function parMatricule(Utilisateur $acteur, string $matricule): ?Eleve
+    {
+        return $this->eleves->findByMatricule((int) $acteur->ecole_id, $matricule);
+    }
+
+    /** Same pupil by identity (name, first names, birth date): what import mode "update" falls back to (RG-M2). */
+    public function parIdentite(Utilisateur $acteur, string $nom, ?string $prenoms, ?string $dateNaissance): ?Eleve
+    {
+        return $this->eleves->findDuplicate((int) $acteur->ecole_id, $nom, $prenoms, $dateNaissance);
+    }
+
+    public function matriculeExiste(Utilisateur $acteur, string $matricule): bool
+    {
+        return $this->eleves->matriculeExists((int) $acteur->ecole_id, $matricule);
+    }
+
+    /**
+     * Hard delete, for rolling back an import only: the matricule must become free again. A pupil that already
+     * has payments cannot go (foreign key), which is the guard we want.
+     */
+    public function supprimerDefinitivement(Utilisateur $acteur, string $uuid): void
+    {
+        $this->eleves->findOrFail($uuid, (int) $acteur->ecole_id)->forceDelete();
+    }
+
     public function modifier(Utilisateur $acteur, string $uuid, UpdateEleveDto $dto): Eleve
     {
         return DB::transaction(function () use ($acteur, $uuid, $dto): Eleve {

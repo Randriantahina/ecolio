@@ -25,6 +25,8 @@ interface EleveRepository
     /** @return array{actifs:int, sans_classe:int} Active pupils, and those among them without an active enrolment. */
     public function effectifs(int $ecoleId): array;
 
+    public function findByMatricule(int $ecoleId, string $matricule): ?Eleve;
+
     public function matriculeExists(int $ecoleId, string $matricule, ?int $sauf = null): bool;
 
     /** RG-E4: same name, first names and birth date. */

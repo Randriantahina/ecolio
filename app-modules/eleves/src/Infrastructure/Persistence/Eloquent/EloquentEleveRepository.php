@@ -57,6 +57,11 @@ final class EloquentEleveRepository implements EleveRepository
         $eleve->save();
     }
 
+    public function findByMatricule(int $ecoleId, string $matricule): ?Eleve
+    {
+        return Eleve::where('ecole_id', $ecoleId)->where('matricule', $matricule)->first();
+    }
+
     public function matriculeExists(int $ecoleId, string $matricule, ?int $sauf = null): bool
     {
         return Eleve::withTrashed()->where('ecole_id', $ecoleId)->where('matricule', $matricule)

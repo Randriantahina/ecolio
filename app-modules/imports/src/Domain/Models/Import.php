@@ -36,6 +36,11 @@ final class Import extends Model
         ];
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     public function uniqueIds(): array
     {
         return ['uuid'];

@@ -259,6 +259,9 @@ return [
         'ViewAny:Paiement' => 'Voir le registre et encaisser',
         'Create:Paiement' => 'Encaisser un paiement',
         'Delete:Paiement' => 'Annuler un paiement (reçu annulé)',
+        'ViewAny:Import' => 'Voir les imports Excel',
+        'Create:Import' => 'Importer un fichier Excel',
+        'Delete:Import' => 'Annuler un import terminé',
     ],
 
     /*
